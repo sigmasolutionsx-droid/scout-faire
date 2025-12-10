@@ -7,9 +7,9 @@ const PORT = process.env.PORT || 5000;
 const ANALYSIS_PRICE = '2.99';
 const CURRENCY = 'USD';
 
-if (!process.env.ANTHROPIC_API_KEY || !process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
+if (!process.env.ANTHROPIC_API_KEY) {
     console.error('Missing required environment variables');
-    console.error('This app requires: ANTHROPIC_API_KEY, PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET');
+    console.error('This app requires: ANTHROPIC_API_KEY');
     process.exit(1);
 }
 
