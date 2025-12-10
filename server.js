@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const { runMigrations } = require('stripe-replit-sync');
+const { getStripeSync, getUncachableStripeClient, getStripePublishableKey } = require('./stripeClient');
+const { WebhookHandlers } = require('./webhookHandlers');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -13,12 +16,106 @@ if (!process.env.ANTHROPIC_API_KEY) {
     process.exit(1);
 }
 
-// Middleware
+async function initStripe() {
+    const databaseUrl = process.env.DATABASE_URL;
+    if (!databaseUrl) {
+        console.log('DATABASE_URL not found, skipping Stripe initialization');
+        return;
+    }
+
+    try {
+        console.log('Initializing Stripe schema...');
+        await runMigrations({ databaseUrl, schema: 'stripe' });
+        console.log('Stripe schema ready');
+
+        const stripeSync = await getStripeSync();
+
+        console.log('Setting up managed webhook...');
+        const webhookBaseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}`;
+        const { webhook, uuid } = await stripeSync.findOrCreateManagedWebhook(
+            `${webhookBaseUrl}/api/stripe/webhook`,
+            {
+                enabled_events: ['*'],
+                description: 'Managed webhook for Scout-Faire',
+            }
+        );
+        console.log(`Webhook configured: ${webhook.url}`);
+
+        console.log('Syncing Stripe data...');
+        stripeSync.syncBackfill()
+            .then(() => console.log('Stripe data synced'))
+            .catch((err) => console.error('Error syncing Stripe data:', err));
+    } catch (error) {
+        console.error('Failed to initialize Stripe:', error);
+    }
+}
+
+initStripe();
+
+app.post(
+    '/api/stripe/webhook/:uuid',
+    express.raw({ type: 'application/json' }),
+    async (req, res) => {
+        const signature = req.headers['stripe-signature'];
+        if (!signature) {
+            return res.status(400).json({ error: 'Missing stripe-signature' });
+        }
+
+        try {
+            const sig = Array.isArray(signature) ? signature[0] : signature;
+            const { uuid } = req.params;
+            await WebhookHandlers.processWebhook(req.body, sig, uuid);
+            res.status(200).json({ received: true });
+        } catch (error) {
+            console.error('Webhook error:', error.message);
+            res.status(400).json({ error: 'Webhook processing error' });
+        }
+    }
+);
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// API endpoint for niche analysis
+app.get('/api/stripe/config', async (req, res) => {
+    try {
+        const publishableKey = await getStripePublishableKey();
+        res.json({ publishableKey, price: ANALYSIS_PRICE, currency: CURRENCY });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to get Stripe config' });
+    }
+});
+
+app.post('/api/create-checkout-session', async (req, res) => {
+    try {
+        const stripe = await getUncachableStripeClient();
+        const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}`;
+        
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [{
+                price_data: {
+                    currency: CURRENCY.toLowerCase(),
+                    product_data: {
+                        name: 'Scout-Faire Niche Analysis',
+                        description: 'AI-powered market intelligence report',
+                    },
+                    unit_amount: Math.round(parseFloat(ANALYSIS_PRICE) * 100),
+                },
+                quantity: 1,
+            }],
+            mode: 'payment',
+            success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${baseUrl}/`,
+        });
+
+        res.json({ url: session.url });
+    } catch (error) {
+        console.error('Checkout error:', error);
+        res.status(500).json({ error: 'Failed to create checkout session' });
+    }
+});
+
 app.post('/api/analyze', async (req, res) => {
     try {
         const { keywords } = req.body;
@@ -27,10 +124,8 @@ app.post('/api/analyze', async (req, res) => {
             return res.status(400).json({ error: 'Keywords are required' });
         }
 
-        // Split keywords by comma
         const keywordList = keywords.split(',').map(k => k.trim()).filter(k => k);
 
-        // Call Claude API for analysis
         const response = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
             headers: {
@@ -74,8 +169,6 @@ Provide realistic, data-driven analysis based on current market trends.`
 
         const data = await response.json();
         const analysisText = data.content[0].text;
-        
-        // Parse the JSON response
         const analysis = JSON.parse(analysisText);
 
         res.json({ analysis });
@@ -89,12 +182,10 @@ Provide realistic, data-driven analysis based on current market trends.`
     }
 });
 
-// Health check endpoint
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', service: 'Scout-Faire API' });
 });
 
-// Serve the frontend
 app.get('/{*splat}', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

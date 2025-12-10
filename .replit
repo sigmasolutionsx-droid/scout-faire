@@ -1,11 +1,11 @@
-modules = ["nodejs-20"]
+modules = ["nodejs-20", "python-3.11"]
 [nix]
 channel = "stable-25_05"
 packages = ["unzip"]
 
 [agent]
 expertMode = true
-integrations = ["javascript_anthropic:1.0.0"]
+integrations = ["javascript_anthropic:1.0.0", "stripe:2.0.0"]
 
 [workflows]
 runButton = "Project"
