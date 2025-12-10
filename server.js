@@ -19,32 +19,55 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/api/analyze', async (req, res) => {
   try {
-    const { text, prompt } = req.body;
+    const { text, niche } = req.body;
 
-    if (!text && !prompt) {
-      return res.status(400).json({ error: 'Text or prompt is required' });
+    const nicheToScore = niche || text;
+
+    if (!nicheToScore) {
+      return res.status(400).json({ error: 'Niche concept is required' });
     }
 
-    const userMessage = prompt || `Please analyze the following text:\n\n${text}`;
+    const systemPrompt = `You are a business niche analyst. Score the given niche concept on a scale of 1-10 for each category. Provide your response in the following JSON format:
+{
+  "niche": "the niche name",
+  "scores": {
+    "marketDemand": { "score": 1-10, "reasoning": "brief explanation" },
+    "competition": { "score": 1-10, "reasoning": "brief explanation (higher = less competition, better)" },
+    "profitPotential": { "score": 1-10, "reasoning": "brief explanation" },
+    "scalability": { "score": 1-10, "reasoning": "brief explanation" },
+    "uniqueness": { "score": 1-10, "reasoning": "brief explanation" }
+  },
+  "overallScore": 1-10,
+  "summary": "2-3 sentence overall assessment",
+  "recommendations": ["actionable tip 1", "actionable tip 2", "actionable tip 3"]
+}`;
 
     const message = await anthropic.messages.create({
       model: DEFAULT_MODEL,
       max_tokens: 1024,
-      messages: [{ role: 'user', content: userMessage }],
+      system: systemPrompt,
+      messages: [{ role: 'user', content: `Score this niche concept: ${nicheToScore}` }],
     });
 
     const responseText = message.content[0].type === 'text' 
       ? message.content[0].text 
       : '';
 
+    let parsed;
+    try {
+      parsed = JSON.parse(responseText);
+    } catch {
+      parsed = { rawResponse: responseText };
+    }
+
     res.json({ 
-      result: responseText,
+      result: parsed,
       model: DEFAULT_MODEL,
       usage: message.usage
     });
   } catch (error) {
     console.error('Error calling Anthropic API:', error.message);
-    res.status(500).json({ error: 'Failed to analyze text', details: error.message });
+    res.status(500).json({ error: 'Failed to score niche', details: error.message });
   }
 });
 
