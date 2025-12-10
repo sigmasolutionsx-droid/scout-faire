@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scout-Faire - Niche Analyzer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin { animation: spin 1s linear infinite; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const TrendingUp = () => (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
+        );
+
+        const Search = () => (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+        );
+
+        const Loader2 = () => (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+            </svg>
+        );
+
+        const AlertCircle = () => (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        );
+
+        const Download = () => (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+        );
+
+        const Lightbulb = () => (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path>
+                <path d="M9 18h6"></path>
+                <path d="M10 22h4"></path>
+            </svg>
+        );
+
+        const BarChart3 = () => (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 3v18h18"></path>
+                <path d="M18 17V9"></path>
+                <path d="M13 17V5"></path>
+                <path d="M8 17v-3"></path>
+            </svg>
+        );
+
+        const Sparkles = () => (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+            </svg>
+        );
+
+        function NicheAnalyzer() {
+            const [analysis, setAnalysis] = useState(null);
+            const [loading, setLoading] = useState(false);
+            const [keywords, setKeywords] = useState('');
+            const [error, setError] = useState('');
+
+            const analyzeNiche = async () => {
+                if (!keywords.trim()) {
+                    setError('Please enter at least one keyword or topic');
+                    return;
+                }
+
+                setLoading(true);
+                setError('');
+
+                try {
+                    const response = await fetch('/api/analyze', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ keywords })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Analysis failed');
+                    }
+
+                    const data = await response.json();
+                    setAnalysis(data.analysis);
+                    
+                } catch (err) {
+                    setError(err.message || 'Analysis failed. Please try again.');
+                    console.error('Error:', err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const exportReport = () => {
+                if (!analysis) return;
+                
+                const report = `SCOUT-FAIRE NICHE ANALYSIS REPORT
+Generated: ${new Date().toLocaleString()}
+
+MARKET OVERVIEW:
+${analysis.overallInsight}
+
+DETAILED NICHE BREAKDOWN:
+
+${analysis.niches.map((n, i) => `${i + 1}. ${n.keyword.toUpperCase()}
+   Profitability Score: ${n.profitability}/10
+   Trend: ${n.trend}
+   Search Volume: ${n.searchVolume}
+   Competition: ${n.competition}
+   Buy Intent: ${n.buyIntent}
+   
+   Opportunity:
+   ${n.opportunity}
+   
+   Recommended Actions:
+${n.recommendations.map(r => `   → ${r}`).join('\n')}
+`).join('\n')}
+
+EMERGING OPPORTUNITIES:
+${analysis.emergingOpportunities.map((o, i) => `${i + 1}. ${o}`).join('\n')}
+
+Powered by Scout-Faire | Agora Arcus Intelligence
+`;
+
+                const blob = new Blob([report], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `scout-faire-analysis-${Date.now()}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+            };
+
+            const getScoreColor = (score) => {
+                if (score >= 8) return 'text-emerald-700 bg-emerald-50 border-emerald-200';
+                if (score >= 5) return 'text-amber-700 bg-amber-50 border-amber-200';
+                return 'text-rose-700 bg-rose-50 border-rose-200';
+            };
+
+            const getTrendIcon = (trend) => {
+                if (trend === 'rising') return '📈';
+                if (trend === 'stable') return '→';
+                return '📉';
+            };
+
+            const getBuyIntentColor = (intent) => {
+                if (intent === 'high') return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+                if (intent === 'medium') return 'bg-amber-100 text-amber-800 border-amber-300';
+                return 'bg-slate-100 text-slate-700 border-slate-300';
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-6 lg:p-8">
+                    <div className="w-full max-w-7xl mx-auto">
+                        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-200/60 p-6 md:p-8 mb-6 md:mb-8">
+                            <div className="flex items-center gap-4 mb-6 md:mb-8">
+                                <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg">
+                                    <TrendingUp />
+                                </div>
+                                <div>
+                                    <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Scout-Faire</h1>
+                                    <p className="text-slate-600 text-sm md:text-base mt-0.5">AI-Powered Market Intelligence</p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-3">
+                                        Enter Keywords or Topics
+                                    </label>
+                                    <textarea
+                                        value={keywords}
+                                        onChange={(e) => setKeywords(e.target.value)}
+                                        placeholder="e.g., sustainable fashion, AI productivity tools, plant-based nutrition"
+                                        className="w-full px-5 py-4 border-2 border-slate-200 rounded-2xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-slate-900 placeholder:text-slate-400 resize-none"
+                                        rows="3"
+                                    />
+                                    <p className="text-xs text-slate-500 mt-2 flex items-center gap-1">
+                                        <Sparkles />
+                                        Separate multiple niches with commas for batch analysis
+                                    </p>
+                                </div>
+
+                                {error && (
+                                    <div className="flex items-start gap-3 p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-700">
+                                        <AlertCircle />
+                                        <span className="text-sm">{error}</span>
+                                    </div>
+                                )}
+
+                                <button
+                                    onClick={analyzeNiche}
+                                    disabled={loading}
+                                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-2xl font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                >
+                                    {loading ? (
+                                        <>
+                                            <Loader2 />
+                                            <span>Analyzing Market...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Search />
+                                            <span>Scout Market</span>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+
+                        {analysis && (
+                            <div className="space-y-6 md:space-y-8">
+                                <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-200/60 p-6 md:p-8">
+                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2.5 bg-amber-100 rounded-xl">
+                                                <Lightbulb />
+                                            </div>
+                                            <h2 className="text-2xl font-bold text-slate-900">Market Overview</h2>
+                                        </div>
+                                        <button
+                                            onClick={exportReport}
+                                            className="self-start md:self-auto flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-all shadow-md hover:shadow-lg font-medium"
+                                        >
+                                            <Download />
+                                            <span>Export</span>
+                                        </button>
+                                    </div>
+                                    <p className="text-slate-700 leading-relaxed text-base">{analysis.overallInsight}</p>
+                                </div>
+
+                                <div className="grid gap-6 md:gap-8">
+                                    {analysis.niches.map((niche, index) => (
+                                        <div key={index} className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-200/60 p-6 md:p-8">
+                                            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-6">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-3 mb-3 flex-wrap">
+                                                        <h3 className="text-2xl md:text-3xl font-bold text-slate-900">{niche.keyword}</h3>
+                                                        <span className="text-2xl">{getTrendIcon(niche.trend)}</span>
+                                                        <span className={`px-3 py-1.5 rounded-lg text-xs font-bold border ${getBuyIntentColor(niche.buyIntent)}`}>
+                                                            {niche.buyIntent.toUpperCase()} INTENT
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-slate-600 leading-relaxed">{niche.opportunity}</p>
+                                                </div>
+                                                <div className="flex-shrink-0">
+                                                    <div className={`inline-flex flex-col items-center px-6 py-4 rounded-2xl border-2 ${getScoreColor(niche.profitability)}`}>
+                                                        <div className="text-5xl font-bold mb-1">{niche.profitability}</div>
+                                                        <div className="text-xs font-semibold uppercase tracking-wide">Profit Score</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                                                <div className="bg-blue-50/80 p-5 rounded-2xl border border-blue-200/50">
+                                                    <div className="text-xs font-semibold text-blue-900 mb-2 uppercase">Search Volume</div>
+                                                    <div className="font-bold text-blue-900 text-base">{niche.searchVolume}</div>
+                                                </div>
+                                                <div className="bg-purple-50/80 p-5 rounded-2xl border border-purple-200/50">
+                                                    <div className="text-xs font-semibold text-purple-900 mb-2 uppercase">Competition</div>
+                                                    <div className="font-bold text-purple-900 text-base capitalize">{niche.competition}</div>
+                                                </div>
+                                                <div className="bg-emerald-50/80 p-5 rounded-2xl border border-emerald-200/50">
+                                                    <div className="text-xs font-semibold text-emerald-900 mb-2 uppercase">Trend</div>
+                                                    <div className="font-bold text-emerald-900 text-base capitalize">{niche.trend}</div>
+                                                </div>
+                                            </div>
+
+                                            <div className="bg-slate-50/80 rounded-2xl p-6 border border-slate-200/50">
+                                                <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2 text-lg">
+                                                    <span className="text-indigo-600">🎯</span>
+                                                    Strategic Recommendations
+                                                </h4>
+                                                <ul className="space-y-3">
+                                                    {niche.recommendations.map((rec, i) => (
+                                                        <li key={i} className="flex items-start gap-3">
+                                                            <span className="text-indigo-600 font-bold text-lg leading-none mt-0.5">→</span>
+                                                            <span className="text-slate-700 flex-1 leading-relaxed">{rec}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {analysis.emergingOpportunities && analysis.emergingOpportunities.length > 0 && (
+                                    <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-3xl shadow-xl p-6 md:p-8 text-white">
+                                        <div className="flex items-center gap-3 mb-6">
+                                            <div className="p-2.5 bg-white/20 rounded-xl">
+                                                <BarChart3 />
+                                            </div>
+                                            <h2 className="text-2xl md:text-3xl font-bold">Emerging Opportunities</h2>
+                                        </div>
+                                        <ul className="space-y-4">
+                                            {analysis.emergingOpportunities.map((opp, i) => (
+                                                <li key={i} className="flex items-start gap-4 bg-white/10 rounded-2xl p-4 border border-white/20">
+                                                    <span className="text-2xl">✨</span>
+                                                    <span className="flex-1 leading-relaxed">{opp}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        <div className="mt-8 text-center">
+                            <p className="text-sm text-slate-500">
+                                Powered by <span className="font-semibold text-slate-700">Scout-Faire</span> | Part of <span className="font-semibold text-slate-700">Agora Arcus</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<NicheAnalyzer />, document.getElementById('root'));
+    </script>
+</body>
+</html>
