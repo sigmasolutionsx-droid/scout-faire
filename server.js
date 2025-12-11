@@ -181,6 +181,44 @@ Provide realistic, data-driven analysis based on current market trends.`
     }
 });
 
+const verifiedSessions = new Set();
+
+app.post('/api/verify-session', async (req, res) => {
+    try {
+        const { sessionId } = req.body;
+        
+        if (!sessionId) {
+            return res.status(400).json({ error: 'Session ID required' });
+        }
+
+        if (verifiedSessions.has(sessionId)) {
+            return res.status(400).json({ error: 'Session already verified' });
+        }
+
+        const stripe = await getUncachableStripeClient();
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+        if (session.payment_status !== 'paid') {
+            return res.status(400).json({ error: 'Payment not completed' });
+        }
+
+        verifiedSessions.add(sessionId);
+
+        const plan = session.metadata?.plan || 'single';
+        const planData = PRICING[plan] || PRICING.single;
+        
+        res.json({
+            verified: true,
+            plan,
+            searches: planData.searches,
+            subscriptionType: planData.type === 'subscription' ? plan : null
+        });
+    } catch (error) {
+        console.error('Session verification error:', error);
+        res.status(400).json({ error: 'Invalid session' });
+    }
+});
+
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', service: 'Scout-Faire API' });
 });
