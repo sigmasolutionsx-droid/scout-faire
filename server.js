@@ -31,15 +31,28 @@ async function initStripe() {
         const stripeSync = await getStripeSync();
 
         console.log('Setting up managed webhook...');
-        const webhookBaseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}`;
-        const { webhook, uuid } = await stripeSync.findOrCreateManagedWebhook(
-            `${webhookBaseUrl}/api/stripe/webhook`,
-            {
-                enabled_events: ['*'],
-                description: 'Managed webhook for Scout-Faire',
+        const replitDomains = process.env.REPLIT_DOMAINS;
+        if (replitDomains) {
+            const webhookBaseUrl = `https://${replitDomains.split(',')[0]}`;
+            try {
+                const result = await stripeSync.findOrCreateManagedWebhook(
+                    `${webhookBaseUrl}/api/stripe/webhook`,
+                    {
+                        enabled_events: ['*'],
+                        description: 'Managed webhook for Scout-Faire',
+                    }
+                );
+                if (result && result.webhook) {
+                    console.log(`Webhook configured: ${result.webhook.url}`);
+                } else {
+                    console.log('Webhook setup completed');
+                }
+            } catch (webhookError) {
+                console.log('Webhook setup skipped:', webhookError.message);
             }
-        );
-        console.log(`Webhook configured: ${webhook.url}`);
+        } else {
+            console.log('REPLIT_DOMAINS not available, skipping webhook setup');
+        }
 
         console.log('Syncing Stripe data...');
         stripeSync.syncBackfill()

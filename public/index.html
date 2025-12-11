@@ -3,102 +3,267 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Niche Concept Scorer</title>
+  <title>Scout-Faire - Niche Market Intelligence</title>
   <style>
     * { box-sizing: border-box; }
-    body { font-family: sans-serif; max-width: 900px; margin: 50px auto; padding: 20px; background: #f9fafb; }
-    h1 { color: #1f2937; }
-    input { width: 100%; padding: 12px; font-size: 16px; border: 1px solid #d1d5db; border-radius: 8px; margin: 10px 0; }
-    button { padding: 12px 24px; font-size: 16px; cursor: pointer; background: #3b82f6; color: white; border: none; border-radius: 8px; }
-    button:hover { background: #2563eb; }
-    button:disabled { background: #9ca3af; cursor: not-allowed; }
-    #result { margin-top: 20px; }
-    .score-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-top: 15px; }
-    .overall { font-size: 48px; font-weight: bold; color: #3b82f6; text-align: center; }
-    .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
-    .score-item { background: #f3f4f6; padding: 15px; border-radius: 8px; }
-    .score-item h4 { margin: 0 0 8px 0; color: #374151; }
-    .score-value { font-size: 24px; font-weight: bold; color: #10b981; }
-    .score-reasoning { font-size: 13px; color: #6b7280; margin-top: 5px; }
-    .summary { background: #eff6ff; padding: 15px; border-radius: 8px; margin: 15px 0; }
-    .recommendations { list-style: none; padding: 0; }
-    .recommendations li { padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
-    .recommendations li:last-child { border-bottom: none; }
-    .loading { text-align: center; padding: 40px; color: #6b7280; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+    .hero { text-align: center; color: white; margin-bottom: 40px; }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
+    .hero p { font-size: 1.2rem; opacity: 0.9; }
+    .card { background: white; border-radius: 16px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+    .input-group { margin-bottom: 20px; }
+    .input-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #374151; }
+    input { width: 100%; padding: 14px 16px; font-size: 16px; border: 2px solid #e5e7eb; border-radius: 10px; transition: border-color 0.2s; }
+    input:focus { outline: none; border-color: #667eea; }
+    .btn { width: 100%; padding: 16px; font-size: 18px; font-weight: 600; cursor: pointer; border: none; border-radius: 10px; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
+    .price-tag { text-align: center; margin: 20px 0; }
+    .price { font-size: 2rem; font-weight: 700; color: #667eea; }
+    .price-sub { color: #6b7280; font-size: 0.9rem; }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 25px 0; }
+    .feature { display: flex; align-items: center; gap: 10px; color: #374151; }
+    .feature-icon { width: 24px; height: 24px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+    .divider { height: 1px; background: #e5e7eb; margin: 25px 0; }
+    #result { margin-top: 30px; }
+    .analysis-card { background: #f9fafb; border-radius: 12px; padding: 25px; margin-top: 20px; }
+    .overall-score { text-align: center; margin-bottom: 25px; }
+    .score-circle { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+    .score-number { font-size: 3rem; font-weight: 700; color: white; }
+    .score-label { color: #6b7280; font-size: 0.9rem; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0; }
+    .metric { background: white; padding: 15px; border-radius: 10px; border: 1px solid #e5e7eb; }
+    .metric-label { font-size: 0.85rem; color: #6b7280; margin-bottom: 5px; }
+    .metric-value { font-size: 1.4rem; font-weight: 600; color: #374151; }
+    .metric-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
+    .badge-high { background: #d1fae5; color: #065f46; }
+    .badge-medium { background: #fef3c7; color: #92400e; }
+    .badge-low { background: #fee2e2; color: #991b1b; }
+    .badge-rising { background: #d1fae5; color: #065f46; }
+    .badge-stable { background: #e0e7ff; color: #3730a3; }
+    .badge-declining { background: #fee2e2; color: #991b1b; }
+    .insight-box { background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%); padding: 20px; border-radius: 10px; margin: 20px 0; }
+    .insight-title { font-weight: 600; color: #3730a3; margin-bottom: 8px; }
+    .recommendations { margin-top: 20px; }
+    .rec-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #e5e7eb; }
+    .rec-item:last-child { border-bottom: none; }
+    .rec-number { width: 28px; height: 28px; background: #667eea; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
+    .loading { text-align: center; padding: 40px; }
+    .spinner { width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top-color: #667eea; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hidden { display: none; }
+    .niche-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .niche-tab { padding: 8px 16px; background: #e5e7eb; border-radius: 20px; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
+    .niche-tab.active { background: #667eea; color: white; }
   </style>
 </head>
 <body>
-  <h1>Niche Concept Scorer</h1>
-  <p>Enter a business niche idea to get a detailed score and analysis.</p>
-  <input type="text" id="niche" placeholder="e.g., Organic pet food subscription for seniors" />
-  <button onclick="scoreNiche()" id="btn">Score Niche</button>
-  <div id="result"></div>
+  <div class="container">
+    <div class="hero">
+      <h1>Scout-Faire</h1>
+      <p>AI-Powered Niche Market Intelligence</p>
+    </div>
+
+    <div class="card">
+      <div id="step1">
+        <div class="input-group">
+          <label>Enter your niche keywords (comma-separated)</label>
+          <input type="text" id="keywords" placeholder="e.g., eco-friendly packaging, sustainable fashion, organic skincare" />
+        </div>
+
+        <div class="price-tag">
+          <div class="price">$2.99</div>
+          <div class="price-sub">per analysis report</div>
+        </div>
+
+        <div class="features">
+          <div class="feature">
+            <div class="feature-icon">&#10003;</div>
+            <span>Profitability Score</span>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">&#10003;</div>
+            <span>Market Trend Analysis</span>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">&#10003;</div>
+            <span>Competition Level</span>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">&#10003;</div>
+            <span>Actionable Recommendations</span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <button class="btn btn-primary" id="payBtn" onclick="startCheckout()">
+          Pay & Get Analysis
+        </button>
+      </div>
+
+      <div id="result"></div>
+    </div>
+  </div>
+
   <script>
-    async function scoreNiche() {
-      const niche = document.getElementById('niche').value.trim();
-      if (!niche) return alert('Please enter a niche concept');
-      
-      const btn = document.getElementById('btn');
-      const resultDiv = document.getElementById('result');
-      
+    let currentKeywords = '';
+
+    async function startCheckout() {
+      const keywords = document.getElementById('keywords').value.trim();
+      if (!keywords) {
+        alert('Please enter at least one niche keyword');
+        return;
+      }
+
+      currentKeywords = keywords;
+      localStorage.setItem('pendingKeywords', keywords);
+
+      const btn = document.getElementById('payBtn');
       btn.disabled = true;
-      btn.textContent = 'Scoring...';
-      resultDiv.innerHTML = '<div class="loading">Analyzing your niche concept...</div>';
+      btn.textContent = 'Redirecting to checkout...';
+
+      try {
+        const response = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ keywords })
+        });
+
+        const data = await response.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error(data.error || 'Failed to create checkout');
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+        btn.disabled = false;
+        btn.textContent = 'Pay & Get Analysis';
+      }
+    }
+
+    async function runAnalysis(keywords) {
+      const resultDiv = document.getElementById('result');
+      document.getElementById('step1').classList.add('hidden');
       
+      resultDiv.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Analyzing your niches...</p>
+          <p style="color: #6b7280; font-size: 0.9rem;">This may take a few seconds</p>
+        </div>
+      `;
+
       try {
         const response = await fetch('/api/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ niche })
+          body: JSON.stringify({ keywords })
         });
+
         const data = await response.json();
-        
+
         if (data.error) {
-          resultDiv.innerHTML = `<div class="score-card" style="color:red;">${data.error}</div>`;
+          resultDiv.innerHTML = `<div class="analysis-card" style="color: #dc2626;">${data.error}</div>`;
           return;
         }
-        
-        const r = data.result;
-        if (r.rawResponse) {
-          resultDiv.innerHTML = `<div class="score-card"><pre>${r.rawResponse}</pre></div>`;
-          return;
-        }
+
+        const analysis = data.analysis;
         
         resultDiv.innerHTML = `
-          <div class="score-card">
-            <div class="overall">${r.overallScore}/10</div>
-            <h3 style="text-align:center;color:#6b7280;">Overall Score for "${r.niche}"</h3>
-            
-            <div class="score-grid">
-              ${Object.entries(r.scores).map(([key, val]) => `
-                <div class="score-item">
-                  <h4>${formatKey(key)}</h4>
-                  <div class="score-value">${val.score}/10</div>
-                  <div class="score-reasoning">${val.reasoning}</div>
+          <div class="insight-box">
+            <div class="insight-title">Market Overview</div>
+            <p>${analysis.overallInsight}</p>
+          </div>
+
+          <div class="niche-tabs">
+            ${analysis.niches.map((n, i) => `
+              <div class="niche-tab ${i === 0 ? 'active' : ''}" onclick="showNiche(${i})">${n.keyword}</div>
+            `).join('')}
+          </div>
+
+          ${analysis.niches.map((niche, i) => `
+            <div class="analysis-card niche-detail ${i === 0 ? '' : 'hidden'}" data-niche="${i}">
+              <div class="overall-score">
+                <div class="score-circle">
+                  <span class="score-number">${niche.profitability}</span>
                 </div>
-              `).join('')}
+                <div class="score-label">Profitability Score</div>
+              </div>
+
+              <div class="metrics-grid">
+                <div class="metric">
+                  <div class="metric-label">Trend</div>
+                  <span class="metric-badge badge-${niche.trend}">${niche.trend}</span>
+                </div>
+                <div class="metric">
+                  <div class="metric-label">Search Volume</div>
+                  <span class="metric-badge badge-${niche.searchVolume}">${niche.searchVolume}</span>
+                </div>
+                <div class="metric">
+                  <div class="metric-label">Competition</div>
+                  <span class="metric-badge badge-${niche.competition === 'low' ? 'high' : niche.competition === 'high' ? 'low' : 'medium'}">${niche.competition}</span>
+                </div>
+                <div class="metric">
+                  <div class="metric-label">Buy Intent</div>
+                  <span class="metric-badge badge-${niche.buyIntent}">${niche.buyIntent}</span>
+                </div>
+              </div>
+
+              <div class="insight-box">
+                <div class="insight-title">Opportunity</div>
+                <p>${niche.opportunity}</p>
+              </div>
+
+              <div class="recommendations">
+                <h4>Recommendations</h4>
+                ${niche.recommendations.map((rec, j) => `
+                  <div class="rec-item">
+                    <div class="rec-number">${j + 1}</div>
+                    <span>${rec}</span>
+                  </div>
+                `).join('')}
+              </div>
             </div>
-            
-            <div class="summary">
-              <strong>Summary:</strong> ${r.summary}
-            </div>
-            
-            <h4>Recommendations:</h4>
-            <ul class="recommendations">
-              ${r.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+          `).join('')}
+
+          <div class="insight-box" style="margin-top: 25px;">
+            <div class="insight-title">Emerging Opportunities</div>
+            <ul style="margin: 0; padding-left: 20px;">
+              ${analysis.emergingOpportunities.map(opp => `<li style="margin: 8px 0;">${opp}</li>`).join('')}
             </ul>
+          </div>
+
+          <div style="margin-top: 25px;">
+            <button class="btn btn-success" onclick="location.reload()">Analyze More Niches</button>
           </div>
         `;
       } catch (error) {
-        resultDiv.innerHTML = `<div class="score-card" style="color:red;">Error: ${error.message}</div>`;
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Score Niche';
+        resultDiv.innerHTML = `<div class="analysis-card" style="color: #dc2626;">Error: ${error.message}</div>`;
       }
     }
-    
-    function formatKey(key) {
-      return key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
+
+    function showNiche(index) {
+      document.querySelectorAll('.niche-tab').forEach((tab, i) => {
+        tab.classList.toggle('active', i === index);
+      });
+      document.querySelectorAll('.niche-detail').forEach((detail, i) => {
+        detail.classList.toggle('hidden', i !== index);
+      });
+    }
+
+    // Check if returning from successful payment
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('session_id')) {
+      const pendingKeywords = localStorage.getItem('pendingKeywords');
+      if (pendingKeywords) {
+        localStorage.removeItem('pendingKeywords');
+        runAnalysis(pendingKeywords);
+      }
     }
   </script>
 </body>
