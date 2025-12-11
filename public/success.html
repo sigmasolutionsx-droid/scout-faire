@@ -5,28 +5,84 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Successful - Scout-Faire</title>
   <style>
+    * { box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; background: linear-gradient(135deg, #10b981 0%, #059669 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-    .card { background: white; border-radius: 16px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); text-align: center; max-width: 400px; }
-    .icon { width: 80px; height: 80px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 40px; color: white; }
-    h1 { color: #374151; margin-bottom: 10px; }
-    p { color: #6b7280; margin-bottom: 25px; }
-    .spinner { width: 30px; height: 30px; border: 3px solid #e5e7eb; border-top-color: #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto; }
+    .card { background: white; border-radius: 20px; padding: 50px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); text-align: center; max-width: 450px; }
+    .icon { width: 80px; height: 80px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-size: 40px; color: white; }
+    h1 { color: #374151; margin-bottom: 15px; font-size: 1.8rem; }
+    p { color: #6b7280; margin-bottom: 10px; line-height: 1.6; }
+    .credits-box { background: #f0fdf4; border: 2px solid #bbf7d0; padding: 20px; border-radius: 12px; margin: 25px 0; }
+    .credits-number { font-size: 3rem; font-weight: 700; color: #16a34a; }
+    .credits-label { color: #166534; font-size: 1rem; }
+    .btn { display: inline-block; padding: 16px 40px; font-size: 1rem; font-weight: 600; cursor: pointer; border: none; border-radius: 10px; text-decoration: none; transition: all 0.2s; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .spinner { width: 30px; height: 30px; border: 3px solid #e5e7eb; border-top-color: #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .loading { display: block; }
+    .success { display: none; }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="icon">&#10003;</div>
-    <h1>Payment Successful!</h1>
-    <p>Redirecting to your analysis...</p>
-    <div class="spinner"></div>
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>Processing your payment...</p>
+    </div>
+    <div class="success" id="success">
+      <div class="icon">&#10003;</div>
+      <h1>Payment Successful!</h1>
+      <p id="plan-message">Your purchase has been confirmed.</p>
+      <div class="credits-box">
+        <div class="credits-number" id="credits-display">0</div>
+        <div class="credits-label">searches available</div>
+      </div>
+      <a href="/" class="btn">Start Analyzing</a>
+    </div>
   </div>
+
   <script>
-    setTimeout(() => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const sessionId = urlParams.get('session_id');
-      window.location.href = '/?session_id=' + sessionId;
-    }, 1500);
+    const urlParams = new URLSearchParams(window.location.search);
+    const plan = urlParams.get('plan');
+    const searches = parseInt(urlParams.get('searches') || '0');
+    const sessionId = urlParams.get('session_id');
+
+    if (sessionId) {
+      setTimeout(() => {
+        const currentCredits = parseInt(localStorage.getItem('searchCredits') || '0');
+        let newCredits = currentCredits;
+        let message = '';
+
+        if (plan === 'single') {
+          newCredits = currentCredits + 1;
+          message = 'Your single analysis credit has been added.';
+        } else if (plan === 'starter') {
+          newCredits = currentCredits + 5;
+          message = 'Your 5-search Starter Pack is ready!';
+        } else if (plan === 'pro') {
+          newCredits = 30;
+          localStorage.setItem('subscriptionType', 'pro');
+          message = 'Welcome to Pro! You have 30 searches this month.';
+        } else if (plan === 'seikuku') {
+          newCredits = 9999;
+          localStorage.setItem('subscriptionType', 'seikuku');
+          message = 'Welcome to Seikuku Precision! Unlimited searches unlocked.';
+        } else if (plan === 'additional') {
+          newCredits = currentCredits + 1;
+          message = 'Your additional search credit has been added.';
+        }
+
+        localStorage.setItem('searchCredits', newCredits.toString());
+        
+        document.getElementById('credits-display').textContent = 
+          plan === 'seikuku' ? '∞' : newCredits;
+        document.getElementById('plan-message').textContent = message;
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+      }, 1500);
+    } else {
+      window.location.href = '/';
+    }
   </script>
 </body>
 </html>

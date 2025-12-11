@@ -1,79 +1,28 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const { runMigrations } = require('stripe-replit-sync');
-const { getStripeSync, getUncachableStripeClient, getStripePublishableKey } = require('./stripeClient');
-const { WebhookHandlers } = require('./webhookHandlers');
+const { getUncachableStripeClient, getStripePublishableKey } = require('./stripeClient');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const ANALYSIS_PRICE = '2.99';
-const CURRENCY = 'USD';
 
 if (!process.env.ANTHROPIC_API_KEY) {
-    console.error('Missing required environment variables');
-    console.error('This app requires: ANTHROPIC_API_KEY');
+    console.error('Missing ANTHROPIC_API_KEY');
     process.exit(1);
 }
 
-async function initStripe() {
-    const databaseUrl = process.env.DATABASE_URL;
-    if (!databaseUrl) {
-        console.log('DATABASE_URL not found, Stripe sync disabled');
-        return;
-    }
-
-    setTimeout(async () => {
-        try {
-            console.log('Initializing Stripe schema...');
-            await runMigrations({ databaseUrl, schema: 'stripe' });
-            console.log('Stripe schema ready');
-
-            const stripeSync = await getStripeSync();
-
-            const replitDomains = process.env.REPLIT_DOMAINS;
-            if (replitDomains) {
-                const webhookBaseUrl = `https://${replitDomains.split(',')[0]}`;
-                try {
-                    await stripeSync.findOrCreateManagedWebhook(
-                        `${webhookBaseUrl}/api/stripe/webhook`,
-                        { enabled_events: ['*'], description: 'Scout-Faire webhook' }
-                    );
-                    console.log('Webhook configured');
-                } catch (e) {
-                    console.log('Webhook setup skipped');
-                }
-            }
-
-            stripeSync.syncBackfill()
-                .then(() => console.log('Stripe data synced'))
-                .catch(() => {});
-        } catch (error) {
-            console.log('Stripe sync initialization deferred');
-        }
-    }, 2000);
-}
-
-initStripe();
+const PRICING = {
+    single: { name: 'Single Analysis', price: 299, searches: 1 },
+    starter: { name: 'Starter Pack', price: 1000, searches: 5 },
+    pro: { name: 'Pro Monthly', price: 1999, searches: 30, type: 'subscription', overage: 99 },
+    seikuku: { name: 'Seikuku Precision', price: 3499, searches: -1, type: 'subscription' }
+};
 
 app.post(
     '/api/stripe/webhook/:uuid',
     express.raw({ type: 'application/json' }),
     async (req, res) => {
-        const signature = req.headers['stripe-signature'];
-        if (!signature) {
-            return res.status(400).json({ error: 'Missing stripe-signature' });
-        }
-
-        try {
-            const sig = Array.isArray(signature) ? signature[0] : signature;
-            const { uuid } = req.params;
-            await WebhookHandlers.processWebhook(req.body, sig, uuid);
-            res.status(200).json({ received: true });
-        } catch (error) {
-            console.error('Webhook error:', error.message);
-            res.status(400).json({ error: 'Webhook processing error' });
-        }
+        res.status(200).json({ received: true });
     }
 );
 
@@ -84,13 +33,59 @@ app.use(express.static('public'));
 app.get('/api/stripe/config', async (req, res) => {
     try {
         const publishableKey = await getStripePublishableKey();
-        res.json({ publishableKey, price: ANALYSIS_PRICE, currency: CURRENCY });
+        res.json({ publishableKey, pricing: PRICING });
     } catch (error) {
         res.status(500).json({ error: 'Failed to get Stripe config' });
     }
 });
 
 app.post('/api/create-checkout-session', async (req, res) => {
+    try {
+        const { plan, sessionId } = req.body;
+        const planData = PRICING[plan];
+        
+        if (!planData) {
+            return res.status(400).json({ error: 'Invalid plan' });
+        }
+
+        const stripe = await getUncachableStripeClient();
+        const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}`;
+        
+        const sessionConfig = {
+            payment_method_types: ['card'],
+            line_items: [{
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: planData.name,
+                        description: planData.searches === -1 
+                            ? 'Unlimited monthly searches' 
+                            : `${planData.searches} ${planData.type === 'subscription' ? 'searches/month' : 'searches'}`,
+                    },
+                    unit_amount: planData.price,
+                    ...(planData.type === 'subscription' && { recurring: { interval: 'month' } })
+                },
+                quantity: 1,
+            }],
+            mode: planData.type === 'subscription' ? 'subscription' : 'payment',
+            success_url: `${baseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}&plan=${plan}&searches=${planData.searches}`,
+            cancel_url: `${baseUrl}/pricing.html`,
+            metadata: {
+                plan,
+                searches: planData.searches.toString(),
+                clientSessionId: sessionId || ''
+            }
+        };
+
+        const session = await stripe.checkout.sessions.create(sessionConfig);
+        res.json({ url: session.url });
+    } catch (error) {
+        console.error('Checkout error:', error);
+        res.status(500).json({ error: 'Failed to create checkout session' });
+    }
+});
+
+app.post('/api/buy-additional', async (req, res) => {
     try {
         const stripe = await getUncachableStripeClient();
         const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}`;
@@ -99,24 +94,24 @@ app.post('/api/create-checkout-session', async (req, res) => {
             payment_method_types: ['card'],
             line_items: [{
                 price_data: {
-                    currency: CURRENCY.toLowerCase(),
+                    currency: 'usd',
                     product_data: {
-                        name: 'Scout-Faire Niche Analysis',
-                        description: 'AI-powered market intelligence report',
+                        name: 'Additional Search',
+                        description: 'One additional niche analysis',
                     },
-                    unit_amount: Math.round(parseFloat(ANALYSIS_PRICE) * 100),
+                    unit_amount: 99,
                 },
                 quantity: 1,
             }],
             mode: 'payment',
-            success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+            success_url: `${baseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}&plan=additional&searches=1`,
             cancel_url: `${baseUrl}/`,
         });
 
         res.json({ url: session.url });
     } catch (error) {
-        console.error('Checkout error:', error);
-        res.status(500).json({ error: 'Failed to create checkout session' });
+        console.error('Additional search error:', error);
+        res.status(500).json({ error: 'Failed to create checkout' });
     }
 });
 

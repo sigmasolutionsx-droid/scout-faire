@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing - Scout-Faire</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+    .hero { text-align: center; color: white; margin-bottom: 50px; }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
+    .hero p { font-size: 1.2rem; opacity: 0.9; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+    .pricing-card { background: white; border-radius: 20px; padding: 35px 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); position: relative; transition: transform 0.3s; }
+    .pricing-card:hover { transform: translateY(-5px); }
+    .pricing-card.featured { border: 3px solid #667eea; }
+    .featured-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 6px 20px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+    .plan-name { font-size: 1.4rem; font-weight: 700; color: #374151; margin-bottom: 10px; }
+    .plan-price { margin: 20px 0; }
+    .price-amount { font-size: 3rem; font-weight: 700; color: #667eea; }
+    .price-period { color: #6b7280; font-size: 1rem; }
+    .plan-description { color: #6b7280; margin-bottom: 25px; font-size: 0.95rem; line-height: 1.5; }
+    .features { list-style: none; margin-bottom: 30px; }
+    .features li { padding: 10px 0; display: flex; align-items: center; gap: 10px; color: #374151; border-bottom: 1px solid #f3f4f6; }
+    .features li:last-child { border-bottom: none; }
+    .check { width: 20px; height: 20px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; flex-shrink: 0; }
+    .btn { width: 100%; padding: 16px; font-size: 1rem; font-weight: 600; cursor: pointer; border: none; border-radius: 10px; transition: all 0.2s; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .btn-secondary { background: #f3f4f6; color: #374151; }
+    .btn-secondary:hover { background: #e5e7eb; }
+    .back-link { display: inline-block; color: white; text-decoration: none; margin-bottom: 30px; opacity: 0.9; }
+    .back-link:hover { opacity: 1; }
+    .credits-display { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px 20px; border-radius: 10px; margin-bottom: 30px; text-align: center; }
+    .credits-display .count { font-size: 2rem; font-weight: 700; color: #16a34a; }
+    .credits-display .label { color: #166534; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">← Back to Scout-Faire</a>
+    
+    <div class="hero">
+      <h1>Choose Your Plan</h1>
+      <p>Unlock AI-powered niche market intelligence</p>
+    </div>
+
+    <div id="credits-section" class="credits-display" style="display: none;">
+      <div class="count" id="credits-count">0</div>
+      <div class="label">searches remaining</div>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-name">Single Analysis</div>
+        <div class="plan-price">
+          <span class="price-amount">$2.99</span>
+        </div>
+        <p class="plan-description">Perfect for trying out Scout-Faire or occasional use.</p>
+        <ul class="features">
+          <li><span class="check">&#10003;</span> 1 niche analysis</li>
+          <li><span class="check">&#10003;</span> Full market report</li>
+          <li><span class="check">&#10003;</span> Profitability scoring</li>
+          <li><span class="check">&#10003;</span> Actionable recommendations</li>
+        </ul>
+        <button class="btn btn-secondary" onclick="selectPlan('single')">Get Started</button>
+      </div>
+
+      <div class="pricing-card">
+        <div class="plan-name">Starter Pack</div>
+        <div class="plan-price">
+          <span class="price-amount">$10</span>
+        </div>
+        <p class="plan-description">Great value for exploring multiple niches.</p>
+        <ul class="features">
+          <li><span class="check">&#10003;</span> 5 niche analyses</li>
+          <li><span class="check">&#10003;</span> Save $4.95 vs single</li>
+          <li><span class="check">&#10003;</span> Full market reports</li>
+          <li><span class="check">&#10003;</span> Never expires</li>
+        </ul>
+        <button class="btn btn-secondary" onclick="selectPlan('starter')">Get Starter Pack</button>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="featured-badge">Most Popular</div>
+        <div class="plan-name">Pro Monthly</div>
+        <div class="plan-price">
+          <span class="price-amount">$19.99</span>
+          <span class="price-period">/month</span>
+        </div>
+        <p class="plan-description">For serious entrepreneurs and researchers.</p>
+        <ul class="features">
+          <li><span class="check">&#10003;</span> 30 searches/month</li>
+          <li><span class="check">&#10003;</span> $0.99 per extra search</li>
+          <li><span class="check">&#10003;</span> Priority processing</li>
+          <li><span class="check">&#10003;</span> Cancel anytime</li>
+        </ul>
+        <button class="btn btn-primary" onclick="selectPlan('pro')">Subscribe Now</button>
+      </div>
+
+      <div class="pricing-card">
+        <div class="plan-name">Seikuku Precision</div>
+        <div class="plan-price">
+          <span class="price-amount">$34.99</span>
+          <span class="price-period">/month</span>
+        </div>
+        <p class="plan-description">Unlimited power for agencies and power users.</p>
+        <ul class="features">
+          <li><span class="check">&#10003;</span> Unlimited searches</li>
+          <li><span class="check">&#10003;</span> Priority processing</li>
+          <li><span class="check">&#10003;</span> Advanced insights</li>
+          <li><span class="check">&#10003;</span> Cancel anytime</li>
+        </ul>
+        <button class="btn btn-primary" onclick="selectPlan('seikuku')">Go Unlimited</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateCreditsDisplay() {
+      const credits = parseInt(localStorage.getItem('searchCredits') || '0');
+      const section = document.getElementById('credits-section');
+      const count = document.getElementById('credits-count');
+      
+      if (credits > 0) {
+        section.style.display = 'block';
+        count.textContent = credits;
+      }
+    }
+
+    async function selectPlan(plan) {
+      const btn = event.target;
+      btn.disabled = true;
+      btn.textContent = 'Redirecting...';
+
+      try {
+        const response = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan })
+        });
+
+        const data = await response.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error(data.error || 'Failed to create checkout');
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+        btn.disabled = false;
+        btn.textContent = plan === 'pro' || plan === 'seikuku' ? 'Subscribe Now' : 'Get Started';
+      }
+    }
+
+    updateCreditsDisplay();
+  </script>
+</body>
+</html>

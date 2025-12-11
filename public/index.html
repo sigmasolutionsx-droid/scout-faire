@@ -8,6 +8,12 @@
     * { box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
     .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .logo { color: white; font-size: 1.5rem; font-weight: 700; text-decoration: none; }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-link { color: white; text-decoration: none; opacity: 0.9; }
+    .nav-link:hover { opacity: 1; }
+    .credits-badge { background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; color: white; font-weight: 600; }
     .hero { text-align: center; color: white; margin-bottom: 40px; }
     .hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
     .hero p { font-size: 1.2rem; opacity: 0.9; }
@@ -21,33 +27,31 @@
     .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
     .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
-    .price-tag { text-align: center; margin: 20px 0; }
-    .price { font-size: 2rem; font-weight: 700; color: #667eea; }
-    .price-sub { color: #6b7280; font-size: 0.9rem; }
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 25px 0; }
-    .feature { display: flex; align-items: center; gap: 10px; color: #374151; }
-    .feature-icon { width: 24px; height: 24px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
-    .divider { height: 1px; background: #e5e7eb; margin: 25px 0; }
+    .btn-outline { background: white; color: #667eea; border: 2px solid #667eea; }
+    .no-credits { text-align: center; padding: 30px; }
+    .no-credits h3 { color: #374151; margin-bottom: 10px; }
+    .no-credits p { color: #6b7280; margin-bottom: 20px; }
+    .credits-info { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .credits-info .count { font-size: 1.5rem; font-weight: 700; color: #16a34a; }
+    .credits-info .label { color: #166534; font-size: 0.9rem; }
+    .buy-more { background: none; border: none; color: #667eea; cursor: pointer; font-weight: 600; text-decoration: underline; }
     #result { margin-top: 30px; }
     .analysis-card { background: #f9fafb; border-radius: 12px; padding: 25px; margin-top: 20px; }
     .overall-score { text-align: center; margin-bottom: 25px; }
     .score-circle { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
     .score-number { font-size: 3rem; font-weight: 700; color: white; }
-    .score-label { color: #6b7280; font-size: 0.9rem; }
     .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0; }
     .metric { background: white; padding: 15px; border-radius: 10px; border: 1px solid #e5e7eb; }
     .metric-label { font-size: 0.85rem; color: #6b7280; margin-bottom: 5px; }
-    .metric-value { font-size: 1.4rem; font-weight: 600; color: #374151; }
     .metric-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
-    .badge-high { background: #d1fae5; color: #065f46; }
-    .badge-medium { background: #fef3c7; color: #92400e; }
-    .badge-low { background: #fee2e2; color: #991b1b; }
-    .badge-rising { background: #d1fae5; color: #065f46; }
-    .badge-stable { background: #e0e7ff; color: #3730a3; }
-    .badge-declining { background: #fee2e2; color: #991b1b; }
+    .badge-high, .badge-rising { background: #d1fae5; color: #065f46; }
+    .badge-medium, .badge-stable { background: #fef3c7; color: #92400e; }
+    .badge-low, .badge-declining { background: #fee2e2; color: #991b1b; }
     .insight-box { background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%); padding: 20px; border-radius: 10px; margin: 20px 0; }
     .insight-title { font-weight: 600; color: #3730a3; margin-bottom: 8px; }
-    .recommendations { margin-top: 20px; }
+    .niche-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .niche-tab { padding: 8px 16px; background: #e5e7eb; border-radius: 20px; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; border: none; }
+    .niche-tab.active { background: #667eea; color: white; }
     .rec-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #e5e7eb; }
     .rec-item:last-child { border-bottom: none; }
     .rec-number { width: 28px; height: 28px; background: #667eea; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
@@ -55,53 +59,47 @@
     .spinner { width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top-color: #667eea; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .hidden { display: none; }
-    .niche-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
-    .niche-tab { padding: 8px 16px; background: #e5e7eb; border-radius: 20px; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
-    .niche-tab.active { background: #667eea; color: white; }
+    .subscription-badge { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="header">
+      <a href="/" class="logo">Scout-Faire</a>
+      <div class="nav-links">
+        <a href="/pricing.html" class="nav-link">Pricing</a>
+        <div class="credits-badge" id="header-credits">0 credits</div>
+      </div>
+    </div>
+
     <div class="hero">
-      <h1>Scout-Faire</h1>
-      <p>AI-Powered Niche Market Intelligence</p>
+      <h1>Niche Market Intelligence</h1>
+      <p>AI-powered analysis to find profitable niches</p>
     </div>
 
     <div class="card">
-      <div id="step1">
+      <div id="no-credits" class="no-credits hidden">
+        <h3>Get Started with Scout-Faire</h3>
+        <p>Purchase credits to unlock AI-powered niche analysis</p>
+        <a href="/pricing.html" class="btn btn-primary" style="display: inline-block; text-decoration: none;">View Pricing Plans</a>
+      </div>
+
+      <div id="has-credits" class="hidden">
+        <div class="credits-info">
+          <div>
+            <div class="count" id="credits-count">0</div>
+            <div class="label" id="credits-label">searches remaining</div>
+          </div>
+          <button class="buy-more" onclick="location.href='/pricing.html'">Buy more</button>
+        </div>
+
         <div class="input-group">
-          <label>Enter your niche keywords (comma-separated)</label>
+          <label>Enter niche keywords (comma-separated)</label>
           <input type="text" id="keywords" placeholder="e.g., eco-friendly packaging, sustainable fashion, organic skincare" />
         </div>
 
-        <div class="price-tag">
-          <div class="price">$2.99</div>
-          <div class="price-sub">per analysis report</div>
-        </div>
-
-        <div class="features">
-          <div class="feature">
-            <div class="feature-icon">&#10003;</div>
-            <span>Profitability Score</span>
-          </div>
-          <div class="feature">
-            <div class="feature-icon">&#10003;</div>
-            <span>Market Trend Analysis</span>
-          </div>
-          <div class="feature">
-            <div class="feature-icon">&#10003;</div>
-            <span>Competition Level</span>
-          </div>
-          <div class="feature">
-            <div class="feature-icon">&#10003;</div>
-            <span>Actionable Recommendations</span>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <button class="btn btn-primary" id="payBtn" onclick="startCheckout()">
-          Pay & Get Analysis
+        <button class="btn btn-primary" id="analyzeBtn" onclick="runAnalysis()">
+          Analyze Niches (uses 1 credit)
         </button>
       </div>
 
@@ -110,51 +108,77 @@
   </div>
 
   <script>
-    let currentKeywords = '';
+    function getCredits() {
+      return parseInt(localStorage.getItem('searchCredits') || '0');
+    }
 
-    async function startCheckout() {
+    function getSubscription() {
+      return localStorage.getItem('subscriptionType') || null;
+    }
+
+    function updateUI() {
+      const credits = getCredits();
+      const subscription = getSubscription();
+      
+      document.getElementById('header-credits').textContent = 
+        subscription === 'seikuku' ? '∞ Unlimited' : `${credits} credits`;
+      
+      if (credits > 0 || subscription) {
+        document.getElementById('no-credits').classList.add('hidden');
+        document.getElementById('has-credits').classList.remove('hidden');
+        document.getElementById('credits-count').textContent = 
+          subscription === 'seikuku' ? '∞' : credits;
+        
+        if (subscription === 'seikuku') {
+          document.getElementById('credits-label').innerHTML = 
+            'Seikuku Precision <span class="subscription-badge">Unlimited</span>';
+        } else if (subscription === 'pro') {
+          document.getElementById('credits-label').innerHTML = 
+            'Pro Monthly <span class="subscription-badge">$0.99/extra</span>';
+        }
+      } else {
+        document.getElementById('no-credits').classList.remove('hidden');
+        document.getElementById('has-credits').classList.add('hidden');
+      }
+    }
+
+    async function runAnalysis() {
       const keywords = document.getElementById('keywords').value.trim();
       if (!keywords) {
         alert('Please enter at least one niche keyword');
         return;
       }
 
-      currentKeywords = keywords;
-      localStorage.setItem('pendingKeywords', keywords);
-
-      const btn = document.getElementById('payBtn');
-      btn.disabled = true;
-      btn.textContent = 'Redirecting to checkout...';
-
-      try {
-        const response = await fetch('/api/create-checkout-session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ keywords })
-        });
-
-        const data = await response.json();
-        if (data.url) {
-          window.location.href = data.url;
-        } else {
-          throw new Error(data.error || 'Failed to create checkout');
+      const credits = getCredits();
+      const subscription = getSubscription();
+      
+      if (credits <= 0 && subscription !== 'seikuku') {
+        if (subscription === 'pro') {
+          if (!confirm('You\'ve used all included searches. Buy an additional search for $0.99?')) {
+            return;
+          }
+          const response = await fetch('/api/buy-additional', { method: 'POST' });
+          const data = await response.json();
+          if (data.url) {
+            localStorage.setItem('pendingKeywords', keywords);
+            window.location.href = data.url;
+          }
+          return;
         }
-      } catch (error) {
-        alert('Error: ' + error.message);
-        btn.disabled = false;
-        btn.textContent = 'Pay & Get Analysis';
+        alert('No credits remaining. Please purchase a plan.');
+        return;
       }
-    }
 
-    async function runAnalysis(keywords) {
+      const btn = document.getElementById('analyzeBtn');
       const resultDiv = document.getElementById('result');
-      document.getElementById('step1').classList.add('hidden');
+      
+      btn.disabled = true;
+      btn.textContent = 'Analyzing...';
       
       resultDiv.innerHTML = `
         <div class="loading">
           <div class="spinner"></div>
           <p>Analyzing your niches...</p>
-          <p style="color: #6b7280; font-size: 0.9rem;">This may take a few seconds</p>
         </div>
       `;
 
@@ -172,6 +196,11 @@
           return;
         }
 
+        if (subscription !== 'seikuku') {
+          localStorage.setItem('searchCredits', (credits - 1).toString());
+          updateUI();
+        }
+
         const analysis = data.analysis;
         
         resultDiv.innerHTML = `
@@ -182,7 +211,7 @@
 
           <div class="niche-tabs">
             ${analysis.niches.map((n, i) => `
-              <div class="niche-tab ${i === 0 ? 'active' : ''}" onclick="showNiche(${i})">${n.keyword}</div>
+              <button class="niche-tab ${i === 0 ? 'active' : ''}" onclick="showNiche(${i})">${n.keyword}</button>
             `).join('')}
           </div>
 
@@ -192,7 +221,7 @@
                 <div class="score-circle">
                   <span class="score-number">${niche.profitability}</span>
                 </div>
-                <div class="score-label">Profitability Score</div>
+                <div style="color: #6b7280;">Profitability Score</div>
               </div>
 
               <div class="metrics-grid">
@@ -219,8 +248,8 @@
                 <p>${niche.opportunity}</p>
               </div>
 
-              <div class="recommendations">
-                <h4>Recommendations</h4>
+              <div style="margin-top: 20px;">
+                <h4 style="margin-bottom: 10px;">Recommendations</h4>
                 ${niche.recommendations.map((rec, j) => `
                   <div class="rec-item">
                     <div class="rec-number">${j + 1}</div>
@@ -238,12 +267,13 @@
             </ul>
           </div>
 
-          <div style="margin-top: 25px;">
-            <button class="btn btn-success" onclick="location.reload()">Analyze More Niches</button>
-          </div>
+          <button class="btn btn-success" style="margin-top: 25px;" onclick="resetAnalysis()">Analyze More Niches</button>
         `;
       } catch (error) {
         resultDiv.innerHTML = `<div class="analysis-card" style="color: #dc2626;">Error: ${error.message}</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Analyze Niches (uses 1 credit)';
       }
     }
 
@@ -256,15 +286,13 @@
       });
     }
 
-    // Check if returning from successful payment
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('session_id')) {
-      const pendingKeywords = localStorage.getItem('pendingKeywords');
-      if (pendingKeywords) {
-        localStorage.removeItem('pendingKeywords');
-        runAnalysis(pendingKeywords);
-      }
+    function resetAnalysis() {
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('keywords').value = '';
+      updateUI();
     }
+
+    updateUI();
   </script>
 </body>
 </html>
