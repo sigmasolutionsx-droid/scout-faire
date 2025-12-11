@@ -19,48 +19,39 @@ if (!process.env.ANTHROPIC_API_KEY) {
 async function initStripe() {
     const databaseUrl = process.env.DATABASE_URL;
     if (!databaseUrl) {
-        console.log('DATABASE_URL not found, skipping Stripe initialization');
+        console.log('DATABASE_URL not found, Stripe sync disabled');
         return;
     }
 
-    try {
-        console.log('Initializing Stripe schema...');
-        await runMigrations({ databaseUrl, schema: 'stripe' });
-        console.log('Stripe schema ready');
+    setTimeout(async () => {
+        try {
+            console.log('Initializing Stripe schema...');
+            await runMigrations({ databaseUrl, schema: 'stripe' });
+            console.log('Stripe schema ready');
 
-        const stripeSync = await getStripeSync();
+            const stripeSync = await getStripeSync();
 
-        console.log('Setting up managed webhook...');
-        const replitDomains = process.env.REPLIT_DOMAINS;
-        if (replitDomains) {
-            const webhookBaseUrl = `https://${replitDomains.split(',')[0]}`;
-            try {
-                const result = await stripeSync.findOrCreateManagedWebhook(
-                    `${webhookBaseUrl}/api/stripe/webhook`,
-                    {
-                        enabled_events: ['*'],
-                        description: 'Managed webhook for Scout-Faire',
-                    }
-                );
-                if (result && result.webhook) {
-                    console.log(`Webhook configured: ${result.webhook.url}`);
-                } else {
-                    console.log('Webhook setup completed');
+            const replitDomains = process.env.REPLIT_DOMAINS;
+            if (replitDomains) {
+                const webhookBaseUrl = `https://${replitDomains.split(',')[0]}`;
+                try {
+                    await stripeSync.findOrCreateManagedWebhook(
+                        `${webhookBaseUrl}/api/stripe/webhook`,
+                        { enabled_events: ['*'], description: 'Scout-Faire webhook' }
+                    );
+                    console.log('Webhook configured');
+                } catch (e) {
+                    console.log('Webhook setup skipped');
                 }
-            } catch (webhookError) {
-                console.log('Webhook setup skipped:', webhookError.message);
             }
-        } else {
-            console.log('REPLIT_DOMAINS not available, skipping webhook setup');
-        }
 
-        console.log('Syncing Stripe data...');
-        stripeSync.syncBackfill()
-            .then(() => console.log('Stripe data synced'))
-            .catch((err) => console.error('Error syncing Stripe data:', err));
-    } catch (error) {
-        console.error('Failed to initialize Stripe:', error);
-    }
+            stripeSync.syncBackfill()
+                .then(() => console.log('Stripe data synced'))
+                .catch(() => {});
+        } catch (error) {
+            console.log('Stripe sync initialization deferred');
+        }
+    }, 2000);
 }
 
 initStripe();
