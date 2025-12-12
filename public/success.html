@@ -66,6 +66,11 @@
           body: JSON.stringify({ sessionId })
         });
 
+        if (response.status === 401) {
+          window.location.href = '/api/login';
+          return;
+        }
+
         const data = await response.json();
 
         if (!response.ok || !data.verified) {
@@ -73,30 +78,19 @@
           return;
         }
 
-        const currentCredits = parseInt(localStorage.getItem('searchCredits') || '0');
-        let newCredits = currentCredits;
         let message = '';
-
         if (data.plan === 'single' || data.plan === 'additional') {
-          newCredits = currentCredits + 1;
           message = 'Your search credit has been added.';
         } else if (data.plan === 'starter') {
-          newCredits = currentCredits + 5;
           message = 'Your 5-search Starter Pack is ready!';
         } else if (data.plan === 'pro') {
-          newCredits = 30;
-          localStorage.setItem('subscriptionType', 'pro');
           message = 'Welcome to Pro! You have 30 searches this month.';
         } else if (data.plan === 'seikuku') {
-          newCredits = 9999;
-          localStorage.setItem('subscriptionType', 'seikuku');
           message = 'Welcome to Seikuku Precision! Unlimited searches unlocked.';
         }
 
-        localStorage.setItem('searchCredits', newCredits.toString());
-        
         document.getElementById('credits-display').textContent = 
-          data.plan === 'seikuku' ? '∞' : newCredits;
+          data.subscriptionType === 'seikuku' ? '∞' : data.credits;
         document.getElementById('plan-message').textContent = message;
         
         document.getElementById('loading').style.display = 'none';

@@ -13,7 +13,11 @@
     .nav-links { display: flex; gap: 20px; align-items: center; }
     .nav-link { color: white; text-decoration: none; opacity: 0.9; }
     .nav-link:hover { opacity: 1; }
+    .user-info { display: flex; align-items: center; gap: 12px; }
+    .user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: rgba(255,255,255,0.2); }
     .credits-badge { background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; color: white; font-weight: 600; }
+    .auth-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500; }
+    .auth-btn:hover { background: rgba(255,255,255,0.3); }
     .hero { text-align: center; color: white; margin-bottom: 40px; }
     .hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
     .hero p { font-size: 1.2rem; opacity: 0.9; }
@@ -22,12 +26,11 @@
     .input-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #374151; }
     input { width: 100%; padding: 14px 16px; font-size: 16px; border: 2px solid #e5e7eb; border-radius: 10px; transition: border-color 0.2s; }
     input:focus { outline: none; border-color: #667eea; }
-    .btn { width: 100%; padding: 16px; font-size: 18px; font-weight: 600; cursor: pointer; border: none; border-radius: 10px; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn { width: 100%; padding: 16px; font-size: 18px; font-weight: 600; cursor: pointer; border: none; border-radius: 10px; transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; display: inline-block; text-align: center; }
     .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
     .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
-    .btn-outline { background: white; color: #667eea; border: 2px solid #667eea; }
     .no-credits { text-align: center; padding: 30px; }
     .no-credits h3 { color: #374151; margin-bottom: 10px; }
     .no-credits p { color: #6b7280; margin-bottom: 20px; }
@@ -60,6 +63,9 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .hidden { display: none; }
     .subscription-badge { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+    .login-prompt { text-align: center; padding: 40px; }
+    .login-prompt h3 { color: #374151; margin-bottom: 10px; }
+    .login-prompt p { color: #6b7280; margin-bottom: 20px; }
   </style>
 </head>
 <body>
@@ -68,7 +74,12 @@
       <a href="/" class="logo">Scout-Faire</a>
       <div class="nav-links">
         <a href="/pricing.html" class="nav-link">Pricing</a>
-        <div class="credits-badge" id="header-credits">0 credits</div>
+        <div class="user-info" id="user-info" style="display: none;">
+          <div class="credits-badge" id="header-credits">0 credits</div>
+          <img class="user-avatar" id="user-avatar" src="" alt="Profile" />
+          <button class="auth-btn" onclick="window.location.href='/api/logout'">Logout</button>
+        </div>
+        <button class="auth-btn" id="login-btn" onclick="window.location.href='/api/login'">Login</button>
       </div>
     </div>
 
@@ -78,6 +89,17 @@
     </div>
 
     <div class="card">
+      <div id="loading-state" class="loading">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+      </div>
+
+      <div id="login-prompt" class="login-prompt hidden">
+        <h3>Welcome to Scout-Faire</h3>
+        <p>Sign in to start analyzing profitable market niches</p>
+        <a href="/api/login" class="btn btn-primary" style="max-width: 300px; margin: 0 auto;">Sign In to Get Started</a>
+      </div>
+
       <div id="no-credits" class="no-credits hidden">
         <h3>Get Started with Scout-Faire</h3>
         <p>Purchase credits to unlock AI-powered niche analysis</p>
@@ -108,20 +130,50 @@
   </div>
 
   <script>
-    function getCredits() {
-      return parseInt(localStorage.getItem('searchCredits') || '0');
+    let currentUser = null;
+
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/auth/user');
+        if (response.ok) {
+          currentUser = await response.json();
+          showLoggedInState();
+        } else {
+          showLoginPrompt();
+        }
+      } catch (error) {
+        showLoginPrompt();
+      }
     }
 
-    function getSubscription() {
-      return localStorage.getItem('subscriptionType') || null;
+    function showLoginPrompt() {
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('login-prompt').classList.remove('hidden');
+      document.getElementById('login-btn').style.display = 'block';
+      document.getElementById('user-info').style.display = 'none';
     }
 
-    function updateUI() {
-      const credits = getCredits();
-      const subscription = getSubscription();
+    function showLoggedInState() {
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('login-prompt').classList.add('hidden');
+      document.getElementById('login-btn').style.display = 'none';
+      document.getElementById('user-info').style.display = 'flex';
+      
+      if (currentUser.profileImageUrl) {
+        document.getElementById('user-avatar').src = currentUser.profileImageUrl;
+      }
+      
+      updateCreditsUI();
+    }
+
+    function updateCreditsUI() {
+      if (!currentUser) return;
+      
+      const credits = currentUser.credits || 0;
+      const subscription = currentUser.subscriptionType;
       
       document.getElementById('header-credits').textContent = 
-        subscription === 'seikuku' ? '∞ Unlimited' : `${credits} credits`;
+        subscription === 'seikuku' ? 'Unlimited' : `${credits} credits`;
       
       if (credits > 0 || subscription) {
         document.getElementById('no-credits').classList.add('hidden');
@@ -149,26 +201,6 @@
         return;
       }
 
-      const credits = getCredits();
-      const subscription = getSubscription();
-      
-      if (credits <= 0 && subscription !== 'seikuku') {
-        if (subscription === 'pro') {
-          if (!confirm('You\'ve used all included searches. Buy an additional search for $0.99?')) {
-            return;
-          }
-          const response = await fetch('/api/buy-additional', { method: 'POST' });
-          const data = await response.json();
-          if (data.url) {
-            localStorage.setItem('pendingKeywords', keywords);
-            window.location.href = data.url;
-          }
-          return;
-        }
-        alert('No credits remaining. Please purchase a plan.');
-        return;
-      }
-
       const btn = document.getElementById('analyzeBtn');
       const resultDiv = document.getElementById('result');
       
@@ -189,6 +221,28 @@
           body: JSON.stringify({ keywords })
         });
 
+        if (response.status === 401) {
+          window.location.href = '/api/login';
+          return;
+        }
+
+        if (response.status === 402) {
+          if (currentUser?.subscriptionType === 'pro') {
+            if (confirm('You\'ve used all included searches. Buy an additional search for $0.99?')) {
+              const buyResponse = await fetch('/api/buy-additional', { method: 'POST' });
+              const buyData = await buyResponse.json();
+              if (buyData.url) {
+                window.location.href = buyData.url;
+              }
+            }
+          } else {
+            alert('No credits remaining. Please purchase a plan.');
+            window.location.href = '/pricing.html';
+          }
+          resultDiv.innerHTML = '';
+          return;
+        }
+
         const data = await response.json();
 
         if (data.error) {
@@ -196,9 +250,9 @@
           return;
         }
 
-        if (subscription !== 'seikuku') {
-          localStorage.setItem('searchCredits', (credits - 1).toString());
-          updateUI();
+        if (data.credits !== undefined) {
+          currentUser.credits = data.credits;
+          updateCreditsUI();
         }
 
         const analysis = data.analysis;
@@ -289,10 +343,9 @@
     function resetAnalysis() {
       document.getElementById('result').innerHTML = '';
       document.getElementById('keywords').value = '';
-      updateUI();
     }
 
-    updateUI();
+    checkAuth();
   </script>
 </body>
 </html>

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:push": "drizzle-kit push"
   },
   "keywords": [],
   "author": "",
@@ -11,8 +12,16 @@
   "description": "",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.37.0",
+    "connect-pg-simple": "^10.0.0",
     "cors": "^2.8.5",
+    "drizzle-kit": "^0.31.8",
+    "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
+    "express-session": "^1.18.2",
+    "memoizee": "^0.4.17",
+    "openid-client": "^6.8.1",
+    "passport": "^0.7.0",
+    "pg": "^8.16.3",
     "stripe": "^20.0.0",
     "stripe-replit-sync": "^1.0.0"
   }

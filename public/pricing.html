@@ -36,6 +36,8 @@
     .credits-display { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px 20px; border-radius: 10px; margin-bottom: 30px; text-align: center; }
     .credits-display .count { font-size: 2rem; font-weight: 700; color: #16a34a; }
     .credits-display .label { color: #166534; }
+    .auth-notice { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; margin-bottom: 30px; text-align: center; color: white; }
+    .auth-notice a { color: white; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -45,6 +47,10 @@
     <div class="hero">
       <h1>Choose Your Plan</h1>
       <p>Unlock AI-powered niche market intelligence</p>
+    </div>
+
+    <div id="auth-notice" class="auth-notice" style="display: none;">
+      <a href="/api/login">Sign in</a> to purchase a plan and start analyzing niches.
     </div>
 
     <div id="credits-section" class="credits-display" style="display: none;">
@@ -119,18 +125,33 @@
   </div>
 
   <script>
-    function updateCreditsDisplay() {
-      const credits = parseInt(localStorage.getItem('searchCredits') || '0');
-      const section = document.getElementById('credits-section');
-      const count = document.getElementById('credits-count');
-      
-      if (credits > 0) {
-        section.style.display = 'block';
-        count.textContent = credits;
+    let isAuthenticated = false;
+
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/auth/user');
+        if (response.ok) {
+          isAuthenticated = true;
+          const user = await response.json();
+          if (user.credits > 0) {
+            document.getElementById('credits-section').style.display = 'block';
+            document.getElementById('credits-count').textContent = 
+              user.subscriptionType === 'seikuku' ? '∞' : user.credits;
+          }
+        } else {
+          document.getElementById('auth-notice').style.display = 'block';
+        }
+      } catch (error) {
+        document.getElementById('auth-notice').style.display = 'block';
       }
     }
 
     async function selectPlan(plan) {
+      if (!isAuthenticated) {
+        window.location.href = '/api/login';
+        return;
+      }
+
       const btn = event.target;
       btn.disabled = true;
       btn.textContent = 'Redirecting...';
@@ -141,6 +162,11 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ plan })
         });
+
+        if (response.status === 401) {
+          window.location.href = '/api/login';
+          return;
+        }
 
         const data = await response.json();
         if (data.url) {
@@ -155,7 +181,7 @@
       }
     }
 
-    updateCreditsDisplay();
+    checkAuth();
   </script>
 </body>
 </html>
