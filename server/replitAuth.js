@@ -21,9 +21,10 @@ function getSession() {
   const PgStore = connectPg(session);
   const sessionStore = new PgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    createTableIfMissing: true,
     ttl: sessionTtl,
     tableName: "sessions",
+    errorLog: (err) => console.error('Session store error:', err.message),
   });
   return session({
     secret: process.env.SESSION_SECRET,

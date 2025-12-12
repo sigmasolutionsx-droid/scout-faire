@@ -27,7 +27,11 @@ class DatabaseStorage {
   }
 
   async addCredits(userId, amount) {
-    const [user] = await db
+    let user = await this.getUser(userId);
+    if (!user) {
+      user = await this.upsertUser({ id: userId });
+    }
+    const [updated] = await db
       .update(users)
       .set({ 
         credits: sql`${users.credits} + ${amount}`,
@@ -35,7 +39,7 @@ class DatabaseStorage {
       })
       .where(eq(users.id, userId))
       .returning();
-    return user;
+    return updated;
   }
 
   async useCredit(userId) {
@@ -62,8 +66,12 @@ class DatabaseStorage {
   }
 
   async setSubscription(userId, type, expiresAt) {
+    let user = await this.getUser(userId);
+    if (!user) {
+      user = await this.upsertUser({ id: userId });
+    }
     const credits = type === 'pro' ? 30 : 0;
-    const [user] = await db
+    const [updated] = await db
       .update(users)
       .set({ 
         subscriptionType: type,
@@ -73,7 +81,7 @@ class DatabaseStorage {
       })
       .where(eq(users.id, userId))
       .returning();
-    return user;
+    return updated;
   }
 }
 
