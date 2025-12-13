@@ -21,6 +21,14 @@ const PRICING = {
     seikuku: { name: 'Seikuku Precision', price: 3499, searches: -1, type: 'subscription' }
 };
 
+const PRICE_IDS = {
+    single: process.env.STRIPE_PRICE_SINGLE || null,
+    starter: process.env.STRIPE_PRICE_STARTER || null,
+    pro: process.env.STRIPE_PRICE_PRO || null,
+    seikuku: process.env.STRIPE_PRICE_SEIKUKU || null,
+    additional: process.env.STRIPE_PRICE_ADDITIONAL || null
+};
+
 app.post(
     '/api/stripe/webhook/:uuid',
     express.raw({ type: 'application/json' }),
@@ -61,6 +69,41 @@ async function startServer() {
             res.json({ publishableKey, pricing: PRICING });
         } catch (error) {
             res.status(500).json({ error: 'Failed to get Stripe config' });
+        }
+    });
+
+    app.post('/api/checkout', isAuthenticated, async (req, res) => {
+        try {
+            const { priceId, plan } = req.body;
+            const userId = req.user.claims.sub;
+            
+            const resolvedPriceId = priceId || PRICE_IDS[plan];
+            
+            if (!resolvedPriceId) {
+                return res.status(400).json({ error: 'Price ID required. Set STRIPE_PRICE_* environment variables or pass priceId directly.' });
+            }
+
+            const planData = PRICING[plan] || {};
+            const isSubscription = planData.type === 'subscription';
+
+            const stripe = await getUncachableStripeClient();
+            const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}`;
+            
+            const session = await stripe.checkout.sessions.create({
+                mode: isSubscription ? 'subscription' : 'payment',
+                line_items: [{ price: resolvedPriceId, quantity: 1 }],
+                success_url: `${baseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}&plan=${plan || 'custom'}`,
+                cancel_url: `${baseUrl}/pricing.html`,
+                metadata: {
+                    plan: plan || 'custom',
+                    userId
+                }
+            });
+
+            res.json({ url: session.url, sessionId: session.id });
+        } catch (error) {
+            console.error('Checkout error:', error);
+            res.status(500).json({ error: 'Failed to create checkout session' });
         }
     });
 
