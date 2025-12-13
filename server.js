@@ -107,21 +107,23 @@ async function startServer() {
         }
     });
 
-    app.post('/api/create-checkout-session', isAuthenticated, async (req, res) => {
+    app.post('/api/create-checkout-session', async (req, res) => {
         try {
             const { plan } = req.body;
             const planData = PRICING[plan];
-            const userId = req.user.claims.sub;
             
             if (!planData) {
                 return res.status(400).json({ error: 'Invalid plan' });
             }
+
+            const userId = req.user?.claims?.sub || null;
 
             const stripe = await getUncachableStripeClient();
             const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}`;
             
             const sessionConfig = {
                 payment_method_types: ['card'],
+                customer_email: undefined,
                 line_items: [{
                     price_data: {
                         currency: 'usd',
@@ -142,7 +144,7 @@ async function startServer() {
                 metadata: {
                     plan,
                     searches: planData.searches.toString(),
-                    userId
+                    userId: userId || 'guest'
                 }
             };
 
@@ -188,10 +190,9 @@ async function startServer() {
 
     const verifiedSessions = new Set();
 
-    app.post('/api/verify-session', isAuthenticated, async (req, res) => {
+    app.post('/api/verify-session', async (req, res) => {
         try {
             const { sessionId } = req.body;
-            const userId = req.user.claims.sub;
             
             if (!sessionId) {
                 return res.status(400).json({ error: 'Session ID required' });
@@ -208,14 +209,25 @@ async function startServer() {
                 return res.status(400).json({ error: 'Payment not completed' });
             }
 
-            if (session.metadata?.userId !== userId) {
-                return res.status(400).json({ error: 'Session mismatch' });
-            }
-
             verifiedSessions.add(sessionId);
 
             const plan = session.metadata?.plan || 'single';
-            const planData = PRICING[plan] || PRICING.single;
+            const customerEmail = session.customer_details?.email || session.customer_email;
+            let userId = session.metadata?.userId;
+
+            if (userId === 'guest' || !userId) {
+                if (!customerEmail) {
+                    return res.status(400).json({ error: 'No email found for guest purchase' });
+                }
+                userId = `email_${customerEmail.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+                await storage.upsertUser({
+                    id: userId,
+                    email: customerEmail,
+                    firstName: null,
+                    lastName: null,
+                    profileImageUrl: null
+                });
+            }
 
             let user;
             if (plan === 'single' || plan === 'additional') {
@@ -235,8 +247,10 @@ async function startServer() {
             res.json({
                 verified: true,
                 plan,
+                email: customerEmail,
                 credits: user?.credits || 0,
-                subscriptionType: user?.subscriptionType || null
+                subscriptionType: user?.subscriptionType || null,
+                message: customerEmail ? `Account created for ${customerEmail}. Sign in with this email to access your credits.` : null
             });
         } catch (error) {
             console.error('Session verification error:', error);

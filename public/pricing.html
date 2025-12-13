@@ -49,7 +49,7 @@
       <p>Unlock AI-powered niche market intelligence</p>
     </div>
 
-    <div id="auth-notice" class="auth-notice" style="display: none;">
+    <div id="auth-notice" class="auth-notice">
       <a href="/api/login">Sign in</a> to purchase a plan and start analyzing niches.
     </div>
 
@@ -138,20 +138,13 @@
             document.getElementById('credits-count').textContent = 
               user.subscriptionType === 'seikuku' ? '∞' : user.credits;
           }
-        } else {
-          document.getElementById('auth-notice').style.display = 'block';
         }
       } catch (error) {
-        document.getElementById('auth-notice').style.display = 'block';
+        console.log('Not logged in - guest checkout available');
       }
     }
 
     async function selectPlan(plan) {
-      if (!isAuthenticated) {
-        window.location.href = '/api/login';
-        return;
-      }
-
       const btn = event.target;
       btn.disabled = true;
       btn.textContent = 'Redirecting...';
@@ -162,11 +155,6 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ plan })
         });
-
-        if (response.status === 401) {
-          window.location.href = '/api/login';
-          return;
-        }
 
         const data = await response.json();
         if (data.url) {

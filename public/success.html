@@ -39,7 +39,11 @@
         <div class="credits-number" id="credits-display">0</div>
         <div class="credits-label">searches available</div>
       </div>
-      <a href="/" class="btn">Start Analyzing</a>
+      <div id="email-notice" style="display: none; background: #eff6ff; border: 2px solid #bfdbfe; padding: 20px; border-radius: 12px; margin: 20px 0;">
+        <p style="color: #1e40af; margin: 0;"><strong>Account created!</strong></p>
+        <p style="color: #1e40af; margin: 10px 0 0 0;">Sign in with <strong id="user-email"></strong> to access your credits.</p>
+      </div>
+      <a href="/" class="btn" id="action-btn">Start Analyzing</a>
     </div>
     <div class="error" id="error">
       <div class="icon icon-error">&#10007;</div>
@@ -66,11 +70,6 @@
           body: JSON.stringify({ sessionId })
         });
 
-        if (response.status === 401) {
-          window.location.href = '/api/login';
-          return;
-        }
-
         const data = await response.json();
 
         if (!response.ok || !data.verified) {
@@ -92,6 +91,13 @@
         document.getElementById('credits-display').textContent = 
           data.subscriptionType === 'seikuku' ? '∞' : data.credits;
         document.getElementById('plan-message').textContent = message;
+        
+        if (data.email && data.message) {
+          document.getElementById('user-email').textContent = data.email;
+          document.getElementById('email-notice').style.display = 'block';
+          document.getElementById('action-btn').textContent = 'Sign In to Start';
+          document.getElementById('action-btn').href = '/api/login';
+        }
         
         document.getElementById('loading').style.display = 'none';
         document.getElementById('success').style.display = 'block';
