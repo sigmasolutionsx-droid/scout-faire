@@ -242,7 +242,7 @@
       `;
 
       try {
-        const response = await fetch('/api/analyze', {
+        const response = await fetch('https://amatuedda-backend-production.up.railway.app/api/products/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ keywords })
