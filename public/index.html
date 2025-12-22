@@ -272,8 +272,8 @@
 
         const data = await response.json();
 
-        if (data.error) {
-          resultDiv.innerHTML = `<div class="analysis-card" style="color: #dc2626;">${data.error}</div>`;
+        if (!data.success || data.error) {
+          resultDiv.innerHTML = `<div class="analysis-card" style="color: #dc2626;">${data.error || 'Analysis failed'}</div>`;
           return;
         }
 
@@ -285,11 +285,6 @@
         const analysis = data.analysis;
         
         resultDiv.innerHTML = `
-          <div class="insight-box">
-            <div class="insight-title">Market Overview</div>
-            <p>${analysis.overallInsight}</p>
-          </div>
-
           <div class="niche-tabs">
             ${analysis.niches.map((n, i) => `
               <button class="niche-tab ${i === 0 ? 'active' : ''}" onclick="showNiche(${i})">${n.keyword}</button>
@@ -300,19 +295,15 @@
             <div class="analysis-card niche-detail ${i === 0 ? '' : 'hidden'}" data-niche="${i}">
               <div class="overall-score">
                 <div class="score-circle">
-                  <span class="score-number">${niche.profitability}</span>
+                  <span class="score-number">${niche.score}</span>
                 </div>
-                <div style="color: #6b7280;">Profitability Score</div>
+                <div style="color: #6b7280;">Score</div>
               </div>
 
               <div class="metrics-grid">
                 <div class="metric">
                   <div class="metric-label">Trend</div>
                   <span class="metric-badge badge-${niche.trend}">${niche.trend}</span>
-                </div>
-                <div class="metric">
-                  <div class="metric-label">Search Volume</div>
-                  <span class="metric-badge badge-${niche.searchVolume}">${niche.searchVolume}</span>
                 </div>
                 <div class="metric">
                   <div class="metric-label">Competition</div>
@@ -323,30 +314,8 @@
                   <span class="metric-badge badge-${niche.buyIntent}">${niche.buyIntent}</span>
                 </div>
               </div>
-
-              <div class="insight-box">
-                <div class="insight-title">Opportunity</div>
-                <p>${niche.opportunity}</p>
-              </div>
-
-              <div style="margin-top: 20px;">
-                <h4 style="margin-bottom: 10px;">Recommendations</h4>
-                ${niche.recommendations.map((rec, j) => `
-                  <div class="rec-item">
-                    <div class="rec-number">${j + 1}</div>
-                    <span>${rec}</span>
-                  </div>
-                `).join('')}
-              </div>
             </div>
           `).join('')}
-
-          <div class="insight-box" style="margin-top: 25px;">
-            <div class="insight-title">Emerging Opportunities</div>
-            <ul style="margin: 0; padding-left: 20px;">
-              ${analysis.emergingOpportunities.map(opp => `<li style="margin: 8px 0;">${opp}</li>`).join('')}
-            </ul>
-          </div>
 
           <button class="btn btn-success" style="margin-top: 25px;" onclick="resetAnalysis()">Analyze More Niches</button>
         `;
