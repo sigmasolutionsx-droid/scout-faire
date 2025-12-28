@@ -35,11 +35,16 @@ async function initializeTables() {
         last_name VARCHAR,
         profile_image_url VARCHAR,
         credits INTEGER NOT NULL DEFAULT 0,
+        free_credits_used INTEGER NOT NULL DEFAULT 0,
+        free_credits_refreshed_at TIMESTAMP DEFAULT NOW(),
         subscription_type VARCHAR,
         subscription_expires_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
+      
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS free_credits_used INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS free_credits_refreshed_at TIMESTAMP DEFAULT NOW();
     `);
     console.log('Database tables initialized');
   } catch (error) {

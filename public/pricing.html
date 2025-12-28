@@ -1,175 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pricing - Scout-Faire</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-    .hero { text-align: center; color: white; margin-bottom: 50px; }
-    .hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
-    .hero p { font-size: 1.2rem; opacity: 0.9; }
-    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-    .pricing-card { background: white; border-radius: 20px; padding: 35px 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); position: relative; transition: transform 0.3s; }
-    .pricing-card:hover { transform: translateY(-5px); }
-    .pricing-card.featured { border: 3px solid #667eea; }
-    .featured-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 6px 20px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
-    .plan-name { font-size: 1.4rem; font-weight: 700; color: #374151; margin-bottom: 10px; }
-    .plan-price { margin: 20px 0; }
-    .price-amount { font-size: 3rem; font-weight: 700; color: #667eea; }
-    .price-period { color: #6b7280; font-size: 1rem; }
-    .plan-description { color: #6b7280; margin-bottom: 25px; font-size: 0.95rem; line-height: 1.5; }
-    .features { list-style: none; margin-bottom: 30px; }
-    .features li { padding: 10px 0; display: flex; align-items: center; gap: 10px; color: #374151; border-bottom: 1px solid #f3f4f6; }
-    .features li:last-child { border-bottom: none; }
-    .check { width: 20px; height: 20px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; flex-shrink: 0; }
-    .btn { width: 100%; padding: 16px; font-size: 1rem; font-weight: 600; cursor: pointer; border: none; border-radius: 10px; transition: all 0.2s; }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-    .btn-secondary { background: #f3f4f6; color: #374151; }
-    .btn-secondary:hover { background: #e5e7eb; }
-    .back-link { display: inline-block; color: white; text-decoration: none; margin-bottom: 30px; opacity: 0.9; }
-    .back-link:hover { opacity: 1; }
-    .credits-display { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px 20px; border-radius: 10px; margin-bottom: 30px; text-align: center; }
-    .credits-display .count { font-size: 2rem; font-weight: 700; color: #16a34a; }
-    .credits-display .label { color: #166534; }
-    .auth-notice { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; margin-bottom: 30px; text-align: center; color: white; }
-    .auth-notice a { color: white; font-weight: 600; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Scout-Faire</title>
+    <link rel="stylesheet" href="pricing.css">
 </head>
 <body>
-  <div class="container">
-    <a href="/" class="back-link">← Back to Scout-Faire</a>
+    <div class="pricing-section">
+        <div class="pricing-header">
+            <h1>Choose Your Plan</h1>
+            <p class="subtitle">Find your competitive advantage in 30 seconds</p>
+        </div>
+        
+        <div class="pricing-grid">
+            
+            <!-- FREE TIER -->
+            <div class="pricing-card tier-free">
+                <h2>Free</h2>
+                <div class="price-block">
+                    <span class="amount">$0</span>
+                    <span class="period">/month</span>
+                </div>
+                
+                <ul class="features-list">
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>5 analyses per month</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Basic market scores</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Overall opportunity assessment</span>
+                    </li>
+                    <li class="locked">
+                        <span class="icon">🔒</span>
+                        <span class="feature-name">
+                            Competitor gaps analysis
+                            <span class="tooltip-trigger" data-tooltip="competitor-gaps">ⓘ</span>
+                        </span>
+                    </li>
+                    <li class="locked">
+                        <span class="icon">🔒</span>
+                        <span class="feature-name">
+                            PDF/CSV exports
+                            <span class="tooltip-trigger" data-tooltip="exports">ⓘ</span>
+                        </span>
+                    </li>
+                    <li class="locked">
+                        <span class="icon">🔒</span>
+                        <span>Search history</span>
+                    </li>
+                </ul>
+                
+                <button class="btn btn-secondary" onclick="startFreePlan()">Get Started Free</button>
+                <p class="no-cc">No credit card required</p>
+            </div>
+            
+            <!-- PRO TIER (FEATURED) -->
+            <div class="pricing-card tier-pro featured">
+                <div class="badge">⭐ MOST POPULAR</div>
+                
+                <h2>Pro</h2>
+                <div class="price-block">
+                    <span class="amount">$19.99</span>
+                    <span class="period">/month</span>
+                </div>
+                
+                <div class="value-prop">
+                    Pays for itself if you find just one $20/mo revenue gap
+                </div>
+                
+                <ul class="features-list">
+                    <li class="included highlight">
+                        <span class="icon">✓</span>
+                        <span>
+                            <strong>Unlimited</strong> analyses
+                            <span class="fair-use">(Fair Use: 500/mo)</span>
+                        </span>
+                    </li>
+                    <li class="included highlight">
+                        <span class="icon">✓</span>
+                        <span class="feature-name">
+                            <strong>Full competitor gaps analysis</strong>
+                            <span class="tooltip-trigger" data-tooltip="competitor-gaps">ⓘ</span>
+                        </span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Detailed monetization strategies</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Strategic recommendations</span>
+                    </li>
+                    <li class="included highlight">
+                        <span class="icon">✓</span>
+                        <span class="feature-name">
+                            <strong>PDF/CSV exports</strong>
+                            <span class="tooltip-trigger" data-tooltip="exports">ⓘ</span>
+                        </span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>90-day search history</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Email support</span>
+                    </li>
+                </ul>
+                
+                <button class="btn btn-primary" onclick="startProTrial()">Start 7-Day Free Trial</button>
+                <p class="guarantee">Cancel anytime. First week free.</p>
+            </div>
+            
+            <!-- ENTERPRISE TIER -->
+            <div class="pricing-card tier-enterprise">
+                <h2>Enterprise</h2>
+                <div class="price-block">
+                    <span class="amount">$99.99</span>
+                    <span class="period">/month</span>
+                </div>
+                
+                <ul class="features-list">
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Everything in Pro</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Fair Use: 2,000 reports/mo</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>White-label PDF reports</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Team accounts (5 users)</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>API access (100 req/day)</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Priority analysis queue</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Dedicated account manager</span>
+                    </li>
+                </ul>
+                
+                <button class="btn btn-secondary" onclick="startEnterprise()">Schedule Demo</button>
+            </div>
+            
+        </div>
+        
+        <!-- FAQ SECTION -->
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <h3>What does "Fair Use: 500/mo" mean?</h3>
+                <p>It means unlimited for normal business use - up to 500 comprehensive analyses per month. This generous limit protects our service from automated abuse while giving you more than enough capacity for serious market research. 99% of users never hit this limit.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>What are "Competitor Gaps"?</h3>
+                <p>Our AI identifies 5-7 specific unmet needs in your niche that existing competitors are missing. Each gap includes what's missing, customer pain points, revenue opportunity, and execution difficulty - giving you a clear roadmap to differentiate your business.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Can I cancel anytime?</h3>
+                <p>Yes! No contracts, no commitments. Cancel with one click from your account dashboard.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Do I need a credit card for the free trial?</h3>
+                <p>No credit card needed for the Free plan (5 analyses/month). The Pro 7-day trial does require a card, but you won't be charged until the trial ends.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOOLTIPS (positioned dynamically via JS) -->
+    <div id="tooltip-competitor-gaps" class="tooltip" style="display: none;">
+        <h4>Competitor Gaps Analysis</h4>
+        <p>Identifies 5-7 unmet market needs that existing brands are missing.</p>
+        <div class="tooltip-example">
+            <strong>Example gaps found:</strong>
+            <ul>
+                <li>"Transparent Material Traceability"</li>
+                <li>"Affordable Entry-Level Products"</li>
+                <li>"Geographic Service Gaps"</li>
+            </ul>
+        </div>
+        <p class="tooltip-cta">See real examples in our <a href="/examples">gallery</a></p>
+    </div>
     
-    <div class="hero">
-      <h1>Choose Your Plan</h1>
-      <p>Unlock AI-powered niche market intelligence</p>
+    <div id="tooltip-exports" class="tooltip" style="display: none;">
+        <h4>PDF/CSV Exports</h4>
+        <p>Download professional reports perfect for:</p>
+        <ul>
+            <li>Investor pitch decks</li>
+            <li>Team presentations</li>
+            <li>Client deliverables</li>
+            <li>Business plan documentation</li>
+        </ul>
+        <p class="tooltip-cta">Clean, branded PDFs ready to share</p>
     </div>
 
-    <div id="auth-notice" class="auth-notice">
-      <a href="/api/login">Sign in</a> to purchase a plan and start analyzing niches.
-    </div>
-
-    <div id="credits-section" class="credits-display" style="display: none;">
-      <div class="count" id="credits-count">0</div>
-      <div class="label">searches remaining</div>
-    </div>
-
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <div class="plan-name">Single Analysis</div>
-        <div class="plan-price">
-          <span class="price-amount">$2.99</span>
-        </div>
-        <p class="plan-description">Perfect for trying out Scout-Faire or occasional use.</p>
-        <ul class="features">
-          <li><span class="check">&#10003;</span> 1 niche analysis</li>
-          <li><span class="check">&#10003;</span> Full market report</li>
-          <li><span class="check">&#10003;</span> Profitability scoring</li>
-          <li><span class="check">&#10003;</span> Actionable recommendations</li>
-        </ul>
-        <button class="btn btn-secondary" onclick="selectPlan('single')">Get Started</button>
-      </div>
-
-      <div class="pricing-card">
-        <div class="plan-name">Starter Pack</div>
-        <div class="plan-price">
-          <span class="price-amount">$10</span>
-        </div>
-        <p class="plan-description">Great value for exploring multiple niches.</p>
-        <ul class="features">
-          <li><span class="check">&#10003;</span> 5 niche analyses</li>
-          <li><span class="check">&#10003;</span> Save $4.95 vs single</li>
-          <li><span class="check">&#10003;</span> Full market reports</li>
-          <li><span class="check">&#10003;</span> Never expires</li>
-        </ul>
-        <button class="btn btn-secondary" onclick="selectPlan('starter')">Get Starter Pack</button>
-      </div>
-
-      <div class="pricing-card featured">
-        <div class="featured-badge">Most Popular</div>
-        <div class="plan-name">Pro Monthly</div>
-        <div class="plan-price">
-          <span class="price-amount">$19.99</span>
-          <span class="price-period">/month</span>
-        </div>
-        <p class="plan-description">For serious entrepreneurs and researchers.</p>
-        <ul class="features">
-          <li><span class="check">&#10003;</span> 30 searches/month</li>
-          <li><span class="check">&#10003;</span> $0.99 per extra search</li>
-          <li><span class="check">&#10003;</span> Priority processing</li>
-          <li><span class="check">&#10003;</span> Cancel anytime</li>
-        </ul>
-        <button class="btn btn-primary" onclick="selectPlan('pro')">Subscribe Now</button>
-      </div>
-
-      <div class="pricing-card">
-        <div class="plan-name">Seikuku Precision</div>
-        <div class="plan-price">
-          <span class="price-amount">$34.99</span>
-          <span class="price-period">/month</span>
-        </div>
-        <p class="plan-description">Unlimited power for agencies and power users.</p>
-        <ul class="features">
-          <li><span class="check">&#10003;</span> Unlimited searches</li>
-          <li><span class="check">&#10003;</span> Priority processing</li>
-          <li><span class="check">&#10003;</span> Advanced insights</li>
-          <li><span class="check">&#10003;</span> Cancel anytime</li>
-        </ul>
-        <button class="btn btn-primary" onclick="selectPlan('seikuku')">Go Unlimited</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    let isAuthenticated = false;
-
-    async function checkAuth() {
-      try {
-        const response = await fetch('/api/auth/user');
-        if (response.ok) {
-          isAuthenticated = true;
-          const user = await response.json();
-          if (user.credits > 0) {
-            document.getElementById('credits-section').style.display = 'block';
-            document.getElementById('credits-count').textContent = 
-              user.subscriptionType === 'seikuku' ? '∞' : user.credits;
-          }
-        }
-      } catch (error) {
-        console.log('Not logged in - guest checkout available');
-      }
-    }
-
-    async function selectPlan(plan) {
-      const btn = event.target;
-      btn.disabled = true;
-      btn.textContent = 'Redirecting...';
-
-      try {
-        const response = await fetch('/api/create-checkout-session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ plan })
-        });
-
-        const data = await response.json();
-        if (data.url) {
-          window.location.href = data.url;
-        } else {
-          throw new Error(data.error || 'Failed to create checkout');
-        }
-      } catch (error) {
-        alert('Error: ' + error.message);
-        btn.disabled = false;
-        btn.textContent = plan === 'pro' || plan === 'seikuku' ? 'Subscribe Now' : 'Get Started';
-      }
-    }
-
-    checkAuth();
-  </script>
+    <script src="pricing.js"></script>
 </body>
 </html>

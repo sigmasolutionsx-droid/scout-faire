@@ -1,0 +1,388 @@
+<!-- Locked Section Component -->
+<!-- Use this in your analysis results page when showing to free tier users -->
+
+<section class="analysis-section locked-section">
+    <div class="section-header">
+        <h2>🔒 Competitor Gaps & Opportunities</h2>
+        <span class="pro-badge">PRO</span>
+    </div>
+    
+    <div class="teaser-content">
+        <p class="section-description">
+            Our AI has identified <strong>7 major market gaps</strong> that existing competitors are missing.
+        </p>
+        
+        <div class="gap-preview blurred">
+            <div class="gap-item">
+                <div class="gap-number">1</div>
+                <div class="gap-details">
+                    <h4>Holistic "Zero-Waste" Kits</h4>
+                    <p>No brand bundles the whole ecosystem; kits are piecemeal...</p>
+                    <span class="difficulty medium">Difficulty: Medium</span>
+                </div>
+            </div>
+            
+            <div class="gap-item">
+                <div class="gap-number">2</div>
+                <div class="gap-details">
+                    <h4>Transparent Material Traceability</h4>
+                    <p>Most brands only claim "recycled" without proof...</p>
+                    <span class="difficulty high">Difficulty: High</span>
+                </div>
+            </div>
+            
+            <div class="gap-item">
+                <div class="gap-number">3</div>
+                <div class="gap-details">
+                    <h4>Affordable "Entry-Level" Products</h4>
+                    <p>Current eco-bags start at $7-8 per roll...</p>
+                    <span class="difficulty low">Difficulty: Low</span>
+                </div>
+            </div>
+            
+            <div class="gap-item">
+                <div class="gap-number">4</div>
+                <div class="gap-details">
+                    <h4>[Hidden Gap]</h4>
+                    <p>Unlock to see full analysis...</p>
+                </div>
+            </div>
+            
+            <div class="gap-item">
+                <div class="gap-number">5</div>
+                <div class="gap-details">
+                    <h4>[Hidden Gap]</h4>
+                    <p>Unlock to see full analysis...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="unlock-overlay">
+        <div class="unlock-card">
+            <div class="unlock-icon">🎯</div>
+            <h3>Unlock Competitive Intelligence</h3>
+            <p class="unlock-subtitle">Get detailed analysis of each gap including:</p>
+            
+            <ul class="benefits-list">
+                <li>
+                    <span class="benefit-icon">✓</span>
+                    What competitors are missing
+                </li>
+                <li>
+                    <span class="benefit-icon">✓</span>
+                    Customer pain points
+                </li>
+                <li>
+                    <span class="benefit-icon">✓</span>
+                    Execution difficulty rating
+                </li>
+                <li>
+                    <span class="benefit-icon">✓</span>
+                    Revenue opportunity sizing
+                </li>
+                <li>
+                    <span class="benefit-icon">✓</span>
+                    <strong>Export to PDF for pitch decks</strong>
+                </li>
+            </ul>
+            
+            <div class="pricing-compare">
+                <div class="consultant-price">
+                    <span class="label">Consultant Gap Analysis:</span>
+                    <span class="amount strikethrough">$5,000</span>
+                </div>
+                <div class="our-price">
+                    <span class="label">Scout-Faire Pro:</span>
+                    <span class="amount highlight">$19.99/mo</span>
+                </div>
+            </div>
+            
+            <button class="btn-upgrade" onclick="window.location='/upgrade'">
+                <span class="btn-text">Upgrade to Pro</span>
+                <span class="btn-subtext">7 Days Free Trial</span>
+            </button>
+            
+            <p class="social-proof">
+                <span class="users-icon">👥</span>
+                247 entrepreneurs upgraded this week
+            </p>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Locked Section Styles */
+.locked-section {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    margin: 30px 0;
+    border: 2px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    font-size: 24px;
+    color: #111827;
+}
+
+.pro-badge {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.section-description {
+    font-size: 16px;
+    color: #374151;
+    margin-bottom: 20px;
+}
+
+.gap-preview {
+    position: relative;
+}
+
+.gap-preview.blurred {
+    filter: blur(4px);
+    pointer-events: none;
+    user-select: none;
+}
+
+.gap-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border-left: 4px solid #10b981;
+}
+
+.gap-number {
+    width: 32px;
+    height: 32px;
+    background: #10b981;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.gap-details h4 {
+    font-size: 16px;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.gap-details p {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.difficulty {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.difficulty.low {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.difficulty.medium {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.difficulty.high {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.unlock-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.6) 0%,
+        rgba(255,255,255,0.95) 30%,
+        rgba(255,255,255,1) 60%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.unlock-card {
+    background: white;
+    border: 3px solid #10b981;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
+    text-align: center;
+}
+
+.unlock-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.unlock-card h3 {
+    font-size: 28px;
+    color: #111827;
+    margin-bottom: 12px;
+}
+
+.unlock-subtitle {
+    font-size: 16px;
+    color: #6b7280;
+    margin-bottom: 24px;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0;
+    text-align: left;
+}
+
+.benefits-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    font-size: 15px;
+    color: #374151;
+}
+
+.benefit-icon {
+    width: 24px;
+    height: 24px;
+    background: #d1fae5;
+    color: #059669;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.pricing-compare {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 24px 0;
+}
+
+.consultant-price, .our-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.pricing-compare .label {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.pricing-compare .amount {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+    color: #9ca3af;
+}
+
+.highlight {
+    color: #10b981;
+}
+
+.btn-upgrade {
+    width: 100%;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-upgrade:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(16, 185, 129, 0.5);
+}
+
+.btn-text {
+    font-size: 18px;
+}
+
+.btn-subtext {
+    font-size: 13px;
+    opacity: 0.9;
+    font-weight: normal;
+}
+
+.social-proof {
+    font-size: 14px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.users-icon {
+    font-size: 16px;
+}
+
+@media (max-width: 640px) {
+    .unlock-overlay {
+        padding: 20px;
+    }
+    
+    .unlock-card {
+        padding: 24px;
+    }
+    
+    .unlock-card h3 {
+        font-size: 22px;
+    }
+}
+</style>

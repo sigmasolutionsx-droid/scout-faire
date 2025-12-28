@@ -15,18 +15,13 @@ if (!process.env.ANTHROPIC_API_KEY) {
 }
 
 const PRICING = {
-    single: { name: 'Single Analysis', price: 299, searches: 1 },
-    starter: { name: 'Starter Pack', price: 1000, searches: 5 },
-    pro: { name: 'Pro Monthly', price: 1999, searches: 30, type: 'subscription', overage: 99 },
-    seikuku: { name: 'Seikuku Precision', price: 3499, searches: -1, type: 'subscription' }
+    pro: { name: 'Pro Monthly', price: 1999, searches: -1, type: 'subscription' },
+    enterprise: { name: 'Enterprise', price: 9999, searches: -1, type: 'subscription' }
 };
 
 const PRICE_IDS = {
-    single: process.env.STRIPE_PRICE_SINGLE || null,
-    starter: process.env.STRIPE_PRICE_STARTER || null,
     pro: process.env.STRIPE_PRICE_PRO || null,
-    seikuku: process.env.STRIPE_PRICE_SEIKUKU || null,
-    additional: process.env.STRIPE_PRICE_ADDITIONAL || null
+    enterprise: process.env.STRIPE_PRICE_ENTERPRISE || null
 };
 
 app.post(
@@ -56,7 +51,13 @@ async function startServer() {
         try {
             const userId = req.user.claims.sub;
             const user = await storage.getUser(userId);
-            res.json(user);
+            const freeCreditsRemaining = await storage.getFreeCreditsRemaining(userId);
+            res.json({
+                ...user,
+                freeCreditsRemaining,
+                isPro: user?.subscriptionType === 'pro' && user?.subscriptionExpiresAt > new Date(),
+                isEnterprise: user?.subscriptionType === 'enterprise' && user?.subscriptionExpiresAt > new Date()
+            });
         } catch (error) {
             console.error("Error fetching user:", error);
             res.status(500).json({ message: "Failed to fetch user" });

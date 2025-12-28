@@ -18,6 +18,8 @@ const users = pgTable("users", {
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
   credits: integer("credits").default(0).notNull(),
+  freeCreditsUsed: integer("free_credits_used").default(0).notNull(),
+  freeCreditsRefreshedAt: timestamp("free_credits_refreshed_at").defaultNow(),
   subscriptionType: varchar("subscription_type"),
   subscriptionExpiresAt: timestamp("subscription_expires_at"),
   createdAt: timestamp("created_at").defaultNow(),
