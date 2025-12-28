@@ -35,12 +35,11 @@ Preferred communication style: Simple, everyday language.
 - **Environment Handling**: Automatic switching between development/production based on REPLIT_DEPLOYMENT flag
 
 ### Pricing Tiers
-| Plan | Price | Credits |
-|------|-------|---------|
-| Single Analysis | $2.99 | 1 search |
-| Starter Pack | $10.00 | 5 searches |
-| Pro Monthly | $19.99/mo | 30 searches + $0.99 overage |
-| Seikuku Precision | $34.99/mo | Unlimited |
+| Plan | Price | Features |
+|------|-------|----------|
+| Free | $0/month | 5 analyses/month, basic scores, locked competitor gaps |
+| Pro | $19.99/month | Unlimited (500 fair use), competitor gaps, PDF/CSV exports |
+| Enterprise | $99.99/month | Everything in Pro + 2000/mo, white-label, team accounts, API |
 
 ### Frontend Architecture
 - **Type**: Static HTML/CSS/JavaScript served from `/public` directory
@@ -49,7 +48,7 @@ Preferred communication style: Simple, everyday language.
 - **Auth Flow**: Checks `/api/auth/user` to determine login state
 
 ### Database Schema
-- **users**: id (PK), email, first_name, last_name, profile_image_url, credits, subscription_type, subscription_expires_at, created_at, updated_at
+- **users**: id (PK), email, first_name, last_name, profile_image_url, credits, free_credits_used, free_credits_refreshed_at, subscription_type, subscription_expires_at, created_at, updated_at
 - **sessions**: sid (PK), sess (JSONB), expire
 
 ### Key Files
@@ -94,3 +93,7 @@ Preferred communication style: Simple, everyday language.
 - Credits now stored in database instead of localStorage
 - Added server-side payment verification for security
 - Protected all API endpoints requiring authentication
+- **Refactored pricing tiers**: Free (5/month), Pro ($19.99), Enterprise ($99.99)
+- Added monthly free credit reset logic (auto-refreshes each month)
+- External Railway backend handles AI analysis (gpt-oss-120b via Groq)
+- Added locked sections for Pro-only features (competitor gaps analysis)
