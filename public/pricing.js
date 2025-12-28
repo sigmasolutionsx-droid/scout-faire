@@ -28,25 +28,37 @@ async function startFreePlan() {
   window.location.href = '/api/login';
 }
 
-async function startProTrial() {
+async function selectPlan(tier) {
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Redirecting...';
+  
   try {
     const response = await fetch('/api/create-checkout-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ plan: 'pro' })
+      body: JSON.stringify({ tier: tier })
     });
     
     const data = await response.json();
     if (data.url) {
       window.location.href = data.url;
     } else {
-      alert('Error starting trial: ' + (data.error || 'Unknown error'));
+      alert('Error: ' + (data.error || 'Unknown error'));
+      btn.disabled = false;
+      btn.textContent = tier === 'enterprise' ? 'Schedule Demo' : 'Start 7-Day Free Trial';
     }
   } catch (error) {
     alert('Error: ' + error.message);
+    btn.disabled = false;
+    btn.textContent = tier === 'enterprise' ? 'Schedule Demo' : 'Start 7-Day Free Trial';
   }
 }
 
+async function startProTrial() {
+  selectPlan('pro');
+}
+
 async function startEnterprise() {
-  window.location.href = '/contact';
+  selectPlan('enterprise');
 }

@@ -110,44 +110,60 @@ async function startServer() {
 
     app.post('/api/create-checkout-session', async (req, res) => {
         try {
-            const { plan } = req.body;
-            const planData = PRICING[plan];
+            const { tier, plan } = req.body;
+            const selectedTier = tier || plan;
+            const planData = PRICING[selectedTier];
             
             if (!planData) {
-                return res.status(400).json({ error: 'Invalid plan' });
+                return res.status(400).json({ error: 'Invalid tier. Use "pro" or "enterprise"' });
             }
 
             const userId = req.user?.claims?.sub || null;
+            const priceId = PRICE_IDS[selectedTier];
 
             const stripe = await getUncachableStripeClient();
             const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0]}`;
             
-            const sessionConfig = {
-                payment_method_types: ['card'],
-                customer_email: undefined,
-                line_items: [{
-                    price_data: {
-                        currency: 'usd',
-                        product_data: {
-                            name: planData.name,
-                            description: planData.searches === -1 
-                                ? 'Unlimited monthly searches' 
-                                : `${planData.searches} ${planData.type === 'subscription' ? 'searches/month' : 'searches'}`,
+            let sessionConfig;
+            
+            if (priceId) {
+                sessionConfig = {
+                    mode: 'subscription',
+                    line_items: [{
+                        price: priceId,
+                        quantity: 1
+                    }],
+                    success_url: `${baseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}&tier=${selectedTier}`,
+                    cancel_url: `${baseUrl}/pricing.html`,
+                    metadata: {
+                        tier: selectedTier,
+                        userId: userId || 'guest'
+                    }
+                };
+            } else {
+                sessionConfig = {
+                    payment_method_types: ['card'],
+                    line_items: [{
+                        price_data: {
+                            currency: 'usd',
+                            product_data: {
+                                name: planData.name,
+                                description: 'Unlimited monthly analyses',
+                            },
+                            unit_amount: planData.price,
+                            recurring: { interval: 'month' }
                         },
-                        unit_amount: planData.price,
-                        ...(planData.type === 'subscription' && { recurring: { interval: 'month' } })
-                    },
-                    quantity: 1,
-                }],
-                mode: planData.type === 'subscription' ? 'subscription' : 'payment',
-                success_url: `${baseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
-                cancel_url: `${baseUrl}/pricing.html`,
-                metadata: {
-                    plan,
-                    searches: planData.searches.toString(),
-                    userId: userId || 'guest'
-                }
-            };
+                        quantity: 1,
+                    }],
+                    mode: 'subscription',
+                    success_url: `${baseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}&tier=${selectedTier}`,
+                    cancel_url: `${baseUrl}/pricing.html`,
+                    metadata: {
+                        tier: selectedTier,
+                        userId: userId || 'guest'
+                    }
+                };
+            }
 
             const session = await stripe.checkout.sessions.create(sessionConfig);
             res.json({ url: session.url });
@@ -212,7 +228,7 @@ async function startServer() {
 
             verifiedSessions.add(sessionId);
 
-            const plan = session.metadata?.plan || 'single';
+            const tier = session.metadata?.tier || session.metadata?.plan || 'pro';
             const customerEmail = session.customer_details?.email || session.customer_email;
             let userId = session.metadata?.userId;
 
@@ -231,23 +247,20 @@ async function startServer() {
             }
 
             let user;
-            if (plan === 'single' || plan === 'additional') {
-                user = await storage.addCredits(userId, 1);
-            } else if (plan === 'starter') {
-                user = await storage.addCredits(userId, 5);
-            } else if (plan === 'pro') {
-                const expiresAt = new Date();
-                expiresAt.setMonth(expiresAt.getMonth() + 1);
+            const expiresAt = new Date();
+            expiresAt.setMonth(expiresAt.getMonth() + 1);
+            
+            if (tier === 'pro') {
                 user = await storage.setSubscription(userId, 'pro', expiresAt);
-            } else if (plan === 'seikuku') {
-                const expiresAt = new Date();
-                expiresAt.setMonth(expiresAt.getMonth() + 1);
-                user = await storage.setSubscription(userId, 'seikuku', expiresAt);
+            } else if (tier === 'enterprise') {
+                user = await storage.setSubscription(userId, 'enterprise', expiresAt);
+            } else if (tier === 'additional') {
+                user = await storage.addCredits(userId, 1);
             }
             
             res.json({
                 verified: true,
-                plan,
+                tier,
                 email: customerEmail,
                 credits: user?.credits || 0,
                 subscriptionType: user?.subscriptionType || null,

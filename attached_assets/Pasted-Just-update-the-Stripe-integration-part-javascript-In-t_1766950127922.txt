@@ -1,0 +1,86 @@
+Just update the Stripe integration part:
+javascript// In the new pricing.html, update this section:
+async function selectPlan(tier) {
+  const response = await fetch('/api/create-checkout-session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      tier: tier  // 'pro' or 'enterprise'
+    })
+  });
+  
+  const data = await response.json();
+  if (data.url) {
+    window.location.href = data.url;
+  }
+}
+
+4. Update Checkout Endpoint
+Modify your existing /api/create-checkout-session:
+javascriptapp.post('/api/create-checkout-session', async (req, res) => {
+  const { tier } = req.body;
+  
+  // Map tier to Stripe price IDs
+  const priceIds = {
+    pro: 'price_XXX',        // Your Scout-Faire Pro price ID
+    enterprise: 'price_YYY'  // Your Scout-Faire Enterprise price ID
+  };
+  
+  const session = await stripe.checkout.sessions.create({
+    mode: 'subscription',
+    line_items: [{
+      price: priceIds[tier],
+      quantity: 1
+    }],
+    success_url: `${process.env.BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.BASE_URL}/pricing`,
+    customer_email: req.body.email, // If guest checkout
+  });
+  
+  res.json({ url: session.url });
+});
+
+5. Stripe Webhook Updates
+Update your webhook to handle subscriptions:
+javascriptapp.post('/webhook', async (req, res) => {
+  const event = req.body;
+  
+  switch (event.type) {
+    case 'checkout.session.completed':
+      const session = event.data.object;
+      
+      // Get user by email
+      const user = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', session.customer_email)
+        .single();
+      
+      // Update user tier based on subscription
+      const subscription = await stripe.subscriptions.retrieve(session.subscription);
+      const priceId = subscription.items.data[0].price.id;
+      
+      const tier = priceId === 'price_XXX' ? 'pro' : 'enterprise';
+      
+      await supabase
+        .from('users')
+        .update({ 
+          tier: tier,
+          stripe_customer_id: session.customer,
+          stripe_subscription_id: session.subscription
+        })
+        .eq('id', user.id);
+      
+      break;
+      
+    case 'customer.subscription.deleted':
+      // Downgrade to free
+      await supabase
+        .from('users')
+        .update({ tier: 'free' })
+        .eq('stripe_subscription_id', event.data.object.id);
+      break;
+  }
+  
+  res.json({ received: true });
+});
