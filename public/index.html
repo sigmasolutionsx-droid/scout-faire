@@ -3,79 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scout-Faire - Niche Market Intelligence</title>
+    <title>Scout-Faire - Analytics Intelligent</title>
     <style>
       * {
         box-sizing: border-box;
       }
+      
       body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         margin: 0;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #2c2416;
+        background-image: 
+          repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(227, 30, 36, 0.03) 50px, rgba(227, 30, 36, 0.03) 51px),
+          repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(0, 74, 152, 0.03) 50px, rgba(0, 74, 152, 0.03) 51px);
         min-height: 100vh;
         position: relative;
         overflow-x: hidden;
       }
 
-      /* Animated background particles */
-      .background-decoration {
-        position: fixed;
-        width: 100%;
-        height: 100%;
+      body::before {
+        content: '';
+        position: absolute;
         top: 0;
         left: 0;
-        z-index: 0;
-        pointer-events: none;
-        overflow: hidden;
-      }
-
-      .particle {
-        position: absolute;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        animation: float 20s infinite;
-      }
-
-      .particle:nth-child(1) {
-        width: 80px;
-        height: 80px;
-        top: 10%;
-        left: 10%;
-        animation-delay: 0s;
-      }
-      .particle:nth-child(2) {
-        width: 60px;
-        height: 60px;
-        top: 70%;
-        left: 80%;
-        animation-delay: 2s;
-      }
-      .particle:nth-child(3) {
-        width: 100px;
-        height: 100px;
-        top: 50%;
-        left: 5%;
-        animation-delay: 4s;
-      }
-      .particle:nth-child(4) {
-        width: 70px;
-        height: 70px;
-        top: 20%;
-        left: 85%;
-        animation-delay: 6s;
-      }
-
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0) rotate(0deg);
-          opacity: 0.3;
-        }
-        50% {
-          transform: translateY(-50px) rotate(180deg);
-          opacity: 0.6;
-        }
+        right: 0;
+        height: 8px;
+        background: linear-gradient(90deg, 
+          #E31E24 0%, #E31E24 25%,
+          #6B7280 25%, #6B7280 50%,
+          #004A98 50%, #004A98 75%,
+          #E31E24 75%, #E31E24 100%
+        );
+        background-size: 80px 8px;
+        z-index: 10;
       }
 
       .container {
@@ -90,39 +50,42 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 40px;
-        animation: slideDown 0.6s ease-out;
+        margin-bottom: 60px;
+        margin-top: 20px;
       }
 
-      @keyframes slideDown {
-        from {
-          opacity: 0;
-          transform: translateY(-20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .logo {
-        color: white;
-        font-size: 1.8rem;
-        font-weight: 800;
-        text-decoration: none;
+      .logo-container {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 10px;
-        transition: transform 0.3s;
+        gap: 8px;
       }
 
-      .logo:hover {
-        transform: scale(1.05);
+      .logo-mark {
+        width: 80px;
+        height: 80px;
+        position: relative;
       }
 
-      .logo::before {
-        content: "🔍";
+      .logo-text {
+        color: #f5f5f4;
         font-size: 1.5rem;
+        font-weight: 900;
+        text-decoration: none;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .logo-text .arrow {
+        color: #E31E24;
+      }
+
+      .logo-tagline {
+        color: #d4d4d8;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
       }
 
       .nav-links {
@@ -132,18 +95,20 @@
       }
 
       .nav-link {
-        color: white;
+        color: #f5f5f4;
         text-decoration: none;
         opacity: 0.9;
-        font-weight: 500;
+        font-weight: 600;
         transition: all 0.3s;
         padding: 8px 16px;
-        border-radius: 8px;
+        border-radius: 0;
+        border: 2px solid transparent;
       }
 
       .nav-link:hover {
         opacity: 1;
-        background: rgba(255, 255, 255, 0.1);
+        border-color: #E31E24;
+        color: #E31E24;
       }
 
       .user-info {
@@ -155,88 +120,114 @@
       .user-avatar {
         width: 40px;
         height: 40px;
-        border-radius: 50%;
+        border-radius: 0;
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
         object-fit: cover;
-        background: rgba(255, 255, 255, 0.2);
-        border: 2px solid white;
-        transition: transform 0.3s;
-      }
-
-      .user-avatar:hover {
-        transform: scale(1.1);
+        background: rgba(227, 30, 36, 0.2);
+        border: 2px solid #E31E24;
       }
 
       .credits-badge {
-        background: rgba(255, 255, 255, 0.25);
-        backdrop-filter: blur(10px);
+        background: #1c1917;
         padding: 10px 18px;
-        border-radius: 25px;
-        color: white;
+        border-radius: 0;
+        color: #f5f5f4;
         font-weight: 700;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border: 2px solid #E31E24;
+        border-left: 4px solid #E31E24;
+        border-right: 4px solid #004A98;
         font-size: 0.95rem;
       }
 
       .auth-btn {
-        background: rgba(255, 255, 255, 0.25);
-        backdrop-filter: blur(10px);
+        background: linear-gradient(135deg, #E31E24, #004A98);
         border: none;
         color: white;
         padding: 10px 20px;
-        border-radius: 25px;
+        border-radius: 0;
         cursor: pointer;
-        font-weight: 600;
+        font-weight: 700;
         transition: all 0.3s;
         font-size: 0.95rem;
+        clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);
       }
 
       .auth-btn:hover {
-        background: rgba(255, 255, 255, 0.35);
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 6px 20px rgba(227, 30, 36, 0.5);
       }
 
       .hero {
         text-align: center;
-        color: white;
+        color: #f5f5f4;
         margin-bottom: 50px;
-        animation: fadeInUp 0.8s ease-out;
+        position: relative;
       }
 
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      .hero::before {
+        content: '';
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 30px solid transparent;
+        border-right: 30px solid transparent;
+        border-top: 40px solid #E31E24;
       }
 
       .hero h1 {
         font-size: 3.5rem;
         margin-bottom: 15px;
         font-weight: 900;
-        letter-spacing: -1px;
-        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        text-transform: uppercase;
       }
 
       .hero p {
         font-size: 1.4rem;
-        opacity: 0.95;
-        font-weight: 400;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        color: #d4d4d8;
+        font-weight: 600;
+        letter-spacing: 1px;
       }
 
       .card {
-        background: white;
-        border-radius: 24px;
+        background: #f5f5f4;
+        border-radius: 0;
         padding: 45px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        animation: fadeInUp 1s ease-out;
-        animation-delay: 0.2s;
-        animation-fill-mode: both;
+        border: 3px solid #78716c;
+        position: relative;
+        clip-path: polygon(0 30px, 50% 0, 100% 30px, 100% 100%, 0 100%);
+      }
+
+      .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 30px;
+        background: linear-gradient(90deg, 
+          #E31E24 0%, #E31E24 33%,
+          #6B7280 33%, #6B7280 66%,
+          #004A98 66%, #004A98 100%
+        );
+      }
+
+      .card::after {
+        content: '';
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-bottom: 20px solid #78716c;
+        opacity: 0.3;
       }
 
       .input-group {
@@ -245,27 +236,29 @@
 
       .input-group label {
         display: block;
-        font-weight: 700;
+        font-weight: 900;
         margin-bottom: 10px;
-        color: #1f2937;
+        color: #1c1917;
         font-size: 1.05rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
       }
 
       input {
         width: 100%;
         padding: 18px 20px;
         font-size: 16px;
-        border: 2px solid #e5e7eb;
-        border-radius: 14px;
+        border: 3px solid #78716c;
+        border-radius: 0;
         transition: all 0.3s;
         font-family: inherit;
+        background: white;
       }
 
       input:focus {
         outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-        transform: translateY(-2px);
+        border-color: #E31E24;
+        box-shadow: 0 0 0 4px rgba(227, 30, 36, 0.1);
       }
 
       .btn {
@@ -275,38 +268,30 @@
         font-weight: 700;
         cursor: pointer;
         border: none;
-        border-radius: 14px;
+        border-radius: 0;
         transition: all 0.3s;
         text-decoration: none;
         display: inline-block;
         text-align: center;
         position: relative;
         overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%);
       }
 
-      .btn::before {
-        content: "";
+      .btn::after {
+        content: '▶';
         position: absolute;
+        right: 20px;
         top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.2);
-        transform: translate(-50%, -50%);
-        transition:
-          width 0.6s,
-          height 0.6s;
-      }
-
-      .btn:hover::before {
-        width: 300px;
-        height: 300px;
+        transform: translateY(-50%);
+        font-size: 12px;
       }
 
       .btn:hover {
         transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
       }
 
       .btn:disabled {
@@ -315,20 +300,16 @@
         transform: none;
       }
 
-      .btn:disabled:hover {
-        box-shadow: none;
-      }
-
       .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #E31E24 0%, #004A98 100%);
         color: white;
-        position: relative;
-        z-index: 1;
+        border: 2px solid #1c1917;
       }
 
       .btn-success {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
         color: white;
+        border: 2px solid #1c1917;
       }
 
       .no-credits {
@@ -337,54 +318,84 @@
       }
 
       .no-credits h3 {
-        color: #1f2937;
+        color: #1c1917;
         margin-bottom: 12px;
         font-size: 1.8rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
       }
 
       .no-credits p {
-        color: #6b7280;
+        color: #57534e;
         margin-bottom: 25px;
         font-size: 1.1rem;
       }
 
       .credits-info {
-        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-        border: 2px solid #bbf7d0;
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border-left: 6px solid #E31E24;
+        border-right: 6px solid #004A98;
         padding: 20px 25px;
-        border-radius: 16px;
+        border-radius: 0;
         margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        position: relative;
+      }
+
+      .credits-info::before {
+        content: '◆';
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #E31E24;
+        font-size: 16px;
+      }
+
+      .credits-info::after {
+        content: '◆';
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #004A98;
+        font-size: 16px;
       }
 
       .credits-info .count {
         font-size: 2rem;
         font-weight: 900;
-        color: #16a34a;
+        color: #92400e;
+        margin-left: 30px;
       }
 
       .credits-info .label {
-        color: #166534;
+        color: #92400e;
         font-size: 0.95rem;
-        font-weight: 600;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
       .buy-more {
-        background: white;
-        border: 2px solid #16a34a;
-        color: #16a34a;
+        background: #f5f5f4;
+        border: 2px solid #E31E24;
+        color: #1c1917;
         cursor: pointer;
         font-weight: 700;
         padding: 10px 20px;
-        border-radius: 12px;
+        border-radius: 0;
         transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
       .buy-more:hover {
-        background: #16a34a;
+        background: #E31E24;
         color: white;
         transform: translateY(-2px);
       }
@@ -394,11 +405,13 @@
       }
 
       .analysis-card {
-        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
-        border-radius: 18px;
+        background: white;
+        border-radius: 0;
         padding: 35px;
         margin-top: 25px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        border: 3px solid #78716c;
+        border-top: 6px solid #E31E24;
+        border-bottom: 6px solid #004A98;
       }
 
       .overall-score {
@@ -409,24 +422,13 @@
       .score-circle {
         width: 140px;
         height: 140px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #E31E24 0%, #004A98 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 15px;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        animation: pulse 2s infinite;
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.05);
-        }
+        box-shadow: 0 10px 30px rgba(227, 30, 36, 0.4);
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
       }
 
       .score-number {
@@ -445,48 +447,49 @@
       .metric {
         background: white;
         padding: 20px;
-        border-radius: 14px;
-        border: 2px solid #e5e7eb;
+        border-radius: 0;
+        border: 2px solid #d6d3d1;
+        border-bottom: 3px solid #78716c;
         transition: all 0.3s;
       }
 
       .metric:hover {
-        border-color: #667eea;
+        border-color: #E31E24;
         transform: translateY(-4px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
       }
 
       .metric-label {
         font-size: 0.9rem;
-        color: #6b7280;
+        color: #57534e;
         margin-bottom: 8px;
-        font-weight: 600;
-      }
-
-      .metric-badge {
-        display: inline-block;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.85rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
 
-      .badge-high,
-      .badge-rising {
+      .metric-badge {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 0;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 2px solid currentColor;
+      }
+
+      .badge-high, .badge-rising {
         background: #d1fae5;
         color: #065f46;
       }
 
-      .badge-medium,
-      .badge-stable {
+      .badge-medium, .badge-stable {
         background: #fef3c7;
         color: #92400e;
       }
 
-      .badge-low,
-      .badge-declining {
+      .badge-low, .badge-declining {
         background: #fee2e2;
         color: #991b1b;
       }
@@ -501,24 +504,26 @@
       .niche-tab {
         padding: 12px 24px;
         background: white;
-        border: 2px solid #e5e7eb;
-        border-radius: 25px;
+        border: 2px solid #78716c;
+        border-radius: 0;
         cursor: pointer;
         font-size: 0.95rem;
         transition: all 0.3s;
-        font-weight: 600;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
       .niche-tab:hover {
-        border-color: #667eea;
+        border-color: #E31E24;
         transform: translateY(-2px);
       }
 
       .niche-tab.active {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #E31E24 0%, #004A98 100%);
         color: white;
-        border-color: transparent;
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        border-color: #1c1917;
+        box-shadow: 0 6px 20px rgba(227, 30, 36, 0.4);
       }
 
       .loading {
@@ -529,9 +534,10 @@
       .spinner {
         width: 50px;
         height: 50px;
-        border: 5px solid #e5e7eb;
-        border-top-color: #667eea;
-        border-radius: 50%;
+        border: 5px solid #d6d3d1;
+        border-top-color: #E31E24;
+        border-radius: 0;
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
         animation: spin 1s linear infinite;
         margin: 0 auto 20px;
       }
@@ -547,13 +553,15 @@
       }
 
       .subscription-badge {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #E31E24 0%, #004A98 100%);
         color: white;
         padding: 5px 14px;
-        border-radius: 14px;
+        border-radius: 0;
         font-size: 0.8rem;
         font-weight: 700;
-        box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        border: 2px solid #1c1917;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
       .login-prompt {
@@ -562,14 +570,16 @@
       }
 
       .login-prompt h3 {
-        color: #1f2937;
+        color: #1c1917;
         margin-bottom: 12px;
         font-size: 2rem;
-        font-weight: 800;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
       }
 
       .login-prompt p {
-        color: #6b7280;
+        color: #57534e;
         margin-bottom: 30px;
         font-size: 1.15rem;
       }
@@ -584,16 +594,29 @@
       .feature-card {
         background: white;
         padding: 30px 25px;
-        border-radius: 16px;
-        border: 2px solid #e5e7eb;
+        border-radius: 0;
+        border: 3px solid #d6d3d1;
         transition: all 0.3s;
         text-align: center;
+        position: relative;
+      }
+
+      .feature-card::before {
+        content: '';
+        position: absolute;
+        top: -3px;
+        left: 20px;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 12px solid #E31E24;
       }
 
       .feature-card:hover {
-        border-color: #667eea;
+        border-color: #E31E24;
         transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       }
 
       .feature-icon {
@@ -604,38 +627,54 @@
 
       .feature-card h4 {
         margin: 0 0 10px;
-        color: #1f2937;
+        color: #1c1917;
         font-size: 1.2rem;
-        font-weight: 700;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
       .feature-card p {
         margin: 0;
-        color: #6b7280;
+        color: #57534e;
         font-size: 0.95rem;
         line-height: 1.5;
       }
 
       .how-it-works {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #1c1917;
         padding: 35px;
-        border-radius: 16px;
-        color: white;
+        border-radius: 0;
+        border: 4px solid #E31E24;
+        border-left: 6px solid #E31E24;
+        border-right: 6px solid #004A98;
+        color: #f5f5f4;
         text-align: center;
         margin: 30px 0;
-        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+        position: relative;
+      }
+
+      .how-it-works::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #E31E24 0%, #004A98 100%);
       }
 
       .how-it-works h4 {
         margin: 0 0 15px;
         font-size: 1.5rem;
-        font-weight: 800;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
       }
 
       .how-it-works p {
         margin: 0;
-        color: white;
-        opacity: 1;
+        color: #d4d4d8;
         font-size: 1.05rem;
         line-height: 1.6;
       }
@@ -653,20 +692,29 @@
         .feature-grid {
           grid-template-columns: 1fr;
         }
+        .logo-mark {
+          width: 60px;
+          height: 60px;
+        }
+        .logo-text {
+          font-size: 1.2rem;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="background-decoration">
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-    </div>
-
     <div class="container">
       <div class="header">
-        <a href="/" class="logo">Scout-Faire</a>
+        <a href="/" class="logo-container" style="text-decoration: none;">
+          <svg class="logo-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- SF Arrowhead Logo -->
+            <polygon points="10,50 30,20 45,30 45,5 50,0 55,5 55,30 70,20 90,50" fill="#E31E24"/>
+            <polygon points="45,40 50,35 55,40 70,50 70,80 55,70 55,95 50,100 45,95 45,70 30,80 30,50" fill="#004A98"/>
+            <polygon points="48,30 50,28 52,30 52,45 48,45" fill="#6B7280"/>
+          </svg>
+          <div class="logo-text">SCOUT<span class="arrow">></span>FAIRE</div>
+          <div class="logo-tagline">Analytics Intelligent</div>
+        </a>
         <div class="nav-links">
           <a href="/pricing.html" class="nav-link">Pricing</a>
           <div class="user-info" id="user-info" style="display: none">
@@ -691,46 +739,43 @@
 
       <div class="hero">
         <h1>Niche Market Intelligence</h1>
-        <p>AI-powered analysis to find profitable niches</p>
+        <p>Find the gaps your competitors missed</p>
       </div>
 
       <div class="card">
         <div id="loading-state" class="loading">
           <div class="spinner"></div>
-          <p>Loading...</p>
+          <p style="color: #1c1917; font-weight: 600;">Loading...</p>
         </div>
 
         <div id="login-prompt" class="login-prompt hidden">
           <h3>Welcome to Scout-Faire</h3>
           <p>
-            AI-powered niche market intelligence to help you discover profitable
-            opportunities
+            AI-powered competitor gap analysis to find profitable opportunities in any niche
           </p>
 
           <div class="feature-grid">
             <div class="feature-card">
-              <span class="feature-icon">📊</span>
-              <h4>Profitability Scores</h4>
-              <p>Get data-driven profitability ratings for any market niche</p>
-            </div>
-            <div class="feature-card">
-              <span class="feature-icon">📈</span>
-              <h4>Trend Analysis</h4>
-              <p>Understand if markets are rising, stable, or declining</p>
-            </div>
-            <div class="feature-card">
               <span class="feature-icon">🎯</span>
-              <h4>Buy Intent</h4>
-              <p>Measure consumer purchase intent in your target niche</p>
+              <h4>Competitor Gaps</h4>
+              <p>Discover 5-7 specific opportunities competitors are missing</p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-icon">⚡</span>
+              <h4>30-Second Analysis</h4>
+              <p>Get strategic intelligence faster than any consultant</p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-icon">📊</span>
+              <h4>Executable Insights</h4>
+              <p>Not just data—actual strategic opportunities to exploit</p>
             </div>
           </div>
 
           <div class="how-it-works">
             <h4>How It Works</h4>
             <p>
-              Enter your niche keywords, and our AI analyzes market data to
-              provide actionable insights including competition levels, search
-              volume estimates, and strategic recommendations.
+              Enter your niche, and our AI reveals exactly where competitors are weak—specific gaps you can exploit to differentiate and win. What would cost $5,000 from a consultant, Scout-Faire delivers in 30 seconds.
             </p>
           </div>
 
@@ -738,13 +783,13 @@
             href="/pricing.html"
             class="btn btn-primary"
             style="max-width: 400px; margin: 0 auto"
-            >Discover Your Niche Now 🚀</a
+            >Start Free - 5 Analyses</a
           >
         </div>
 
         <div id="no-credits" class="no-credits hidden">
           <h3>Get Started with Scout-Faire</h3>
-          <p>Purchase credits to unlock AI-powered niche analysis</p>
+          <p>Purchase credits to unlock AI-powered competitor gap analysis</p>
           <a
             href="/pricing.html"
             class="btn btn-primary"
@@ -765,16 +810,16 @@
               <div class="label" id="credits-label">searches remaining</div>
             </div>
             <button class="buy-more" onclick="location.href='/pricing.html'">
-              Buy more
+              Buy More
             </button>
           </div>
 
           <div class="input-group">
-            <label>Enter niche keywords (comma-separated)</label>
+            <label>Enter Your Niche</label>
             <input
               type="text"
               id="keywords"
-              placeholder="e.g., eco-friendly packaging, sustainable fashion, organic skincare"
+              placeholder="e.g., sustainable pet products, keto meal prep, vintage vinyl"
             />
           </div>
 
@@ -783,7 +828,7 @@
             id="analyzeBtn"
             onclick="runAnalysis()"
           >
-            Analyze Niches (uses 1 credit)
+            Analyze Niche (Uses 1 Search)
           </button>
         </div>
 
@@ -860,7 +905,7 @@
       async function runAnalysis() {
         const keywords = document.getElementById("keywords").value.trim();
         if (!keywords) {
-          alert("Please enter at least one niche keyword");
+          alert("Please enter a niche keyword");
           return;
         }
 
@@ -873,7 +918,7 @@
         resultDiv.innerHTML = `
         <div class="loading">
           <div class="spinner"></div>
-          <p>Analyzing your niches...</p>
+          <p style="color: #1c1917; font-weight: 600;">Analyzing your niche...</p>
         </div>
       `;
 
@@ -948,7 +993,7 @@
                 <div class="score-circle">
                   <span class="score-number">${niche.score}</span>
                 </div>
-                <div style="color: #6b7280; font-weight: 600; font-size: 1.1rem;">Profitability Score</div>
+                <div style="color: #57534e; font-weight: 700; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.5px;">Profitability Score</div>
               </div>
 
               <div class="metrics-grid">
@@ -970,13 +1015,13 @@
             )
             .join("")}
 
-          <button class="btn btn-success" style="margin-top: 30px;" onclick="resetAnalysis()">Analyze More Niches</button>
+          <button class="btn btn-success" style="margin-top: 30px;" onclick="resetAnalysis()">Analyze Another Niche</button>
         `;
         } catch (error) {
           resultDiv.innerHTML = `<div class="analysis-card" style="color: #dc2626;">Error: ${error.message}</div>`;
         } finally {
           btn.disabled = false;
-          btn.textContent = "Analyze Niches (uses 1 credit)";
+          btn.textContent = "Analyze Niche (Uses 1 Search)";
         }
       }
 
