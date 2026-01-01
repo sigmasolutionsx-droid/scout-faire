@@ -4,19 +4,517 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing - Scout-Faire</title>
-    <link rel="stylesheet" href="pricing.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c1810 0%, #1a0f0a 100%);
+            color: #f5f5f5;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Logo Header Bar */
+        .logo-header {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid rgba(200, 16, 46, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-header img {
+            height: 60px;
+            width: auto;
+        }
+
+        .logo-header .tagline {
+            font-size: 0.9rem;
+            color: #d4a574;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .content-wrapper {
+            padding: 40px 20px;
+        }
+
+        .pricing-section {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Southwestern Geometric Header */
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .pricing-header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, #c8102e 0%, #666 50%, #003f87 100%);
+        }
+
+        .pricing-header h1 {
+            font-size: 3.5rem;
+            margin: 30px 0 20px;
+            background: linear-gradient(135deg, #c8102e 0%, #003f87 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .pricing-header .subtitle {
+            font-size: 1.3rem;
+            color: #d4a574;
+            font-style: italic;
+        }
+
+        /* Woven Tribal Pattern Accent */
+        .geometric-accent {
+            width: 100%;
+            height: 80px;
+            /* Creating a "Kilim" woven diamond effect */
+            background-color: transparent;
+            background-image: 
+                linear-gradient(45deg, #c8102e 25%, transparent 25%, transparent 75%, #c8102e 75%, #c8102e), 
+                linear-gradient(-45deg, #003f87 25%, transparent 25%, transparent 75%, #003f87 75%, #003f87);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            opacity: 0.2;
+            margin: 60px 0;
+            /* Adds a "fiber" texture feel */
+            border-top: 2px solid rgba(212, 165, 116, 0.3);
+            border-bottom: 2px solid rgba(212, 165, 116, 0.3);
+        }
+
+        /* Thinner Woven Divider for Sections */
+        .pattern-divider {
+            width: 100%;
+            height: 20px;
+            background: 
+                linear-gradient(90deg, #c8102e 5px, transparent 5px) 0 0,
+                linear-gradient(90deg, #003f87 5px, transparent 5px) 10px 10px,
+                linear-gradient(90deg, #d4a574 5px, transparent 5px) 20px 0;
+            background-size: 30px 20px;
+            opacity: 0.25;
+            margin: 30px 0;
+        }
+
+        /* Pricing Grid */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        /* Pricing Cards */
+        .pricing-card {
+            background: rgba(30, 20, 15, 0.8);
+            border: 3px solid;
+            border-radius: 12px;
+            padding: 40px 30px;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tier-free {
+            border-color: #666;
+        }
+
+        .tier-elite {
+            border-color: #c8102e;
+            box-shadow: 0 0 30px rgba(200, 16, 46, 0.3);
+        }
+
+        .tier-oracle {
+            border-color: #003f87;
+            box-shadow: 0 0 30px rgba(0, 63, 135, 0.3);
+        }
+
+        /* Featured Badge */
+        .badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #c8102e 0%, #8b0a1f 100%);
+            color: white;
+            padding: 8px 25px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(200, 16, 46, 0.4);
+        }
+
+        .pricing-card h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .tier-free h2 {
+            color: #999;
+        }
+
+        .tier-elite h2 {
+            color: #c8102e;
+        }
+
+        .tier-oracle h2 {
+            color: #003f87;
+        }
+
+        /* Price Block */
+        .price-block {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .price-block .amount {
+            font-size: 3.5rem;
+            font-weight: bold;
+        }
+
+        .tier-free .amount {
+            color: #999;
+        }
+
+        .tier-elite .amount {
+            color: #c8102e;
+        }
+
+        .tier-oracle .amount {
+            color: #003f87;
+        }
+
+        .price-block .period {
+            font-size: 1.1rem;
+            color: #aaa;
+        }
+
+        .value-prop {
+            background: rgba(200, 16, 46, 0.15);
+            border-left: 4px solid #c8102e;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #d4a574;
+            font-style: italic;
+        }
+
+        /* Features List */
+        .features-list {
+            list-style: none;
+            margin: 30px 0;
+        }
+
+        .features-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+
+        .features-list .icon {
+            flex-shrink: 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .included .icon {
+            color: #4ade80;
+        }
+
+        .locked .icon {
+            color: #666;
+        }
+
+        .locked {
+            opacity: 0.5;
+        }
+
+        .highlight {
+            background: rgba(200, 16, 46, 0.1);
+            padding: 12px !important;
+            border-radius: 6px;
+            border-bottom: 1px solid rgba(200, 16, 46, 0.3) !important;
+        }
+
+        .fair-use {
+            font-size: 0.85rem;
+            color: #aaa; /* Improved from #888 for better contrast */
+            font-style: italic;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease; /* Added smooth transition */
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            background: #666;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #777;
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(102, 102, 102, 0.4); /* Added glow */
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #c8102e 0%, #8b0a1f 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(200, 16, 46, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 25px rgba(200, 16, 46, 0.5);
+            transform: scale(1.02);
+        }
+
+        .tier-oracle .btn-primary {
+            background: linear-gradient(135deg, #003f87 0%, #002855 100%);
+            box-shadow: 0 4px 15px rgba(0, 63, 135, 0.3);
+        }
+
+        .tier-oracle .btn-primary:hover {
+            box-shadow: 0 6px 25px rgba(0, 63, 135, 0.5);
+        }
+
+        .no-cc {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #aaa; /* Improved from #888 for better contrast */
+            font-style: italic;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            max-width: 900px;
+            margin: 80px auto 60px;
+            padding: 40px;
+            background: rgba(30, 20, 15, 0.6);
+            border-radius: 12px;
+            border: 2px solid #666;
+        }
+
+        .faq-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #d4a574;
+            letter-spacing: 1px;
+        }
+
+        .faq-item {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .faq-item h3 {
+            color: #c8102e;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .faq-item p {
+            color: #ccc;
+            line-height: 1.7;
+        }
+
+        /* Branding Footer */
+        .branding-footer {
+            text-align: center;
+            margin: 80px auto 40px;
+            padding: 60px 40px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            border: 2px solid rgba(200, 16, 46, 0.3);
+            max-width: 600px;
+        }
+
+        .branding-footer .logo-large {
+            width: 200px;
+            height: auto;
+            margin: 0 auto 30px;
+            display: block;
+        }
+
+        .branding-footer .product-name {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #c8102e 0%, #003f87 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+        }
+
+        .branding-footer .arrow {
+            font-size: 2rem;
+            color: #666;
+            margin: 15px 0;
+        }
+
+        .branding-footer .powered-by {
+            font-size: 1rem;
+            color: #aaa; /* Improved contrast */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 15px 0;
+        }
+
+        .branding-footer .ai-engine {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d4a574;
+            letter-spacing: 2px;
+            margin-top: 15px;
+        }
+
+        .branding-footer .trademark {
+            font-size: 1.3rem;
+            vertical-align: super;
+        }
+
+        /* Southwestern geometric accent - removed old version */
+
+        @media (max-width: 768px) {
+            .logo-header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo-header img {
+                height: 50px;
+            }
+
+            .logo-header .tagline {
+                font-size: 0.75rem;
+            }
+
+            .content-wrapper {
+                padding: 20px 15px; /* Reduced from 40px for mobile */
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .pricing-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .branding-footer {
+                padding: 40px 20px;
+            }
+
+            .branding-footer .logo-large {
+                width: 150px;
+            }
+
+            .branding-footer .product-name {
+                font-size: 1.8rem;
+            }
+
+            .branding-footer .ai-engine {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .content-wrapper {
+                padding: 15px 10px; /* Even tighter for very small screens */
+            }
+
+            .pricing-card {
+                padding: 30px 20px;
+            }
+
+            .pricing-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="pricing-section">
+    <!-- Logo Header (Sticky) -->
+    <div class="logo-header">
+        <img src="2.png" alt="Scout-Faire Logo">
+        <div class="tagline">Analytics Intelligent</div>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div class="content-wrapper">
+        <div class="pricing-section">
         <div class="pricing-header">
-            <h1>Choose Your Plan</h1>
+            <h1>Choose Your Path</h1>
             <p class="subtitle">Find your competitive advantage in 30 seconds</p>
         </div>
+
+        <div class="pattern-divider"></div>
 
         <div class="pricing-grid">
             <!-- FREE TIER -->
             <div class="pricing-card tier-free">
-                <h2>Free</h2>
+                <h2>FREE</h2>
                 <div class="price-block">
                     <span class="amount">$0</span>
                     <span class="period">/month</span>
@@ -25,82 +523,81 @@
                 <ul class="features-list">
                     <li class="included">
                         <span class="icon">✓</span>
-                        <span>5 analyses per month</span>
+                        <span>5 comprehensive analyses per month</span>
                     </li>
                     <li class="included">
                         <span class="icon">✓</span>
-                        <span>Basic market scores only</span>
+                        <span>Basic market opportunity scores</span>
                     </li>
                     <li class="included">
                         <span class="icon">✓</span>
-                        <span>Overall opportunity assessment</span>
+                        <span>Overall viability assessment</span>
                     </li>
                     <li class="locked">
                         <span class="icon">🔒</span>
-                        <span class="feature-name">
-                            Competitor gaps analysis
-                            <span class="tooltip-trigger" data-tooltip="competitor-gaps">ⓘ</span>
-                        </span>
+                        <span>Full competitor gaps analysis</span>
+                    </li>
+                    <li class="locked">
+                        <span class="icon">🔒</span>
+                        <span>Business model blueprints</span>
                     </li>
                     <li class="locked">
                         <span class="icon">🔒</span>
                         <span>PDF/CSV exports</span>
                     </li>
-                    <li class="locked">
-                        <span class="icon">🔒</span>
-                        <span>Email support</span>
-                    </li>
                 </ul>
                 
                 <button class="btn btn-secondary" onclick="window.location.href='https://amatuedda-backend-production.up.railway.app/api/login'">
-                    Get Started Free
+                    Start Free
                 </button>
                 <p class="no-cc">No credit card required</p>
             </div>
             
-            <!-- PRO TIER (FEATURED) -->
-            <div class="pricing-card tier-pro featured">
+            <!-- ELITE TIER (FEATURED) -->
+            <div class="pricing-card tier-elite featured">
                 <div class="badge">⭐ MOST POPULAR</div>
                 
-                <h2>Pro</h2>
+                <h2>ELITE</h2>
                 <div class="price-block">
                     <span class="amount">$19.99</span>
                     <span class="period">/month</span>
                 </div>
                 
                 <div class="value-prop">
-                    Pays for itself if you find just one $20/mo revenue gap
+                    Pays for itself when you find your first $20/month revenue opportunity
                 </div>
                 
                 <ul class="features-list">
                     <li class="included highlight">
                         <span class="icon">✓</span>
                         <span>
-                            <strong>Unlimited</strong> analyses
-                            <span class="fair-use">(Fair Use: 500/mo)</span>
+                            <strong>Unlimited analyses</strong>
+                            <span class="fair-use">(Fair Use: 500/month)</span>
                         </span>
                     </li>
                     <li class="included highlight">
                         <span class="icon">✓</span>
-                        <span class="feature-name">
-                            <strong>Full competitor gaps analysis</strong>
-                            <span class="tooltip-trigger" data-tooltip="competitor-gaps">ⓘ</span>
-                        </span>
+                        <span><strong>Complete competitor gaps analysis</strong> - 5-7 specific market opportunities your competitors are missing</span>
                     </li>
                     <li class="included">
                         <span class="icon">✓</span>
-                        <span>How to actually make money from each gap - pricing models, revenue streams, and positioning strategies competitors missed</span>
+                        <span>What's missing in the market</span>
                     </li>
                     <li class="included">
                         <span class="icon">✓</span>
-                        <span>Execution difficulty ratings</span>
+                        <span>Customer pain points competitors ignore</span>
                     </li>
                     <li class="included">
                         <span class="icon">✓</span>
-                        <span class="feature-name">
-                            PDF/CSV exports
-                            <span class="tooltip-trigger" data-tooltip="exports">ⓘ</span>
-                        </span>
+                        <span>Execution difficulty ratings (Easy/Medium/Hard)</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Revenue opportunity sizing</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>PDF/CSV exports for reporting</span>
                     </li>
                     <li class="included">
                         <span class="icon">✓</span>
@@ -112,14 +609,14 @@
                     </li>
                 </ul>
                 
-                <button class="btn btn-primary" onclick="selectPlan('pro')">
-                    Choose Pro
+                <button class="btn btn-primary" onclick="selectPlan('elite')">
+                    Choose Elite
                 </button>
             </div>
             
-            <!-- ENTERPRISE TIER -->
-            <div class="pricing-card tier-enterprise">
-                <h2>Enterprise</h2>
+            <!-- ORACLE TIER -->
+            <div class="pricing-card tier-oracle">
+                <h2>ORACLE</h2>
                 <div class="price-block">
                     <span class="amount">$99.99</span>
                     <span class="period">/month</span>
@@ -128,82 +625,111 @@
                 <ul class="features-list">
                     <li class="included">
                         <span class="icon">✓</span>
-                        <span>Everything in Pro</span>
+                        <span><strong>Everything in Elite</strong></span>
+                    </li>
+                    <li class="included highlight">
+                        <span class="icon">✓</span>
+                        <span><strong>Business Model Blueprints</strong> - Real monetization strategies for each competitor gap</span>
+                    </li>
+                    <li class="included highlight">
+                        <span class="icon">✓</span>
+                        <span>How to actually make money from each gap - pricing models, revenue streams, positioning strategies competitors missed</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Product/service examples that exploit the gap</span>
+                    </li>
+                    <li class="included">
+                        <span class="icon">✓</span>
+                        <span>Go-to-market recommendations</span>
                     </li>
                     <li class="included highlight">
                         <span class="icon">✓</span>
                         <span>
-                            <strong>Fair Use: 2,000 reports/mo</strong>
+                            <strong>Fair Use: 2,000 analyses/month</strong>
+                            <span class="fair-use">(66/day average)</span>
                         </span>
                     </li>
                     <li class="included">
                         <span class="icon">✓</span>
-                        <span class="feature-name">
-                            White-label PDF reports
-                            <span class="tooltip-trigger" data-tooltip="white-label">ⓘ</span>
-                        </span>
+                        <span>White-label PDF reports (your branding)</span>
                     </li>
                     <li class="included">
                         <span class="icon">✓</span>
-                        <span class="feature-name">
-                            Team accounts (5 users)
-                            <span class="tooltip-trigger" data-tooltip="team">ⓘ</span>
-                        </span>
+                        <span>Team accounts (5 users included)</span>
                     </li>
                     <li class="included">
                         <span class="icon">✓</span>
-                        <span>API access</span>
+                        <span>API access for integrations</span>
                     </li>
                     <li class="included">
                         <span class="icon">✓</span>
-                        <span>Priority support</span>
+                        <span>Priority support (2-hour response)</span>
                     </li>
                     <li class="included">
                         <span class="icon">✓</span>
-                        <span>Custom integrations</span>
+                        <span>Custom integrations available</span>
                     </li>
                 </ul>
                 
-                <button class="btn btn-primary" onclick="selectPlan('enterprise')">
-                    Choose Enterprise
+                <button class="btn btn-primary" onclick="selectPlan('oracle')">
+                    Choose Oracle
                 </button>
             </div>
         </div>
+
+        <div class="geometric-accent"></div>
 
         <!-- FAQ SECTION -->
         <div class="faq-section">
             <h2>Frequently Asked Questions</h2>
             
             <div class="faq-item">
-                <h3>What counts as a "search" or "analysis"?</h3>
-                <p>Each time you submit a niche for analysis, that counts as one search. You can analyze as many niches as your plan allows per month.</p>
+                <h3>What counts as an "analysis"?</h3>
+                <p>Each time you submit a niche for analysis, that counts as one search. Elite gets unlimited (fair use 500/month), Oracle gets 2,000/month. You can re-analyze the same niche multiple times if needed.</p>
             </div>
             
             <div class="faq-item">
                 <h3>What is "Fair Use" and why do you have it?</h3>
-                <p>Fair Use limits prevent abuse while giving you generous access. Pro gets 500 analyses/month (16/day average), Enterprise gets 2,000/month (66/day average). If you legitimately need more, contact us for a custom plan.</p>
+                <p>Fair Use limits prevent abuse while giving you generous access. Elite averages 16 analyses/day, Oracle averages 66/day. If you legitimately need more for agency use, contact us for enterprise pricing.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>What's the difference between Elite and Oracle?</h3>
+                <p>Elite shows you WHAT gaps exist in the market. Oracle shows you HOW TO MAKE MONEY from those gaps - with specific pricing models, revenue streams, and positioning strategies. Oracle is for people ready to execute, not just research.</p>
             </div>
             
             <div class="faq-item">
                 <h3>What's included in competitor gaps analysis?</h3>
-                <p>We identify 5-7 specific opportunities your competitors are missing, including what's missing in the market, customer pain points, execution difficulty ratings, revenue opportunity sizing, and actionable recommendations.</p>
+                <p>We identify 5-7 specific opportunities your competitors are missing. Elite tier shows what's missing, pain points, and opportunity sizing. Oracle tier adds detailed business models showing exactly how to monetize each gap.</p>
             </div>
             
             <div class="faq-item">
                 <h3>Can I upgrade or downgrade anytime?</h3>
-                <p>Yes! Upgrade instantly to access more features. Downgrades take effect at the end of your current billing period.</p>
+                <p>Yes! Upgrade instantly to access more features. Downgrades take effect at the end of your current billing period. No penalties for changing tiers.</p>
             </div>
             
             <div class="faq-item">
                 <h3>Do you offer refunds?</h3>
-                <p>We offer a 7-day money-back guarantee. If you're not satisfied with Scout-Faire within the first week, contact us for a full refund.</p>
+                <p>We offer a 7-day money-back guarantee on paid tiers. If Scout-Faire doesn't help you find profitable market opportunities within the first week, contact us for a full refund - no questions asked.</p>
             </div>
         </div>
-    </div>
 
-    <!-- Tooltip Script -->
-    <script src="pricing.js"></script>
-    
+        <div class="pattern-divider"></div>
+
+        <!-- Branding Footer -->
+        <div class="branding-footer">
+            <img src="2.png" alt="Scout-Faire Logo" class="logo-large">
+            <div class="product-name">SCOUT-FAIRE</div>
+            <div class="arrow">↓</div>
+            <div class="powered-by">Powered by</div>
+            <div class="arrow">↓</div>
+            <div class="ai-engine">THE TENDER<span class="trademark">™</span> MOE 120B PROMISE</div>
+        </div>
+    </div>
+    <!-- End Content Wrapper -->
+</div>
+
     <!-- Checkout Script -->
     <script>
       async function selectPlan(tier) {
