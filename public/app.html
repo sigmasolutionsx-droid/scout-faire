@@ -645,12 +645,16 @@
 
         // Check auth on page load
         window.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('auth_token');
-            
-            if (!token) {
-                window.location.href = 'login.html';
-                return;
-            }
+    const token = localStorage.getItem('auth_token');
+    
+    if (!token) {
+        // window.location.href = 'login.html';  // ← COMMENTED OUT
+        // return;
+        // TEMP: Set fake user data for testing
+        userData = { id: 'test', email: 'test@example.com', tier: 'oracle', searches_remaining: 999 };
+        updateUserDisplay();
+        return;
+    }
 
             try {
                 const response = await fetch(`${API_BASE}/api/auth/me`, {
