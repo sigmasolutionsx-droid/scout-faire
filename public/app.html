@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scout-Faire - Niche Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c1810 0%, #1a0f0a 100%);
+            color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid rgba(200, 16, 46, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #c8102e 0%, #003f87 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+        }
+
+        .logo p {
+            color: #d4a574;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-email {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .tier-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .tier-free {
+            background: rgba(102, 102, 102, 0.3);
+            border: 2px solid #666;
+            color: #999;
+        }
+
+        .tier-elite {
+            background: rgba(200, 16, 46, 0.3);
+            border: 2px solid #c8102e;
+            color: #ff6b6b;
+        }
+
+        .tier-oracle {
+            background: rgba(0, 63, 135, 0.3);
+            border: 2px solid #003f87;
+            color: #5b9cff;
+        }
+
+        .search-counter {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #d4a574;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Analysis Form */
+        .analysis-section {
+            background: rgba(30, 20, 15, 0.8);
+            border: 3px solid #666;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #d4a574;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .section-subtitle {
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #d4a574;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 18px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #666;
+            border-radius: 8px;
+            color: #f5f5f5;
+            font-size: 1.1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #c8102e;
+        }
+
+        input[type="text"]::placeholder {
+            color: #888;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #c8102e 0%, #8b0a1f 100%);
+            color: white;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .analyze-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #d11635 0%, #9c0b23 100%);
+            transform: scale(1.02);
+            box-shadow: 0 6px 25px rgba(200, 16, 46, 0.5);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Results Section */
+        .results-section {
+            background: rgba(30, 20, 15, 0.8);
+            border: 3px solid #666;
+            border-radius: 12px;
+            padding: 40px;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .niche-title {
+            font-size: 1.8rem;
+            color: #d4a574;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .score-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #666;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .score-label {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #d4a574;
+        }
+
+        .analysis-content {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #555;
+            border-radius: 8px;
+            padding: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+        }
+
+        /* Upgrade Prompt */
+        .upgrade-prompt {
+            background: linear-gradient(135deg, rgba(200, 16, 46, 0.2) 0%, rgba(0, 63, 135, 0.2) 100%);
+            border: 2px solid #c8102e;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .upgrade-prompt h3 {
+            font-size: 1.5rem;
+            color: #d4a574;
+            margin-bottom: 15px;
+        }
+
+        .upgrade-prompt p {
+            color: #ccc;
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        .upgrade-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #003f87 0%, #002855 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .upgrade-btn:hover {
+            background: linear-gradient(135deg, #004a9f 0%, #003366 100%);
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(0, 63, 135, 0.5);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #d4a574;
+        }
+
+        .spinner {
+            border: 4px solid rgba(212, 165, 116, 0.2);
+            border-top: 4px solid #d4a574;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error Message */
+        .error-message {
+            background: rgba(200, 16, 46, 0.2);
+            border: 2px solid #c8102e;
+            color: #ff6b6b;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            background: none;
+            border: 1px solid #666;
+            color: #aaa;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            border-color: #c8102e;
+            color: #c8102e;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .user-info {
+                text-align: center;
+            }
+
+            .analysis-section, .results-section {
+                padding: 25px;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <h1>SCOUT-FAIRE</h1>
+            <p>ANALYTICS INTELLIGENT</p>
+        </div>
+        <div class="user-info">
+            <div class="user-email" id="user-email">Loading...</div>
+            <div>
+                <span class="tier-badge" id="tier-badge">FREE</span>
+            </div>
+            <div class="search-counter" id="search-counter">5 searches remaining</div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Analysis Form -->
+        <div class="analysis-section">
+            <h2 class="section-title">Analyze Your Niche</h2>
+            <p class="section-subtitle">Enter a niche market to get instant competitive intelligence</p>
+
+            <div id="error-message" class="error-message"></div>
+
+            <form id="analysis-form">
+                <div class="input-group">
+                    <label for="niche-input">Niche Keyword or Market</label>
+                    <input 
+                        type="text" 
+                        id="niche-input" 
+                        name="niche" 
+                        placeholder="e.g., organic dog food, eco-friendly yoga mats, vintage watches"
+                        required
+                    >
+                </div>
+                <button type="submit" class="analyze-btn" id="analyze-btn">
+                    Analyze Niche
+                </button>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="results-section">
+            <h3 class="niche-title" id="results-niche"></h3>
+            
+            <div class="scores-grid" id="scores-grid"></div>
+            
+            <div class="analysis-content" id="analysis-content"></div>
+            
+            <div class="upgrade-prompt" id="upgrade-prompt" style="display: none;">
+                <h3>Want More Insights?</h3>
+                <p id="upgrade-message"></p>
+                <a href="pricing.html" class="upgrade-btn">View Upgrade Options</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let userData = null;
+        const API_BASE = 'https://amatuedda-backend-production.up.railway.app';
+
+        // Check auth on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('auth_token');
+            
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    localStorage.removeItem('auth_token');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                userData = data.user;
+                updateUserDisplay();
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                window.location.href = 'login.html';
+            }
+        });
+
+        function updateUserDisplay() {
+            document.getElementById('user-email').textContent = userData.email;
+            
+            const tierBadge = document.getElementById('tier-badge');
+            tierBadge.textContent = userData.tier.toUpperCase();
+            tierBadge.className = `tier-badge tier-${userData.tier}`;
+            
+            const counter = document.getElementById('search-counter');
+            if (userData.tier === 'free') {
+                counter.textContent = `${userData.searches_remaining} of 5 searches remaining`;
+            } else {
+                counter.textContent = `Unlimited searches (${userData.tier.toUpperCase()} tier)`;
+            }
+        }
+
+        // Handle analysis form submission
+        document.getElementById('analysis-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const niche = document.getElementById('niche-input').value.trim();
+            const errorMessage = document.getElementById('error-message');
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const resultsSection = document.getElementById('results-section');
+
+            // Clear previous errors
+            errorMessage.classList.remove('show');
+            errorMessage.textContent = '';
+
+            // Hide previous results
+            resultsSection.classList.remove('show');
+
+            // Show loading state
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = 'Analyzing...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/analysis/niche`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        niche: niche,
+                        userId: userData.id
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    if (data.error === 'limit_reached') {
+                        showUpgradePrompt();
+                        throw new Error(data.message || 'Monthly search limit reached');
+                    }
+                    throw new Error(data.error || 'Analysis failed');
+                }
+
+                // Update search counter
+                userData.searches_remaining = data.usage.searches_remaining;
+                updateUserDisplay();
+
+                // Show results
+                displayResults(niche, data);
+
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.classList.add('show');
+            } finally {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = 'Analyze Niche';
+            }
+        });
+
+        function displayResults(niche, data) {
+            const resultsSection = document.getElementById('results-section');
+            const resultsNiche = document.getElementById('results-niche');
+            const scoresGrid = document.getElementById('scores-grid');
+            const analysisContent = document.getElementById('analysis-content');
+
+            // Set niche title
+            resultsNiche.textContent = niche.toUpperCase();
+
+            // Display scores
+            scoresGrid.innerHTML = '';
+            const scores = data.scores || {};
+            
+            if (scores.market !== null) {
+                scoresGrid.innerHTML += createScoreCard('Market Demand', scores.market);
+            }
+            if (scores.competition !== null) {
+                scoresGrid.innerHTML += createScoreCard('Competition', scores.competition);
+            }
+            if (scores.profitability !== null) {
+                scoresGrid.innerHTML += createScoreCard('Profitability', scores.profitability);
+            }
+            if (scores.overall !== null) {
+                scoresGrid.innerHTML += createScoreCard('Overall Opportunity', scores.overall);
+            }
+
+            // Display analysis
+            analysisContent.textContent = data.analysis;
+
+            // Show upgrade prompt if free tier
+            if (userData.tier === 'free') {
+                showTierUpgradeMessage('free');
+            } else if (userData.tier === 'elite') {
+                showTierUpgradeMessage('elite');
+            }
+
+            // Show results
+            resultsSection.classList.add('show');
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function createScoreCard(label, value) {
+            return `
+                <div class="score-card">
+                    <div class="score-label">${label}</div>
+                    <div class="score-value">${value}/10</div>
+                </div>
+            `;
+        }
+
+        function showTierUpgradeMessage(tier) {
+            const upgradePrompt = document.getElementById('upgrade-prompt');
+            const upgradeMessage = document.getElementById('upgrade-message');
+
+            if (tier === 'free') {
+                upgradeMessage.textContent = 'Upgrade to ELITE to see competitor gaps and opportunities, or ORACLE for full monetization blueprints.';
+                upgradePrompt.style.display = 'block';
+            } else if (tier === 'elite') {
+                upgradeMessage.textContent = 'Upgrade to ORACLE to get detailed monetization blueprints showing exactly how to profit from each gap.';
+                upgradePrompt.style.display = 'block';
+            }
+        }
+
+        function showUpgradePrompt() {
+            const upgradePrompt = document.getElementById('upgrade-prompt');
+            const upgradeMessage = document.getElementById('upgrade-message');
+            upgradeMessage.textContent = "You've used all 5 free searches this month. Upgrade for unlimited analyses!";
+            upgradePrompt.style.display = 'block';
+        }
+
+        function logout() {
+            localStorage.removeItem('auth_token');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
