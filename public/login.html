@@ -100,7 +100,7 @@
             margin-top: 10px;
         }
 
-        .btn:hover {
+        .btn:hover:not(:disabled) {
             background: linear-gradient(135deg, #d11635 0%, #9c0b23 100%);
             transform: scale(1.02);
             box-shadow: 0 6px 25px rgba(200, 16, 46, 0.5);
@@ -122,6 +122,20 @@
         }
 
         .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: rgba(74, 222, 128, 0.2);
+            border: 1px solid #4ade80;
+            color: #4ade80;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
             display: block;
         }
 
@@ -167,6 +181,7 @@
         </div>
 
         <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
 
         <form id="login-form">
             <div class="form-group">
@@ -206,26 +221,32 @@
     </div>
 
     <script>
+        const API_BASE = 'https://amatuedda-backend-production.up.railway.app';
         const form = document.getElementById('login-form');
         const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
         const submitBtn = document.getElementById('login-btn');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
-            // Clear previous errors
+            // Clear previous messages
             errorMessage.classList.remove('show');
             errorMessage.textContent = '';
+            successMessage.classList.remove('show');
+            successMessage.textContent = '';
 
             // Disable button
             submitBtn.disabled = true;
             submitBtn.textContent = 'Logging In...';
 
             try {
-                const response = await fetch('https://amatuedda-backend-production.up.railway.app/api/auth/login', {
+                console.log('Sending login request...');
+                
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -236,26 +257,50 @@
                     })
                 });
 
+                console.log('Response status:', response.status);
                 const data = await response.json();
+                console.log('Response data:', data);
 
-                if (data.success) {
-                    // Store auth token
-                    if (data.token) {
-                        localStorage.setItem('auth_token', data.token);
-                    }
+                if (data.success && data.token) {
+                    // CRITICAL: Save token FIRST, then show success, then redirect
+                    console.log('Saving token:', data.token.substring(0, 20) + '...');
+                    localStorage.setItem('auth_token', data.token);
                     
-                    // Redirect to Scout-Faire app
-                    window.location.href = 'app.html';
+                    // Verify token was saved
+                    const savedToken = localStorage.getItem('auth_token');
+                    console.log('Token saved successfully:', savedToken ? 'YES' : 'NO');
+                    
+                    // Show success message
+                    successMessage.textContent = 'Login successful! Redirecting...';
+                    successMessage.classList.add('show');
+                    
+                    // Wait a moment to ensure storage is complete, then redirect
+                    setTimeout(() => {
+                        console.log('Redirecting to app.html...');
+                        window.location.href = 'app.html';
+                    }, 500);
+                    
                 } else {
-                    throw new Error(data.error || 'Login failed');
+                    throw new Error(data.error || 'Login failed - no token received');
                 }
             } catch (error) {
+                console.error('Login error:', error);
                 errorMessage.textContent = error.message || 'An error occurred. Please try again.';
                 errorMessage.classList.add('show');
                 
                 // Re-enable button
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Log In';
+            }
+        });
+
+        // Debug: Check if we came from a redirect with an error
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            if (error) {
+                errorMessage.textContent = 'Session expired or invalid. Please log in again.';
+                errorMessage.classList.add('show');
             }
         });
     </script>
