@@ -228,8 +228,238 @@
             border-radius: 8px;
             padding: 30px;
             line-height: 1.8;
-            white-space: pre-wrap;
-            font-size: 0.95rem;
+        }
+
+        /* Analysis Formatting Styles */
+        .analysis-content .analysis-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #666;
+        }
+
+        .analysis-content .niche-name {
+            font-size: 2rem;
+            color: #d4a574;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .analysis-content .tier-indicator {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .analysis-content .tier-free {
+            background: rgba(102, 102, 102, 0.3);
+            border: 2px solid #666;
+            color: #999;
+        }
+
+        .analysis-content .tier-elite {
+            background: rgba(200, 16, 46, 0.3);
+            border: 2px solid #c8102e;
+            color: #ff6b6b;
+        }
+
+        .analysis-content .tier-oracle {
+            background: rgba(0, 63, 135, 0.3);
+            border: 2px solid #003f87;
+            color: #5b9cff;
+        }
+
+        .analysis-content .section {
+            margin-bottom: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .analysis-content .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #666;
+        }
+
+        .analysis-content .section-header h3 {
+            font-size: 1.5rem;
+            color: #d4a574;
+            margin: 0;
+        }
+
+        .analysis-content .score-badge {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border: 2px solid;
+        }
+
+        .analysis-content .elite-badge,
+        .analysis-content .oracle-badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .analysis-content .elite-badge {
+            background: rgba(200, 16, 46, 0.2);
+            border: 1px solid #c8102e;
+            color: #ff6b6b;
+        }
+
+        .analysis-content .oracle-badge {
+            background: rgba(0, 63, 135, 0.2);
+            border: 1px solid #003f87;
+            color: #5b9cff;
+        }
+
+        /* Gap Cards */
+        .analysis-content .gap-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #555;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .analysis-content .gap-card:hover {
+            border-color: #c8102e;
+            transform: translateX(5px);
+        }
+
+        .analysis-content .gap-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .analysis-content .gap-number {
+            background: #d4a574;
+            color: #1a0f0a;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .analysis-content .gap-header h4 {
+            flex: 1;
+            margin: 0;
+            color: #d4a574;
+            font-size: 1.2rem;
+        }
+
+        .analysis-content .difficulty-badge {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid;
+        }
+
+        .analysis-content .gap-details {
+            padding-left: 50px;
+        }
+
+        .analysis-content .gap-item {
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+
+        .analysis-content .gap-item strong {
+            color: #d4a574;
+        }
+
+        /* Monetization Blueprint Cards */
+        .analysis-content .blueprint-card {
+            background: linear-gradient(135deg, rgba(0, 63, 135, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border: 2px solid #003f87;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .analysis-content .blueprint-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #003f87;
+        }
+
+        .analysis-content .blueprint-header h4 {
+            margin: 0;
+            color: #5b9cff;
+            font-size: 1.3rem;
+        }
+
+        .analysis-content .blueprint-content {
+            color: #ccc;
+        }
+
+        /* Tables */
+        .analysis-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .analysis-content table th {
+            background: rgba(212, 165, 116, 0.2);
+            color: #d4a574;
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #666;
+            font-weight: bold;
+        }
+
+        .analysis-content table td {
+            padding: 12px;
+            border: 1px solid #555;
+            color: #ccc;
+        }
+
+        .analysis-content table tr:hover {
+            background: rgba(212, 165, 116, 0.1);
+        }
+
+        /* Typography */
+        .analysis-content p {
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+        .analysis-content strong {
+            color: #d4a574;
+        }
+
+        .analysis-content em {
+            color: #aaa;
+        }
+
+        .analysis-content ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .analysis-content li {
+            margin-bottom: 8px;
+            color: #ccc;
         }
 
         /* Upgrade Prompt */
@@ -544,8 +774,8 @@
                 scoresGrid.innerHTML += createScoreCard('Overall Opportunity', scores.overall);
             }
 
-            // Display analysis
-            analysisContent.textContent = data.analysis;
+            // Display analysis (now as HTML)
+            analysisContent.innerHTML = data.analysis;
 
             // Show upgrade prompt if free tier
             if (userData.tier === 'free') {
