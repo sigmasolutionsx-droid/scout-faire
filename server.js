@@ -288,15 +288,19 @@ async function startServer() {
 
             const keywordList = keywords.split(',').map(k => k.trim()).filter(k => k);
 
-            const response = await fetch('https://api.anthropic.com/v1/messages', {
+            const groqApiKey = process.env.GROQ_API_KEY;
+            if (!groqApiKey) {
+                throw new Error('GROQ_API_KEY is not configured');
+            }
+
+            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': process.env.ANTHROPIC_API_KEY,
-                    'anthropic-version': '2023-06-01'
+                    'Authorization': `Bearer ${groqApiKey}`
                 },
                 body: JSON.stringify({
-                    model: 'claude-sonnet-4-20250514',
+                    model: 'llama-3.3-70b-versatile',
                     max_tokens: 4000,
                     messages: [{
                         role: 'user',
@@ -326,11 +330,12 @@ Provide realistic, data-driven analysis based on current market trends.`
             });
 
             if (!response.ok) {
-                throw new Error(`Claude API error: ${response.status}`);
+                const errText = await response.text();
+                throw new Error(`Groq API error: ${response.status} - ${errText}`);
             }
 
             const data = await response.json();
-            const analysisText = data.content[0].text;
+            const analysisText = data.choices[0].message.content;
             const analysis = JSON.parse(analysisText);
 
             const user = await storage.getUser(userId);
