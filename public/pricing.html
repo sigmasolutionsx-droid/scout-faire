@@ -1,220 +1,851 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pricing - Scout-Faire</title>
-    <link rel="stylesheet" href="pricing.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — Scout-Faire</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+    :root {
+      --navy:   #0a0f1e;
+      --navy2:  #111827;
+      --gold:   #c9a84c;
+      --gold2:  #e8c96d;
+      --red:    #c8102e;
+      --red2:   #e8192e;
+      --blue:   #003f87;
+      --white:  #f5f0e8;
+      --grey:   #6b7280;
+      --card:   rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,15,30,0.92);
+      backdrop-filter: blur(12px);
+    }
+    header img { height: 52px; }
+    .header-nav { display: flex; gap: 32px; align-items: center; }
+    .header-nav a { color: rgba(245,240,232,0.7); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .header-nav a:hover { color: var(--gold); }
+    .header-btn {
+      background: var(--red);
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    .header-btn:hover { background: var(--red2); color: #fff; }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 60px;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .founders-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 30px;
+      padding: 8px 20px;
+      font-size: 0.82rem;
+      color: var(--gold);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .founders-banner span { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--white) 0%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: rgba(245,240,232,0.6);
+      max-width: 560px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+
+    /* ── Pricing Grid ── */
+    .pricing-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media(max-width: 900px) {
+      .pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 28px;
+      position: relative;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover { transform: translateY(-4px); }
+
+    .card-free   { border-color: rgba(107,114,128,0.3); }
+    .card-founders {
+      border-color: rgba(201,168,76,0.4);
+      background: linear-gradient(135deg, rgba(201,168,76,0.06) 0%, rgba(10,15,30,0.8) 100%);
+      box-shadow: 0 0 40px rgba(201,168,76,0.08);
+    }
+    .card-enterprise {
+      border-color: rgba(0,63,135,0.4);
+      background: linear-gradient(135deg, rgba(0,63,135,0.08) 0%, rgba(10,15,30,0.8) 100%);
+      box-shadow: 0 0 40px rgba(0,63,135,0.1);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      padding: 5px 18px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .badge-founders { background: linear-gradient(135deg, var(--gold), #a07830); color: #000; }
+    .badge-enterprise { background: linear-gradient(135deg, var(--blue), #001f44); color: #fff; }
+
+    .card-label {
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 8px;
+    }
+    .card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .card-free .card-name   { color: var(--white); }
+    .card-founders .card-name { color: var(--gold); }
+    .card-enterprise .card-name { color: #6ba3f5; }
+
+    .card-tagline {
+      font-size: 0.85rem;
+      color: rgba(245,240,232,0.5);
+      margin-bottom: 24px;
+      min-height: 36px;
+    }
+
+    /* Price */
+    .price-block { margin-bottom: 8px; }
+    .price-was {
+      font-size: 0.85rem;
+      color: var(--grey);
+      text-decoration: line-through;
+      margin-bottom: 2px;
+    }
+    .price-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .card-free .price-amount   { color: var(--white); }
+    .card-founders .price-amount { color: var(--gold); }
+    .card-enterprise .price-amount { color: #6ba3f5; }
+    .price-period {
+      font-size: 0.9rem;
+      color: var(--grey);
+      margin-bottom: 4px;
+    }
+    .price-equiv {
+      font-size: 0.8rem;
+      color: var(--gold);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    /* Founders callout */
+    .founders-callout {
+      background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.04));
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      font-size: 0.83rem;
+      color: var(--gold2);
+      line-height: 1.5;
+    }
+    .founders-callout strong { display: block; margin-bottom: 3px; font-size: 0.88rem; }
+
+    /* Spots counter */
+    .spots-counter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      font-size: 0.82rem;
+    }
+    .spots-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .spots-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--red));
+    }
+    .spots-text { color: var(--gold); white-space: nowrap; font-weight: 600; }
+
+    /* Features */
+    .features-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+    .features-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--grey);
+      margin-bottom: 14px;
+    }
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 0.875rem;
+      line-height: 1.4;
+      color: rgba(245,240,232,0.85);
+    }
+    .feature-icon { flex-shrink: 0; font-size: 0.9rem; margin-top: 1px; }
+    .feature.locked { opacity: 0.4; }
+    .feature.highlight { color: var(--white); font-weight: 500; }
+    .feature-note { font-size: 0.75rem; color: var(--grey); margin-top: 1px; }
+
+    /* Buttons */
+    .btn-card {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      margin-top: 24px;
+      transition: all 0.2s;
+    }
+    .btn-free {
+      background: rgba(255,255,255,0.08);
+      color: var(--white);
+      border: 1px solid var(--border);
+    }
+    .btn-free:hover { background: rgba(255,255,255,0.14); }
+    .btn-founders {
+      background: linear-gradient(135deg, var(--gold) 0%, #a07830 100%);
+      color: #000;
+      box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+    }
+    .btn-founders:hover { box-shadow: 0 6px 30px rgba(201,168,76,0.5); transform: scale(1.02); }
+    .btn-enterprise {
+      background: linear-gradient(135deg, var(--blue) 0%, #001f44 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(0,63,135,0.3);
+    }
+    .btn-enterprise:hover { box-shadow: 0 6px 30px rgba(0,63,135,0.5); transform: scale(1.02); }
+    .btn-sub { text-align: center; font-size: 0.78rem; color: var(--grey); margin-top: 10px; }
+
+    /* ── Comparison Chart ── */
+    .chart-section {
+      max-width: 1100px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+    .chart-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 8px;
+      color: var(--white);
+    }
+    .chart-sub {
+      text-align: center;
+      color: var(--grey);
+      font-size: 0.9rem;
+      margin-bottom: 40px;
+    }
+
+    .chart-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .chart-table thead tr {
+      background: rgba(255,255,255,0.03);
+    }
+    .chart-table th {
+      padding: 16px 20px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--border);
+    }
+    .chart-table th:first-child { text-align: left; color: var(--grey); }
+    .th-free   { color: var(--grey); }
+    .th-founders { color: var(--gold); }
+    .th-enterprise { color: #6ba3f5; }
+
+    .chart-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .chart-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+    .chart-table tbody tr.group-header {
+      background: rgba(255,255,255,0.03);
+    }
+    .chart-table td {
+      padding: 13px 20px;
+      text-align: center;
+      color: rgba(245,240,232,0.75);
+    }
+    .chart-table td:first-child {
+      text-align: left;
+      color: var(--white);
+      font-weight: 500;
+    }
+    .group-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .check-yes { color: #4ade80; font-size: 1.1rem; }
+    .check-no  { color: rgba(255,255,255,0.2); font-size: 1rem; }
+    .check-partial { color: var(--gold); font-size: 0.8rem; font-weight: 600; }
+
+    /* ── Coming Soon ── */
+    .coming-section {
+      max-width: 800px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .coming-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+    .coming-sub { color: var(--grey); margin-bottom: 40px; font-size: 0.9rem; }
+    .coming-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .coming-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: left;
+    }
+    .coming-card-name {
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+    .coming-card-desc {
+      font-size: 0.82rem;
+      color: rgba(245,240,232,0.55);
+      line-height: 1.5;
+    }
+    .coming-card-badge {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(0,63,135,0.3);
+      color: #6ba3f5;
+      font-weight: 600;
+    }
+    .coming-note {
+      background: linear-gradient(135deg, rgba(201,168,76,0.06), rgba(0,63,135,0.06));
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 12px;
+      padding: 24px 32px;
+      font-size: 0.9rem;
+      color: rgba(245,240,232,0.7);
+      line-height: 1.7;
+    }
+    .coming-note strong { color: var(--gold); }
+    .value-vs-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--grey); margin-bottom: 4px; }
+    .value-vs-price { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; }
+    .value-vs-price.old { color: var(--red); text-decoration: line-through; }
+    .value-vs-price.new { color: var(--gold); }
+    .value-vs-divider { font-size: 1.5rem; color: var(--grey); }
+    .value-vs-saving {
+      font-size: 0.85rem;
+      color: #4ade80;
+      margin-top: 4px;
+    }
+
+    /* ── FAQ ── */
+    .faq-section {
+      max-width: 720px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+    .faq-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+    }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+    .faq-a {
+      color: rgba(245,240,232,0.65);
+      line-height: 1.7;
+      font-size: 0.9rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 48px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--grey);
+      font-size: 0.85rem;
+    }
+    footer img { height: 36px; margin-bottom: 16px; opacity: 0.6; }
+    footer p { margin-top: 8px; }
+
+    /* Gold divider */
+    .gold-divider {
+      max-width: 1100px;
+      margin: 0 auto 60px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .gold-divider::before, .gold-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
+    }
+    .gold-divider span {
+      color: var(--gold);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+  </style>
 </head>
 <body>
-    <div class="pricing-section">
-        <div class="pricing-header">
-            <h1>Choose Your Plan</h1>
-            <p class="subtitle">Find your competitive advantage in 30 seconds</p>
+
+  <header>
+    <img src="logo.png" alt="Scout-Faire">
+    <nav class="header-nav">
+      <a href="index.html">Home</a>
+      <a href="#faq">FAQ</a>
+      <a href="login.html" class="header-btn">Sign In</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="founders-banner">
+      <span></span>
+      Founders Launch — Limited Time
+    </div>
+    <h1>Invest in Your Business.<br>Lock In Forever.</h1>
+    <p>Scout-Faire is growing fast. The platform keeps getting bigger — new tools, new AI, new capabilities. Founders lock in today's price and get everything that comes next.</p>
+  </section>
+
+  <!-- Pricing Cards -->
+  <div class="pricing-wrap">
+    <div class="pricing-grid">
+
+      <!-- FREE -->
+      <div class="card card-free">
+        <div class="card-label">Get Started</div>
+        <div class="card-name">Free</div>
+        <div class="card-tagline">Find out if your niche is worth pursuing — fast.</div>
+        <div class="price-block">
+          <div class="price-amount">$0</div>
+          <div class="price-period">forever free</div>
         </div>
-        
-        <div class="pricing-grid">
-            
-            <!-- FREE TIER -->
-            <div class="pricing-card tier-free">
-                <h2>Free</h2>
-                <div class="price-block">
-                    <span class="amount">$0</span>
-                    <span class="period">/month</span>
-                </div>
-                
-                <ul class="features-list">
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>5 analyses per month</span>
-                    </li>
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>Basic market scores</span>
-                    </li>
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>Overall opportunity assessment</span>
-                    </li>
-                    <li class="locked">
-                        <span class="icon">🔒</span>
-                        <span class="feature-name">
-                            Competitor gaps analysis
-                            <span class="tooltip-trigger" data-tooltip="competitor-gaps">ⓘ</span>
-                        </span>
-                    </li>
-                    <li class="locked">
-                        <span class="icon">🔒</span>
-                        <span class="feature-name">
-                            PDF/CSV exports
-                            <span class="tooltip-trigger" data-tooltip="exports">ⓘ</span>
-                        </span>
-                    </li>
-                    <li class="locked">
-                        <span class="icon">🔒</span>
-                        <span>Search history</span>
-                    </li>
-                </ul>
-                
-                <button class="btn btn-secondary" onclick="window.location='/signup'">Get Started Free</button>
-                <p class="no-cc">No credit card required</p>
-            </div>
-            
-            <!-- PRO TIER (FEATURED) -->
-            <div class="pricing-card tier-pro featured">
-                <div class="badge">⭐ MOST POPULAR</div>
-                
-                <h2>Pro</h2>
-                <div class="price-block">
-                    <span class="amount">$19.99</span>
-                    <span class="period">/month</span>
-                </div>
-                
-                <div class="value-prop">
-                    Pays for itself if you find just one $20/mo revenue gap
-                </div>
-                
-                <ul class="features-list">
-                    <li class="included highlight">
-                        <span class="icon">✓</span>
-                        <span>
-                            <strong>Unlimited</strong> analyses
-                            <span class="fair-use">(Fair Use: 500/mo)</span>
-                        </span>
-                    </li>
-                    <li class="included highlight">
-                        <span class="icon">✓</span>
-                        <span class="feature-name">
-                            <strong>Full competitor gaps analysis</strong>
-                            <span class="tooltip-trigger" data-tooltip="competitor-gaps">ⓘ</span>
-                        </span>
-                    </li>
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>Detailed monetization strategies</span>
-                    </li>
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>Strategic recommendations</span>
-                    </li>
-                    <li class="included highlight">
-                        <span class="icon">✓</span>
-                        <span class="feature-name">
-                            <strong>PDF/CSV exports</strong>
-                            <span class="tooltip-trigger" data-tooltip="exports">ⓘ</span>
-                        </span>
-                    </li>
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>90-day search history</span>
-                    </li>
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>Email support</span>
-                    </li>
-                </ul>
-                
-                <button class="btn btn-primary" onclick="window.location='/start-trial'">Start 7-Day Free Trial</button>
-                <p class="guarantee">Cancel anytime. First week free.</p>
-            </div>
-            
-            <!-- ENTERPRISE TIER -->
-            <div class="pricing-card tier-enterprise">
-                <h2>Enterprise</h2>
-                <div class="price-block">
-                    <span class="amount">$99.99</span>
-                    <span class="period">/month</span>
-                </div>
-                
-                <ul class="features-list">
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>Everything in Pro</span>
-                    </li>
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>Fair Use: 2,000 reports/mo</span>
-                    </li>
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>White-label PDF reports</span>
-                    </li>
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>Team accounts (5 users)</span>
-                    </li>
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>API access (100 req/day)</span>
-                    </li>
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>Priority analysis queue</span>
-                    </li>
-                    <li class="included">
-                        <span class="icon">✓</span>
-                        <span>Dedicated account manager</span>
-                    </li>
-                </ul>
-                
-                <button class="btn btn-secondary" onclick="window.location='/contact'">Schedule Demo</button>
-            </div>
-            
+        <div class="features-divider"></div>
+        <div class="features-label">What you get</div>
+        <div class="feature highlight">
+          <span class="feature-icon">✓</span>
+          <div>Is this niche profitable? Yes or No — with a plain-English reason why.</div>
         </div>
-        
-        <!-- FAQ SECTION -->
-        <div class="faq-section">
-            <h2>Frequently Asked Questions</h2>
-            
-            <div class="faq-item">
-                <h3>What does "Fair Use: 500/mo" mean?</h3>
-                <p>It means unlimited for normal business use - up to 500 comprehensive analyses per month. This generous limit protects our service from automated abuse while giving you more than enough capacity for serious market research. 99% of users never hit this limit.</p>
-            </div>
-            
-            <div class="faq-item">
-                <h3>What are "Competitor Gaps"?</h3>
-                <p>Our AI identifies 5-7 specific unmet needs in your niche that existing competitors are missing. Each gap includes what's missing, customer pain points, revenue opportunity, and execution difficulty - giving you a clear roadmap to differentiate your business.</p>
-            </div>
-            
-            <div class="faq-item">
-                <h3>Can I cancel anytime?</h3>
-                <p>Yes! No contracts, no commitments. Cancel with one click from your account dashboard.</p>
-            </div>
-            
-            <div class="faq-item">
-                <h3>Do I need a credit card for the free trial?</h3>
-                <p>No credit card needed for the Free plan (5 analyses/month). The Pro 7-day trial does require a card, but you won't be charged until the trial ends.</p>
-            </div>
+        <div class="feature highlight">
+          <span class="feature-icon">✓</span>
+          <div>Profitability score + trend + competition level</div>
         </div>
+        <div class="feature highlight">
+          <span class="feature-icon">✓</span>
+          <div>The single most important thing to do next</div>
+        </div>
+        <div class="feature locked">
+          <span class="feature-icon">🔒</span>
+          <div>Competitor gap analysis</div>
+        </div>
+        <div class="feature locked">
+          <span class="feature-icon">🔒</span>
+          <div>30-day execution plan</div>
+        </div>
+        <div class="feature locked">
+          <span class="feature-icon">🔒</span>
+          <div>Scout AI coach</div>
+        </div>
+        <div class="feature locked">
+          <span class="feature-icon">🔒</span>
+          <div>Business plan PDF</div>
+        </div>
+        <button class="btn-card btn-free" onclick="window.location.href='signup.html'">Start Free — No Card Needed</button>
+      </div>
+
+      <!-- FOUNDERS PACK -->
+      <div class="card card-founders">
+        <div class="card-badge badge-founders">⭐ Founders Special — 50 Spots Only</div>
+        <div class="card-label" style="margin-top:10px">Most Popular</div>
+        <div class="card-name">Founders Pack</div>
+        <div class="card-tagline">Pro + Scout Monthly combined. First 30 days on full Enterprise — on us.</div>
+        <div class="price-block">
+          <div class="price-was">~~$114.98/mo combined~~</div>
+          <div class="price-amount">$49.98</div>
+          <div class="price-period">/month · locked forever</div>
+        </div>
+        <div class="founders-callout">
+          <strong>🎁 First 30 Days: Full Enterprise Free</strong>
+          Get Scout AI full coaching, asset generation, business plan PDF, EOM interview — everything — to launch your business properly. Then continue at $49.98/mo locked for life.
+        </div>
+        <div class="spots-counter">
+          <div class="spots-bar"><div class="spots-fill" style="width:30%"></div></div>
+          <div class="spots-text">~35 spots left</div>
+        </div>
+        <div class="features-divider"></div>
+        <div class="features-label">Everything included</div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>Full competitor gap analysis — real competitors, real gaps</div></div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>How to profit from every gap — offer, price, buyer, channel</div></div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>30-day process plan — Foundation → Outreach → Validation → Launch</div></div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>Scout AI coach — process-based guidance on your next move</div></div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>Business plan PDF — phases, costs, revenue projections</div></div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>Social media package — actual post copy written for your niche</div></div>
+        <div class="feature"><span class="feature-icon">✓</span><div>Lead magnet idea — name, contents, why they trade their email</div></div>
+        <div class="feature"><span class="feature-icon">✓</span><div>First outreach message — written, not described</div></div>
+        <div class="feature"><span class="feature-icon">✓</span><div>5 active niches</div></div>
+        <div class="feature"><span class="feature-icon">✓</span><div>Price locked forever — never increases</div></div>
+        <button class="btn-card btn-founders" onclick="selectPlan('founders_pack')">Claim Your Founders Spot</button>
+        <div class="btn-sub">50 spots total · Price locked for life · Cancel anytime</div>
+      </div>
+
+      <!-- ENTERPRISE ANNUAL -->
+      <div class="card card-enterprise">
+        <div class="card-badge badge-enterprise">🏆 10 Founders Only</div>
+        <div class="card-label" style="margin-top:10px">All-Inclusive Platform</div>
+        <div class="card-name">Enterprise</div>
+        <div class="card-tagline">The complete Freedom Uprise ecosystem. Every tool. Forever.</div>
+        <div class="price-block">
+          <div class="price-was">$99.99/mo — $1,199/yr</div>
+          <div class="price-amount">$797</div>
+          <div class="price-period">/year · $66.42/mo · locked forever</div>
+          <div class="price-equiv">Only $16.44 more than Founders Pack — paid annually</div>
+        </div>
+        <div class="founders-callout" style="border-color:rgba(107,163,245,0.3);background:rgba(0,63,135,0.1);color:#a8c8f8">
+          <strong>🌐 The Full Platform — Everything That Gets Built</strong>
+          Every new tool added to Freedom Uprise comes to Enterprise first. Scout AI, Daedalus product builder, Trail-Maker funnels, Shintaku email AI, Aetherium WhatsApp, Arcus CRM, Maximus social — all included as they launch. No extra charges. Ever.
+        </div>
+        <div class="spots-counter">
+          <div class="spots-bar"><div class="spots-fill" style="width:10%;background:linear-gradient(90deg,#6ba3f5,#003f87)"></div></div>
+          <div class="spots-text" style="color:#6ba3f5">~9 spots left</div>
+        </div>
+        <div class="features-divider"></div>
+        <div class="features-label">Everything in Founders Pack, plus</div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>Scout AI — full daily coaching, next-move guidance, situation-aware</div></div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>Asset generation — Scout writes emails, landing pages, ad copy</div></div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>Report rebuilt every 30 days with fresh intelligence</div></div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>End-of-month interview → next month's custom strategy</div></div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>Daedalus product builder (coming soon)</div></div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>Trail-Maker funnel builder (coming soon)</div></div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>Shintaku AI email sequences (coming soon)</div></div>
+        <div class="feature highlight"><span class="feature-icon">✓</span><div>Aetherium WhatsApp campaigns (coming soon)</div></div>
+        <div class="feature"><span class="feature-icon">✓</span><div>10 active niches · 3 seats</div></div>
+        <div class="feature"><span class="feature-icon">✓</span><div>Free hosting + WordPress + email (Golden Ticket perks)
+          <div class="feature-note">⏱ Allow up to 72 hours for website &amp; email setup after signup</div>
+        </div></div>
+        <div class="feature"><span class="feature-icon">✓</span><div>Price locked forever — even as platform grows</div></div>
+        <button class="btn-card btn-enterprise" onclick="selectPlan('enterprise_annual')">Lock In Enterprise Forever</button>
+        <div class="btn-sub">10 founders only · $797 billed annually · Cancel anytime</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Coming Soon -->
+  <div class="coming-section">
+    <h2 class="coming-title">Enterprise Gets Everything That's Built</h2>
+    <p class="coming-sub">Scout-Faire is live today. The rest of the Freedom Uprise platform is coming — Enterprise founders get every tool as it launches, automatically, no extra charge.</p>
+    <div class="coming-grid">
+      <div class="coming-card">
+        <div class="coming-card-name">Scout-Faire</div>
+        <div class="coming-card-desc">Niche intelligence, competitor gaps, 30-day plan, business plan PDF, Scout AI coach.</div>
+        <span class="coming-card-badge" style="background:rgba(74,222,128,0.2);color:#4ade80">✓ Live Now</span>
+      </div>
+      <div class="coming-card">
+        <div class="coming-card-name">Daedalus</div>
+        <div class="coming-card-desc">AI product builder — takes your niche and builds the actual digital product (ebook, course, software, membership).</div>
+        <span class="coming-card-badge">Coming Soon</span>
+      </div>
+      <div class="coming-card">
+        <div class="coming-card-name">Trail-Maker</div>
+        <div class="coming-card-desc">Funnel builder — front-end offer, OTO1/2/3, bonus stack, economics calculator.</div>
+        <span class="coming-card-badge">Coming Soon</span>
+      </div>
+      <div class="coming-card">
+        <div class="coming-card-name">Shintaku Oracle</div>
+        <div class="coming-card-desc">AI email sequences — 7-day automated sequences written for your specific niche and buyer.</div>
+        <span class="coming-card-badge">Coming Soon</span>
+      </div>
+      <div class="coming-card">
+        <div class="coming-card-name">Aetherium</div>
+        <div class="coming-card-desc">WhatsApp campaigns — broadcast, automated sequences, rich media, read receipts.</div>
+        <span class="coming-card-badge">Coming Soon</span>
+      </div>
+      <div class="coming-card">
+        <div class="coming-card-name">Arcus CRM</div>
+        <div class="coming-card-desc">Contact management, list segmentation, email campaigns, open and click tracking.</div>
+        <span class="coming-card-badge">Coming Soon</span>
+      </div>
+      <div class="coming-card">
+        <div class="coming-card-name">Maximus</div>
+        <div class="coming-card-desc">Social media growth — Telegram, Discord, WhatsApp. AI growth strategies, milestone tracking.</div>
+        <span class="coming-card-badge">Coming Soon</span>
+      </div>
+    </div>
+    <div class="coming-note">
+      <strong>Enterprise founders get everything above as it launches.</strong> No upgrade fees. No new subscriptions. No surprises. The platform is only getting bigger — your $66.42/mo covers all of it, forever. Think about what Canva cost in 2013 vs today. You're getting in at the beginning.
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="gold-divider"><span>Full Comparison</span></div>
+
+  <!-- Comparison Chart -->
+  <div class="chart-section">
+    <h2 class="chart-title">Everything Side by Side</h2>
+    <p class="chart-sub">See exactly what each tier includes</p>
+    <table class="chart-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th class="th-free">Free</th>
+          <th class="th-founders">Founders Pack<br><span style="font-size:0.75rem;font-weight:400">$49.98/mo</span></th>
+          <th class="th-enterprise">Enterprise<br><span style="font-size:0.75rem;font-weight:400">$66.42/mo</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="group-header"><td colspan="4"><span class="group-label">Core Reports</span></td></tr>
+        <tr><td>Niche profitability verdict</td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Profitability score + trend + buy intent</td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Competitor gap analysis</td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>How to profit from the gaps</td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Offer stack + money path</td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Report rebuilt monthly</td><td><span class="check-no">—</span></td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td></tr>
+
+        <tr class="group-header"><td colspan="4"><span class="group-label">Execution Plan</span></td></tr>
+        <tr><td>30-day process plan</td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Week-by-week milestones</td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Daily habits list</td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>End-of-month interview + next month strategy</td><td><span class="check-no">—</span></td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td></tr>
+
+        <tr class="group-header"><td colspan="4"><span class="group-label">Scout AI Coach</span></td></tr>
+        <tr><td>Scout AI access</td><td><span class="check-no">—</span></td><td><span class="check-partial">Process guidance</span></td><td><span class="check-yes">✓ Full coaching</span></td></tr>
+        <tr><td>Next-move coaching (day by day)</td><td><span class="check-no">—</span></td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Location-aware task clustering</td><td><span class="check-no">—</span></td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Asset generation (emails, pages, copy)</td><td><span class="check-no">—</span></td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td></tr>
+
+        <tr class="group-header"><td colspan="4"><span class="group-label">Content & Assets</span></td></tr>
+        <tr><td>Social media post copy (written)</td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>First outreach message (written)</td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Lead magnet idea + contents</td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Business plan PDF (phases, costs, revenue)</td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+
+        <tr class="group-header"><td colspan="4"><span class="group-label">Platform Tools (Coming Soon)</span></td></tr>
+        <tr><td>Daedalus — AI product builder</td><td><span class="check-no">—</span></td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Trail-Maker — funnel builder</td><td><span class="check-no">—</span></td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Shintaku — AI email sequences</td><td><span class="check-no">—</span></td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Aetherium — WhatsApp campaigns</td><td><span class="check-no">—</span></td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Arcus CRM — contact management</td><td><span class="check-no">—</span></td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Maximus — social media growth</td><td><span class="check-no">—</span></td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td></tr>
+
+        <tr class="group-header"><td colspan="4"><span class="group-label">Account</span></td></tr>
+        <tr><td>Active niches</td><td>1</td><td>5</td><td>10</td></tr>
+        <tr><td>Seats</td><td>1</td><td>2</td><td>3</td></tr>
+        <tr><td>Free hosting + WordPress + email</td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Price locked forever</td><td><span class="check-no">—</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Divider -->
+  <div class="gold-divider"><span>Questions</span></div>
+
+  <!-- FAQ -->
+  <div class="faq-section" id="faq">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">How long does it take to get my website and email set up?</div>
+      <div class="faq-a">Free hosting, WordPress, and email are included with Founders Pack and Enterprise. Please allow up to 72 hours after signup for your website and email to be provisioned and ready. You'll receive an email with your login details and setup instructions once everything is live.</div>
     </div>
 
-    <!-- TOOLTIPS (positioned dynamically via JS) -->
-    <div id="tooltip-competitor-gaps" class="tooltip" style="display: none;">
-        <h4>Competitor Gaps Analysis</h4>
-        <p>Identifies 5-7 unmet market needs that existing brands are missing.</p>
-        <div class="tooltip-example">
-            <strong>Example gaps found:</strong>
-            <ul>
-                <li>"Transparent Material Traceability"</li>
-                <li>"Affordable Entry-Level Products"</li>
-                <li>"Geographic Service Gaps"</li>
-            </ul>
-        </div>
-        <p class="tooltip-cta">See real examples in our <a href="/examples">gallery</a></p>
-    </div>
-    
-    <div id="tooltip-exports" class="tooltip" style="display: none;">
-        <h4>PDF/CSV Exports</h4>
-        <p>Download professional reports perfect for:</p>
-        <ul>
-            <li>Investor pitch decks</li>
-            <li>Team presentations</li>
-            <li>Client deliverables</li>
-            <li>Business plan documentation</li>
-        </ul>
-        <p class="tooltip-cta">Clean, branded PDFs ready to share</p>
+    <div class="faq-item">
+      <div class="faq-q">What is the Founders Pack 30-day Enterprise trial?</div>
+      <div class="faq-a">When you sign up for the Founders Pack, your first 30 days are automatically upgraded to full Enterprise — no extra charge. You get Scout AI full coaching, asset generation, business plan PDF, the end-of-month interview, everything. On day 31 you continue at $49.98/mo with Founders Pack features, locked forever.</div>
     </div>
 
-    <script src="pricing.js"></script>
+    <div class="faq-item">
+      <div class="faq-q">Why is the Enterprise Annual founders price $797?</div>
+      <div class="faq-a">That's $66.42/mo — only $16.44 more than the Founders Pack paid annually. For that $16 you get the entire Freedom Uprise platform as it grows: Daedalus, Trail-Maker, Shintaku, Aetherium, Arcus, Maximus — every tool we build, included. In 3 years when this platform is worth $200/mo you'll still be paying $66.42.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is the founders price really locked forever?</div>
+      <div class="faq-a">Yes. A deal is a deal. Founders who lock in today keep that rate for as long as they stay subscribed. As the platform grows and prices increase, your rate never changes. We honor every commitment we make.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What is Scout AI?</div>
+      <div class="faq-a">Scout is the AI coach built into Scout-Faire. It knows your niche report, your competitor gaps, your offer, and your 30-day plan. Founders Pack gets process-based guidance — Scout tells you which of the 5 processes you're in and what's left to complete it. Enterprise gets full daily coaching — Scout tells you exactly what to do today, writes assets on demand, and clusters tasks around your real-life situation.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What's coming to the platform?</div>
+      <div class="faq-a">Daedalus (AI product builder), Trail-Maker (funnel builder), Shintaku Oracle (AI email sequences), Aetherium (WhatsApp campaigns), Arcus CRM, and Maximus (social media growth) are all built and being deployed. Enterprise founders get every tool as it launches — no upgrade fees, no extra charges, ever.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I cancel?</div>
+      <div class="faq-a">Yes, cancel anytime. If you cancel your founders pricing is not held — if you resubscribe later you'll pay the current market rate. We offer a 7-day money-back guarantee on your first payment.</div>
+    </div>
+  </div>
+
+  <footer>
+    <img src="logo.png" alt="Scout-Faire">
+    <p>Scout-Faire · Freedom Uprise Ecosystem · Analytics Intelligent</p>
+    <p style="margin-top:8px">© 2026 Freedom Uprise. All rights reserved.</p>
+  </footer>
+
+  <script>
+    async function selectPlan(tier) {
+      const btn = event.target;
+      const orig = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tier })
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else if (data.error === 'Not authenticated') {
+          window.location.href = '/login.html?redirect=pricing.html&plan=' + tier;
+        } else {
+          alert(data.error || 'Could not start checkout. Please try again.');
+          btn.disabled = false;
+          btn.textContent = orig;
+        }
+      } catch (e) {
+        alert('Something went wrong. Please try again.');
+        btn.disabled = false;
+        btn.textContent = orig;
+      }
+    }
+  </script>
 </body>
 </html>
