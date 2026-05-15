@@ -641,37 +641,21 @@
     <script>
         // Global state
         let userData = null;
-        const API_BASE = 'https://amatuedda-backend-production.up.railway.app';
 
-        // Check auth on page load
+        // Check auth on page load (session-cookie based)
         window.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('auth_token');
-    
-    if (!token) {
-        // window.location.href = 'login.html';  // ← COMMENTED OUT
-        // return;
-        // TEMP: Set fake user data for testing
-        userData = { id: 'test', email: 'test@example.com', tier: 'oracle', searches_remaining: 999 };
-        updateUserDisplay();
-        return;
-    }
-
             try {
-                const response = await fetch(`${API_BASE}/api/auth/me`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                const response = await fetch('/api/auth/user', {
+                    credentials: 'same-origin'
                 });
 
-                const data = await response.json();
-
-                if (!data.success) {
-                    localStorage.removeItem('auth_token');
+                if (!response.ok) {
                     window.location.href = 'login.html';
                     return;
                 }
 
-                userData = data.user;
+                const data = await response.json();
+                userData = data;
                 updateUserDisplay();
             } catch (error) {
                 console.error('Auth check failed:', error);
@@ -715,11 +699,10 @@
             analyzeBtn.textContent = 'Analyzing...';
 
             try {
-                const response = await fetch(`${API_BASE}/api/analysis/niche`, {
+                const response = await fetch('/api/analyze', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
                     body: JSON.stringify({
                         niche: niche,
                         userId: userData.id
@@ -823,8 +806,7 @@
         }
 
         function logout() {
-            localStorage.removeItem('auth_token');
-            window.location.href = 'login.html';
+            window.location.href = '/api/logout';
         }
     </script>
 </body>
