@@ -221,7 +221,6 @@
     </div>
 
     <script>
-        const API_BASE = 'https://amatuedda-backend-production.up.railway.app';
         const form = document.getElementById('login-form');
         const errorMessage = document.getElementById('error-message');
         const successMessage = document.getElementById('success-message');
@@ -233,62 +232,35 @@
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
-            // Clear previous messages
             errorMessage.classList.remove('show');
             errorMessage.textContent = '';
             successMessage.classList.remove('show');
             successMessage.textContent = '';
 
-            // Disable button
             submitBtn.disabled = true;
             submitBtn.textContent = 'Logging In...';
 
             try {
-                console.log('Sending login request...');
-                
-                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                const response = await fetch('/api/login', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        password: password
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ email, password })
                 });
 
-                console.log('Response status:', response.status);
                 const data = await response.json();
-                console.log('Response data:', data);
 
-                if (data.success && data.token) {
-                    // CRITICAL: Save token FIRST, then show success, then redirect
-                    console.log('Saving token:', data.token.substring(0, 20) + '...');
-                    localStorage.setItem('auth_token', data.token);
-                    
-                    // Verify token was saved
-                    const savedToken = localStorage.getItem('auth_token');
-                    console.log('Token saved successfully:', savedToken ? 'YES' : 'NO');
-                    
-                    // Show success message
+                if (data.success) {
                     successMessage.textContent = 'Login successful! Redirecting...';
                     successMessage.classList.add('show');
-                    
-                    // Wait a moment to ensure storage is complete, then redirect
-                    setTimeout(() => {
-                        console.log('Redirecting to app.html...');
-                        window.location.href = 'app.html';
-                    }, 500);
-                    
+                    setTimeout(() => { window.location.href = '/'; }, 500);
                 } else {
-                    throw new Error(data.error || 'Login failed - no token received');
+                    throw new Error(data.error || 'Login failed');
                 }
             } catch (error) {
                 console.error('Login error:', error);
                 errorMessage.textContent = error.message || 'An error occurred. Please try again.';
                 errorMessage.classList.add('show');
-                
-                // Re-enable button
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Log In';
             }
