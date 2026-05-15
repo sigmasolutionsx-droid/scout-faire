@@ -171,16 +171,20 @@ app.get('/api/auth/user', isAuthenticated, async (req, res) => {
 
 // ── Stripe ────────────────────────────────────────────────────────────────────
 const PRICING = {
-  pro:                 { name: 'Scout-Faire Pro',            price: 1999,   mode: 'subscription', interval: 'month' },
-  golden_ticket:       { name: 'Scout-Faire Golden Ticket',  price: 3700,   mode: 'payment',      credits: 3 },
-  monthly_market_pack: { name: 'Scout-Faire Scout Monthly',  price: 7400,   mode: 'subscription', interval: 'month' },
-  enterprise:          { name: 'Scout-Faire Enterprise',     price: 119988, mode: 'subscription', interval: 'year'  }
+  pro:                 { name: 'Scout-Faire Pro',                    price: 1999,   mode: 'subscription', interval: 'month' },
+  golden_ticket:       { name: 'Scout-Faire Golden Ticket',          price: 3700,   mode: 'payment',      credits: 3 },
+  monthly_market_pack: { name: 'Scout-Faire Scout Monthly',          price: 7400,   mode: 'subscription', interval: 'month' },
+  enterprise:          { name: 'Scout-Faire Enterprise',             price: 119988, mode: 'subscription', interval: 'year'  },
+  founders_pack:       { name: 'Scout-Faire Founders Pack',          price: 4998,   mode: 'subscription', interval: 'month' },
+  enterprise_annual:   { name: 'Scout-Faire Enterprise Annual',      price: 79700,  mode: 'subscription', interval: 'year'  }
 };
 const PRICE_IDS = {
   pro:                 process.env.STRIPE_PRICE_PRO                 || null,
   golden_ticket:       process.env.STRIPE_PRICE_GOLDEN_TICKET       || null,
   monthly_market_pack: process.env.STRIPE_PRICE_MONTHLY_MARKET_PACK || null,
-  enterprise:          process.env.STRIPE_PRICE_ENTERPRISE          || null
+  enterprise:          process.env.STRIPE_PRICE_ENTERPRISE          || null,
+  founders_pack:       process.env.STRIPE_PRICE_FOUNDERS_PACK       || null,
+  enterprise_annual:   process.env.STRIPE_PRICE_ENTERPRISE_ANNUAL   || null
 };
 // What each tier unlocks — checked by /api/auth/user and the frontend
 const TIER_LIMITS = {
@@ -188,7 +192,9 @@ const TIER_LIMITS = {
   pro:                 { seats: 1, activeNiches: 3,  hasMonthlyPack: false, hasEom: false, hasWordPress: false, hasSocialPack: false, hasTraining: false, hasHosting: false },
   golden_ticket:       { seats: 1, activeNiches: 1,  hasMonthlyPack: false, hasEom: true,  hasWordPress: true,  hasSocialPack: false, hasTraining: true,  hasHosting: true  },
   monthly_market_pack: { seats: 1, activeNiches: 5,  hasMonthlyPack: true,  hasEom: false, hasWordPress: false, hasSocialPack: true,  hasTraining: false, hasHosting: false },
-  enterprise:          { seats: 3, activeNiches: 10, hasMonthlyPack: true,  hasEom: true,  hasWordPress: true,  hasSocialPack: true,  hasTraining: true,  hasHosting: true  }
+  enterprise:          { seats: 3, activeNiches: 10, hasMonthlyPack: true,  hasEom: true,  hasWordPress: true,  hasSocialPack: true,  hasTraining: true,  hasHosting: true  },
+  founders_pack:       { seats: 2, activeNiches: 5,  hasMonthlyPack: true,  hasEom: true,  hasWordPress: true,  hasSocialPack: true,  hasTraining: true,  hasHosting: true,  isFounder: true },
+  enterprise_annual:   { seats: 3, activeNiches: 10, hasMonthlyPack: true,  hasEom: true,  hasWordPress: true,  hasSocialPack: true,  hasTraining: true,  hasHosting: true,  isFounder: true }
 };
 const verified  = new Set();
 
