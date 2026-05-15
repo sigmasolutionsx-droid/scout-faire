@@ -1376,7 +1376,7 @@
           <button
             class="auth-btn"
             id="login-btn"
-            onclick="window.location.href='/api/login'"
+            onclick="window.location.href='/login.html'"
           >
             Login
           </button>
@@ -1579,29 +1579,13 @@
           );
 
           if (response.status === 401) {
-            window.location.href = "/api/login";
+            window.location.href = "/login.html";
             return;
           }
 
           if (response.status === 402) {
-            if (currentUser?.subscriptionType === "pro") {
-              if (
-                confirm(
-                  "You've used all included searches. Buy an additional search for $0.99?",
-                )
-              ) {
-                const buyResponse = await fetch("/api/buy-additional", {
-                  method: "POST",
-                });
-                const buyData = await buyResponse.json();
-                if (buyData.url) {
-                  window.location.href = buyData.url;
-                }
-              }
-            } else {
-              alert("No credits remaining. Please purchase a plan.");
-              window.location.href = "/pricing.html";
-            }
+            alert("You've used all your included searches. Upgrade your plan for more.");
+            window.location.href = "/pricing.html";
             resultDiv.innerHTML = "";
             return;
           }
@@ -1945,7 +1929,7 @@
             body: JSON.stringify({ niche, analysis })
           });
 
-          if (res.status === 401) { window.location.href = '/api/login'; return; }
+          if (res.status === 401) { window.location.href = '/login.html'; return; }
           if (res.status === 402) {
             section.innerHTML = `<div class="analysis-card" style="color:#dc2626;text-align:center">No credits remaining. <a href="/pricing.html" style="color:#004A98">Purchase a plan</a></div>`;
             btn.disabled = false;
