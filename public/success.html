@@ -43,7 +43,7 @@
         <p style="color: #1e40af; margin: 0;"><strong>Account created!</strong></p>
         <p style="color: #1e40af; margin: 10px 0 0 0;">Sign in with <strong id="user-email"></strong> to access your credits.</p>
       </div>
-      <a href="/" class="btn" id="action-btn">Start Analyzing</a>
+      <a href="/" class="btn" id="action-btn">Start Analyzing</a><!-- redirects to home which checks auth -->
     </div>
     <div class="error" id="error">
       <div class="icon icon-error">&#10007;</div>
@@ -96,7 +96,7 @@
           document.getElementById('user-email').textContent = data.email;
           document.getElementById('email-notice').style.display = 'block';
           document.getElementById('action-btn').textContent = 'Sign In to Start';
-          document.getElementById('action-btn').href = '/api/login';
+          document.getElementById('action-btn').href = '/login.html';
         }
         
         document.getElementById('loading').style.display = 'none';
