@@ -156,7 +156,7 @@ app.get('/api/auth/user', isAuthenticated, async (req, res) => {
       isPro:               hasSub && u.subscription_type === 'pro',
       isGoldenTicket:      hasSub && u.subscription_type === 'golden_ticket',
       isMonthlyMarketPack: hasSub && u.subscription_type === 'monthly_market_pack',
-      isEnterprise:        hasSub && u.subscription_type === 'enterprise',
+      isEnterprise:        hasSub && ['enterprise', 'enterprise_annual', 'founders_pack'].includes(u.subscription_type),
       seats:               limits.seats,
       activeNiches:        limits.activeNiches,
       hasMonthlyPack:      limits.hasMonthlyPack,
@@ -1122,6 +1122,13 @@ app.post('/api/business-plan', isAuthenticated, async (req, res) => {
     const { niche, analysis } = req.body;
     if (!niche) return res.status(400).json({ error: 'Niche is required' });
 
+    // Tier check — free users cannot generate business plans
+    const bpUser = await getUser(req.user.id);
+    const bpNow  = new Date();
+    const bpHasSub = bpUser?.subscription_type && bpUser?.subscription_expires && new Date(bpUser.subscription_expires) > bpNow;
+    const bpTier   = bpHasSub ? bpUser.subscription_type : 'free';
+    if (bpTier === 'free') return res.status(402).json({ error: 'Business plan requires a paid plan.' });
+
     const ok = await canUseCredit(req.user.id);
     if (!ok) return res.status(402).json({ error: 'No credits remaining. Please upgrade.' });
 
@@ -1292,8 +1299,8 @@ const isEnterpriseUser = async (req, res, next) => {
     const u = await getUser(req.user.id);
     const now = new Date();
     const hasSub = u?.subscription_type && u?.subscription_expires && new Date(u.subscription_expires) > now;
-    if (hasSub && u.subscription_type === 'enterprise') return next();
-    return res.status(403).json({ error: 'Enterprise Yearly membership required for End-of-Month Interview.' });
+    if (hasSub && ['enterprise', 'enterprise_annual', 'founders_pack'].includes(u.subscription_type)) return next();
+    return res.status(403).json({ error: 'Enterprise membership required for End-of-Month Interview.' });
   } catch (e) { res.status(500).json({ error: 'Auth check failed' }); }
 };
 
@@ -1313,96 +1320,6 @@ app.post('/api/end-of-month-interview', isEnterpriseUser, async (req, res) => {
   } catch (e) {
     console.error('EOM interview error:', e);
     res.status(500).json({ error: 'Failed to generate package', details: e.message });
-  }
-});
-
-// ── Business Plan Generator ───────────────────────────────────────────────────
-// Available to Pro, Monthly, Enterprise, and Golden Ticket users
-app.post('/api/business-plan', isAuthenticated, async (req, res) => {
-  try {
-    const { niche, analysis } = req.body;
-    if (!niche) return res.status(400).json({ error: 'niche is required' });
-
-    const u      = await getUser(req.user.id);
-    const now    = new Date();
-    const hasSub = u?.subscription_type && u?.subscription_expires && new Date(u.subscription_expires) > now;
-    const tier   = hasSub ? u.subscription_type : 'free';
-
-    if (tier === 'free') return res.status(402).json({ error: 'Business plan requires a paid plan.' });
-
-    const ok = await canUseCredit(req.user.id);
-    if (!ok) return res.status(402).json({ error: 'No credits remaining.' });
-
-    const prompt = `You are Scout-Faire. Build a complete business plan for this niche: ${niche}
-
-${analysis ? `Context from market analysis: verdict=${analysis.nicheDefinition?.verdict||''}, biggest gap=${analysis.biggestGap||''}, primary offer=${analysis.profitFromGaps?.primaryOffer?.name||''}` : ''}
-
-Return ONLY valid JSON:
-{
-  "phases": [
-    {
-      "phase": "Phase 1: Foundation (Days 1-30)",
-      "goal": "Specific goal for this phase",
-      "actions": ["Exact action 1", "Exact action 2", "Exact action 3", "Exact action 4", "Exact action 5"],
-      "milestone": "The specific outcome that marks this phase complete",
-      "budget": "Estimated cost range for this phase"
-    },
-    {
-      "phase": "Phase 2: Traction (Days 31-60)",
-      "goal": "Specific goal",
-      "actions": ["Action 1", "Action 2", "Action 3", "Action 4", "Action 5"],
-      "milestone": "Phase completion milestone",
-      "budget": "Estimated cost range"
-    },
-    {
-      "phase": "Phase 3: Scale (Days 61-90)",
-      "goal": "Specific goal",
-      "actions": ["Action 1", "Action 2", "Action 3", "Action 4", "Action 5"],
-      "milestone": "Phase completion milestone",
-      "budget": "Estimated cost range"
-    }
-  ],
-  "actionPlan": {
-    "week1": "Exact tasks for week 1 — specific, named, actionable",
-    "week2": "Exact tasks for week 2",
-    "week3": "Exact tasks for week 3",
-    "week4": "Exact tasks for week 4"
-  },
-  "revenueProjection": {
-    "month1": "Realistic revenue range for month 1 and how to achieve it",
-    "month2": "Month 2 projection based on month 1 results",
-    "month3": "Month 3 projection",
-    "breakeven": "When and how breakeven is reached"
-  },
-  "startupCosts": {
-    "essential": "Must-have costs to launch — itemized with amounts",
-    "optional": "Nice-to-have costs — itemized",
-    "total": "Total estimated startup cost range"
-  },
-  "risks": [
-    { "risk": "Specific risk", "likelihood": "high | medium | low", "mitigation": "Exact mitigation strategy" },
-    { "risk": "Risk 2", "likelihood": "...", "mitigation": "..." },
-    { "risk": "Risk 3", "likelihood": "...", "mitigation": "..." }
-  ],
-  "successMetrics": [
-    "Metric 1 — specific number and timeframe",
-    "Metric 2 — specific number and timeframe",
-    "Metric 3 — specific number and timeframe",
-    "Metric 4 — specific number and timeframe"
-  ]
-}`;
-
-    const text = await callLLM(
-      'You are Scout-Faire. Return only strict JSON. No markdown, no backticks.',
-      prompt,
-      5000,
-      0.35
-    );
-    const plan = extractJson(text);
-    return res.json({ success: true, plan });
-  } catch (e) {
-    console.error('Business plan error:', e);
-    res.status(500).json({ error: 'Failed to generate business plan', details: e.message });
   }
 });
 
