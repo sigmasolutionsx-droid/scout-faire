@@ -1289,6 +1289,126 @@
       #pdf-output { display: none; }
     
       /* ── AI Chat Widget ─────────────────────────────── */
+      /* ── Training Section ── */
+      .training-section {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 80px 20px 60px;
+      }
+
+      .training-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+
+      .training-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--white) 0%, var(--gold) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 12px;
+      }
+
+      .training-header p {
+        color: rgba(245,240,232,0.6);
+        font-size: 1rem;
+        max-width: 500px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      .training-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+      }
+
+      .training-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .training-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+      }
+
+      .training-thumb {
+        width: 100%;
+        height: 160px;
+        background: linear-gradient(135deg, var(--navy2), #1a2340);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        position: relative;
+      }
+
+      .training-thumb .coming-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(201,168,76,0.2);
+        color: var(--gold);
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .training-body {
+        padding: 20px;
+      }
+
+      .training-body h4 {
+        color: var(--white);
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 8px;
+      }
+
+      .training-body p {
+        color: rgba(245,240,232,0.5);
+        font-size: 0.85rem;
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
+
+      .training-tier {
+        display: inline-block;
+        background: rgba(201,168,76,0.12);
+        color: var(--gold);
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 20px;
+      }
+
+      .training-empty {
+        border: 2px dashed rgba(255,255,255,0.08);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 260px;
+        text-align: center;
+        padding: 32px;
+      }
+
+      .training-empty p {
+        color: rgba(245,240,232,0.35);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
       .chat-widget {
         position: fixed; bottom: 24px; right: 24px; z-index: 9999;
         font-family: inherit;
@@ -1360,6 +1480,7 @@
         </a>
         <div class="nav-links">
           <a href="/marketing-command-center.html" class="nav-link">Marketing</a>
+          <a href="#training" class="nav-link">Training</a>
           <a href="/pricing.html" class="nav-link">Pricing</a>
           <div class="user-info" id="user-info" style="display: none">
             <div class="credits-badge" id="header-credits">0 credits</div>
@@ -2454,8 +2575,59 @@
       checkAuth();
     </script>
   
+  <!-- Training Section -->
+  <section class="training-section" id="training">
+    <div class="training-header">
+      <h2>Scout-Faire Training</h2>
+      <p>Step-by-step courses to launch, grow, and scale your business — included with your plan.</p>
+    </div>
+    <div class="training-grid" id="trainingGrid">
+      <!-- Courses render here dynamically, or show placeholder -->
+    </div>
+  </section>
+
+  <script>
+    // Training courses — add entries here as courses are created
+    const TRAINING_COURSES = [
+      // Example format:
+      // { title: "Finding Your First Niche", desc: "How to identify a profitable niche using Scout-Faire data.", icon: "🎯", tier: "Golden Ticket", url: "/training/niche-101", status: "live" },
+      // { title: "Launch Your First Offer", desc: "Build and price your first digital product in 7 days.", icon: "🚀", tier: "Pro", url: "/training/first-offer", status: "coming_soon" },
+    ];
+
+    (function renderTraining() {
+      const grid = document.getElementById('trainingGrid');
+      if (!grid) return;
+
+      if (TRAINING_COURSES.length === 0) {
+        grid.innerHTML = `
+          <div class="training-empty" style="grid-column: 1 / -1;">
+            <div>
+              <div style="font-size:2.5rem;margin-bottom:16px;">🎓</div>
+              <p><strong style="color:rgba(245,240,232,0.7);">Courses dropping soon.</strong><br>
+              Pre-recorded trainings, weekly live sessions, and step-by-step business blueprints — coming with your Golden Ticket or Scout subscription.</p>
+            </div>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = TRAINING_COURSES.map(c => `
+        <a href="${c.url || '#'}" class="training-card" style="text-decoration:none;${c.status === 'coming_soon' ? 'pointer-events:none;opacity:0.7;' : ''}">
+          <div class="training-thumb">
+            ${c.icon || '📚'}
+            ${c.status === 'coming_soon' ? '<span class="coming-badge">Coming Soon</span>' : ''}
+          </div>
+          <div class="training-body">
+            <h4>${c.title}</h4>
+            <p>${c.desc}</p>
+            <span class="training-tier">${c.tier}</span>
+          </div>
+        </a>
+      `).join('');
+    })();
+  </script>
+
   <!-- AI Chat Widget -->
-  <div class="chat-widget" id="chatWidget" style="display:none">
+  <div class="chat-widget" id="chatWidget">
     <div class="chat-box" id="chatBox">
       <div class="chat-header">
         <div>
@@ -2464,10 +2636,20 @@
         </div>
         <button class="chat-close" onclick="toggleChat()">✕</button>
       </div>
+      <!-- Upgrade prompt (shown for non-subscribers) -->
+      <div class="chat-upgrade" id="chatUpgrade" style="display:none">
+        <div style="text-align:center;padding:40px 24px;">
+          <div style="font-size:2.2rem;margin-bottom:12px;">🔒</div>
+          <div style="font-weight:700;font-size:1.1rem;margin-bottom:8px;color:#1c1917;">Unlock Ask Scout</div>
+          <div style="color:#6b7280;font-size:0.9rem;line-height:1.6;margin-bottom:20px;">Get your own AI business advisor that knows your niche inside and out. Available on Pro and above.</div>
+          <a href="/pricing.html" style="display:inline-block;background:linear-gradient(135deg,#c9a84c,#a07830);color:#000;font-weight:700;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:0.95rem;">See Plans</a>
+        </div>
+      </div>
+      <!-- Chat messages (shown for subscribers) -->
       <div class="chat-messages" id="chatMessages">
         <div class="chat-msg ai">Hey! I know your niche report. Ask me what to do today, how to find your first customer, what to charge — anything. I'll give you a straight answer.</div>
       </div>
-      <div class="chat-input-row">
+      <div class="chat-input-row" id="chatInputRow">
         <textarea class="chat-input" id="chatInput" placeholder="Ask your AI coach..." rows="1"
           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
         <button class="chat-send" id="chatSend" onclick="sendChat()">Send</button>
@@ -2488,10 +2670,24 @@
 
     function showChatWidget() {
       const w = document.getElementById('chatWidget');
-      if (w && currentUser?.subscriptionType && currentUser.subscriptionType !== 'free' && currentUser.subscriptionType !== 'golden_ticket') {
-        w.style.display = 'block';
+      if (!w) return;
+      // Button is always visible now
+      const hasChatAccess = currentUser?.subscriptionType
+        && currentUser.subscriptionType !== 'free'
+        && currentUser.subscriptionType !== 'golden_ticket';
+
+      if (hasChatAccess) {
+        // Subscriber — show full chat
+        document.getElementById('chatMessages').style.display = '';
+        document.getElementById('chatInputRow').style.display = '';
+        document.getElementById('chatUpgrade').style.display = 'none';
         const badge = document.getElementById('chatTierBadge');
         if (badge) badge.textContent = currentUser.subscriptionType.replace('_', ' ').toUpperCase();
+      } else {
+        // Visitor / free / Golden Ticket — show upgrade prompt
+        document.getElementById('chatMessages').style.display = 'none';
+        document.getElementById('chatInputRow').style.display = 'none';
+        document.getElementById('chatUpgrade').style.display = 'block';
       }
     }
 
