@@ -1126,7 +1126,7 @@ Known intelligence about this niche:
     const prompt = `You are Scout-Faire. Build a complete actionable business plan for this niche: ${niche}
 ${context}
 
-Return ONLY valid JSON:
+Return ONLY valid JSON — no markdown, no backticks:
 {
   "executiveSummary": "3-4 sentences. What this business is, who it serves, why it will work, what the operator needs to do first.",
   "whyNow": "1-2 sentences on why this moment is the right time to enter this niche.",
@@ -1179,13 +1179,13 @@ Return ONLY valid JSON:
   },
   "revenueProjection": {
     "month1": { "range": "$X - $X,XXX", "how": "How you get here — specific actions and customer count" },
-    "month3": { "range": "$X,XXX - $X,XXX", "how": "What changes to reach this" },
+    "month3": { "range": "$X,XXX - $X,XXX", "how": "What changes to reach this — more customers, higher price, or new offer" },
     "month6": { "range": "$X,XXX - $XX,XXX", "how": "What the business looks like at 6 months" }
   },
   "risks": [
-    { "risk": "Specific risk", "likelihood": "high | medium | low", "mitigation": "Exactly how to avoid or handle it" },
-    { "risk": "Risk 2", "likelihood": "...", "mitigation": "..." },
-    { "risk": "Risk 3", "likelihood": "...", "mitigation": "..." }
+    { "risk": "Specific risk", "likelihood": "High | Medium | Low", "impact": "High | Medium | Low", "mitigation": "Exactly how to handle it" },
+    { "risk": "Risk 2", "likelihood": "...", "impact": "...", "mitigation": "..." },
+    { "risk": "Risk 3", "likelihood": "...", "impact": "...", "mitigation": "..." }
   ],
   "successMetrics": [
     "Metric 1 — specific number — by when",
@@ -1193,7 +1193,7 @@ Return ONLY valid JSON:
     "Metric 3 — specific number — by when",
     "Metric 4 — specific number — by when"
   ],
-  "unfairAdvantage": "The one thing this operator can do that no competitor easily copies"
+  "unfairAdvantage": "The one thing this operator can do that no competitor easily copies."
 }`;
 
     const text = await callLLM(SYSTEM_PROMPT, prompt, 4000, 0.35);
@@ -1204,6 +1204,9 @@ Return ONLY valid JSON:
     res.status(500).json({ error: 'Failed to generate business plan.', details: e.message });
   }
 });
+
+// ── Scout AI Chat ───────────────────────────────────────────────────────────
+require("./routes/chat")(app, { getUser, isAuthenticated });
 
 // ── End-of-Month Interview → Tailored Package ─────────────────────────────────
 const EOM_QUESTIONS = [
