@@ -244,6 +244,12 @@ app.post('/api/verify-session', async (req, res) => {
       uid = existing ? existing.id : `email_${email.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
       if (!existing) await pool.query('INSERT INTO users (id,email) VALUES ($1,$2) ON CONFLICT DO NOTHING', [uid, email.toLowerCase()]);
     }
+    // Log the user into the session so they're authenticated after payment
+    const loginUser = () => new Promise((resolve, reject) => {
+      req.login({ id: uid, email: (email || '').toLowerCase() }, err => err ? reject(err) : resolve());
+    });
+    await loginUser();
+
     // Golden Ticket is one-time: add credits, no subscription
     if (p.mode === 'payment') {
       const creditsToAdd = p.credits || 1;
