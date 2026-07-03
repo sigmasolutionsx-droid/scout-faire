@@ -1,831 +1,453 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scout-Faire - Niche Analysis</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2c1810 0%, #1a0f0a 100%);
-            color: #f5f5f5;
-            min-height: 100vh;
-        }
-
-        /* Header */
-        .header {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid rgba(200, 16, 46, 0.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .logo h1 {
-            font-size: 1.8rem;
-            background: linear-gradient(135deg, #c8102e 0%, #003f87 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 3px;
-        }
-
-        .logo p {
-            color: #d4a574;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            margin-top: 5px;
-        }
-
-        .user-info {
-            text-align: right;
-        }
-
-        .user-email {
-            color: #aaa;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-
-        .tier-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .tier-free {
-            background: rgba(102, 102, 102, 0.3);
-            border: 2px solid #666;
-            color: #999;
-        }
-
-        .tier-elite {
-            background: rgba(200, 16, 46, 0.3);
-            border: 2px solid #c8102e;
-            color: #ff6b6b;
-        }
-
-        .tier-oracle {
-            background: rgba(0, 63, 135, 0.3);
-            border: 2px solid #003f87;
-            color: #5b9cff;
-        }
-
-        .search-counter {
-            margin-top: 8px;
-            font-size: 0.85rem;
-            color: #d4a574;
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        /* Analysis Form */
-        .analysis-section {
-            background: rgba(30, 20, 15, 0.8);
-            border: 3px solid #666;
-            border-radius: 12px;
-            padding: 40px;
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            color: #d4a574;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-
-        .section-subtitle {
-            color: #aaa;
-            margin-bottom: 30px;
-        }
-
-        .input-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: #d4a574;
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 18px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 2px solid #666;
-            border-radius: 8px;
-            color: #f5f5f5;
-            font-size: 1.1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #c8102e;
-        }
-
-        input[type="text"]::placeholder {
-            color: #888;
-        }
-
-        .analyze-btn {
-            width: 100%;
-            padding: 20px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background: linear-gradient(135deg, #c8102e 0%, #8b0a1f 100%);
-            color: white;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
-
-        .analyze-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, #d11635 0%, #9c0b23 100%);
-            transform: scale(1.02);
-            box-shadow: 0 6px 25px rgba(200, 16, 46, 0.5);
-        }
-
-        .analyze-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* Results Section */
-        .results-section {
-            background: rgba(30, 20, 15, 0.8);
-            border: 3px solid #666;
-            border-radius: 12px;
-            padding: 40px;
-            display: none;
-        }
-
-        .results-section.show {
-            display: block;
-        }
-
-        .niche-title {
-            font-size: 1.8rem;
-            color: #d4a574;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-        }
-
-        .scores-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .score-card {
-            background: rgba(0, 0, 0, 0.4);
-            border: 2px solid #666;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .score-label {
-            color: #aaa;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .score-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #d4a574;
-        }
-
-        .analysis-content {
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid #555;
-            border-radius: 8px;
-            padding: 30px;
-            line-height: 1.8;
-        }
-
-        /* Analysis Formatting Styles */
-        .analysis-content .analysis-header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #666;
-        }
-
-        .analysis-content .niche-name {
-            font-size: 2rem;
-            color: #d4a574;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-
-        .analysis-content .tier-indicator {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .analysis-content .tier-free {
-            background: rgba(102, 102, 102, 0.3);
-            border: 2px solid #666;
-            color: #999;
-        }
-
-        .analysis-content .tier-elite {
-            background: rgba(200, 16, 46, 0.3);
-            border: 2px solid #c8102e;
-            color: #ff6b6b;
-        }
-
-        .analysis-content .tier-oracle {
-            background: rgba(0, 63, 135, 0.3);
-            border: 2px solid #003f87;
-            color: #5b9cff;
-        }
-
-        .analysis-content .section {
-            margin-bottom: 40px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            padding: 25px;
-        }
-
-        .analysis-content .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #666;
-        }
-
-        .analysis-content .section-header h3 {
-            font-size: 1.5rem;
-            color: #d4a574;
-            margin: 0;
-        }
-
-        .analysis-content .score-badge {
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            border: 2px solid;
-        }
-
-        .analysis-content .elite-badge,
-        .analysis-content .oracle-badge {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .analysis-content .elite-badge {
-            background: rgba(200, 16, 46, 0.2);
-            border: 1px solid #c8102e;
-            color: #ff6b6b;
-        }
-
-        .analysis-content .oracle-badge {
-            background: rgba(0, 63, 135, 0.2);
-            border: 1px solid #003f87;
-            color: #5b9cff;
-        }
-
-        /* Gap Cards */
-        .analysis-content .gap-card {
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid #555;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .analysis-content .gap-card:hover {
-            border-color: #c8102e;
-            transform: translateX(5px);
-        }
-
-        .analysis-content .gap-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .analysis-content .gap-number {
-            background: #d4a574;
-            color: #1a0f0a;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .analysis-content .gap-header h4 {
-            flex: 1;
-            margin: 0;
-            color: #d4a574;
-            font-size: 1.2rem;
-        }
-
-        .analysis-content .difficulty-badge {
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            border: 1px solid;
-        }
-
-        .analysis-content .gap-details {
-            padding-left: 50px;
-        }
-
-        .analysis-content .gap-item {
-            margin-bottom: 10px;
-            color: #ccc;
-        }
-
-        .analysis-content .gap-item strong {
-            color: #d4a574;
-        }
-
-        /* Monetization Blueprint Cards */
-        .analysis-content .blueprint-card {
-            background: linear-gradient(135deg, rgba(0, 63, 135, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
-            border: 2px solid #003f87;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 25px;
-        }
-
-        .analysis-content .blueprint-header {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #003f87;
-        }
-
-        .analysis-content .blueprint-header h4 {
-            margin: 0;
-            color: #5b9cff;
-            font-size: 1.3rem;
-        }
-
-        .analysis-content .blueprint-content {
-            color: #ccc;
-        }
-
-        /* Tables */
-        .analysis-content table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .analysis-content table th {
-            background: rgba(212, 165, 116, 0.2);
-            color: #d4a574;
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #666;
-            font-weight: bold;
-        }
-
-        .analysis-content table td {
-            padding: 12px;
-            border: 1px solid #555;
-            color: #ccc;
-        }
-
-        .analysis-content table tr:hover {
-            background: rgba(212, 165, 116, 0.1);
-        }
-
-        /* Typography */
-        .analysis-content p {
-            margin-bottom: 15px;
-            color: #ccc;
-        }
-
-        .analysis-content strong {
-            color: #d4a574;
-        }
-
-        .analysis-content em {
-            color: #aaa;
-        }
-
-        .analysis-content ul {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-
-        .analysis-content li {
-            margin-bottom: 8px;
-            color: #ccc;
-        }
-
-        /* Upgrade Prompt */
-        .upgrade-prompt {
-            background: linear-gradient(135deg, rgba(200, 16, 46, 0.2) 0%, rgba(0, 63, 135, 0.2) 100%);
-            border: 2px solid #c8102e;
-            border-radius: 12px;
-            padding: 30px;
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .upgrade-prompt h3 {
-            font-size: 1.5rem;
-            color: #d4a574;
-            margin-bottom: 15px;
-        }
-
-        .upgrade-prompt p {
-            color: #ccc;
-            margin-bottom: 20px;
-            font-size: 1.05rem;
-        }
-
-        .upgrade-btn {
-            display: inline-block;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #003f87 0%, #002855 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
-
-        .upgrade-btn:hover {
-            background: linear-gradient(135deg, #004a9f 0%, #003366 100%);
-            transform: scale(1.05);
-            box-shadow: 0 6px 25px rgba(0, 63, 135, 0.5);
-        }
-
-        /* Loading State */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #d4a574;
-        }
-
-        .spinner {
-            border: 4px solid rgba(212, 165, 116, 0.2);
-            border-top: 4px solid #d4a574;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Error Message */
-        .error-message {
-            background: rgba(200, 16, 46, 0.2);
-            border: 2px solid #c8102e;
-            color: #ff6b6b;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        /* Logout Button */
-        .logout-btn {
-            background: none;
-            border: 1px solid #666;
-            color: #aaa;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            border-color: #c8102e;
-            color: #c8102e;
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 20px;
-                text-align: center;
-            }
-
-            .user-info {
-                text-align: center;
-            }
-
-            .analysis-section, .results-section {
-                padding: 25px;
-            }
-
-            .section-title {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scout-Faire - Strategic Market Intelligence</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .animate-spin { animation: spin 1s linear infinite; }
+    @media print {
+      @page { margin: 1.5cm; size: A4; }
+
+      .no-print { display: none !important; }
+
+      body { background: white !important; margin: 0 !important; padding: 0 !important; }
+
+      /* Kill the dark full-screen outer wrapper */
+      #root > div {
+        min-height: 0 !important;
+        background: white !important;
+        color: #1e293b !important;
+        padding: 0 !important;
+      }
+      .max-w-7xl { max-width: 100% !important; padding: 0 !important; }
+
+      /* Report cards */
+      .report-card {
+        box-shadow: none !important;
+        border: 1px solid #d1d5db !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin-bottom: 1rem !important;
+        border-radius: 0.5rem !important;
+      }
+
+      /* Fix dark "First 30 Days" section */
+      .bg-slate-950 {
+        background: #f1f5f9 !important;
+        border-radius: 0.5rem !important;
+      }
+      .bg-slate-950 * { color: #1e293b !important; }
+      .bg-white\/10 { background: #e2e8f0 !important; border-color: #cbd5e1 !important; }
+      .text-amber-300 { color: #b45309 !important; }
+      .text-white { color: #1e293b !important; }
+      .text-slate-100 { color: #1e293b !important; }
+
+      /* Tighten spacing so sections don't float apart creating blank pages */
+      .space-y-8 > * + * { margin-top: 1rem !important; }
+      .space-y-8 { margin-top: 0 !important; }
+
+      /* Grid layouts — collapse to single column for clean print */
+      .grid { display: block !important; }
+      .grid > * { margin-bottom: 0.75rem; width: 100% !important; }
+
+      /* Remove gradients that can cause rendering artifacts */
+      [class*="bg-gradient"] { background: white !important; }
+      [class*="from-slate-950"] { background: #f1f5f9 !important; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="logo">
-            <h1>SCOUT-FAIRE</h1>
-            <p>ANALYTICS INTELLIGENT</p>
-        </div>
-        <div class="user-info">
-            <div class="user-email" id="user-email">Loading...</div>
-            <div>
-                <span class="tier-badge" id="tier-badge">FREE</span>
-            </div>
-            <div class="search-counter" id="search-counter">5 searches remaining</div>
-            <button class="logout-btn" onclick="logout()">Logout</button>
-        </div>
-    </div>
+  <div id="root"></div>
+  <script>
+    (async () => {
+      try {
+        const r = await fetch("/api/auth/user", { credentials: "include" });
+        if (!r.ok) window.location.href = "/login.html";
+      } catch(e) { window.location.href = "/login.html"; }
+    })();
+  </script>
 
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Analysis Form -->
-        <div class="analysis-section">
-            <h2 class="section-title">Analyze Your Niche</h2>
-            <p class="section-subtitle">Enter a niche market to get instant competitive intelligence</p>
+  <script type="text/babel">
+    const { useState } = React;
 
-            <div id="error-message" class="error-message"></div>
+    const Icon = ({ children, className = '', size = 24 }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>{children}</svg>
+    );
+    const TrendingUp = () => <Icon><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></Icon>;
+    const Search = () => <Icon><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></Icon>;
+    const Loader2 = () => <Icon className="animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></Icon>;
+    const AlertCircle = () => <Icon><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></Icon>;
+    const Download = () => <Icon><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></Icon>;
+    const Lightbulb = () => <Icon><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></Icon>;
+    const BarChart3 = () => <Icon><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></Icon>;
+    const Shield = () => <Icon><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></Icon>;
+    const Target = () => <Icon><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></Icon>;
 
-            <form id="analysis-form">
-                <div class="input-group">
-                    <label for="niche-input">Niche Keyword or Market</label>
-                    <input 
-                        type="text" 
-                        id="niche-input" 
-                        name="niche" 
-                        placeholder="e.g., organic dog food, eco-friendly yoga mats, vintage watches"
-                        required
-                    >
+    const ensureArray = (value) => Array.isArray(value) ? value : [];
+    const label = (value) => String(value || 'unknown').replace(/\b\w/g, c => c.toUpperCase());
+
+    function NicheAnalyzer() {
+      const [analysis, setAnalysis] = useState(null);
+      const [loading, setLoading] = useState(false);
+      const [keywords, setKeywords] = useState('');
+      const [error, setError] = useState('');
+
+      const analyzeNiche = async () => {
+        if (!keywords.trim()) {
+          setError('Enter at least one keyword, niche, industry, or business idea.');
+          return;
+        }
+        setLoading(true);
+        setError('');
+        setAnalysis(null);
+        try {
+          const response = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ keywords })
+          });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || 'Analysis failed');
+          setAnalysis(data.analysis);
+        } catch (err) {
+          setError(err.message || 'Analysis failed. Please try again.');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const scoreClass = (score) => {
+        if (score >= 80) return 'text-emerald-800 bg-emerald-50 border-emerald-300';
+        if (score >= 60) return 'text-amber-800 bg-amber-50 border-amber-300';
+        return 'text-rose-800 bg-rose-50 border-rose-300';
+      };
+
+      const intentClass = (intent) => {
+        if (intent === 'high') return 'bg-emerald-100 text-emerald-900 border-emerald-300';
+        if (intent === 'medium') return 'bg-amber-100 text-amber-900 border-amber-300';
+        return 'bg-slate-100 text-slate-800 border-slate-300';
+      };
+
+      const exportReport = () => {
+        if (!analysis) return;
+        const line = '='.repeat(72);
+        const bulletList = (items) => ensureArray(items).map(item => `  - ${typeof item === 'string' ? item : JSON.stringify(item)}`).join('\n') || '  - Not specified';
+        const gapPlanText = (plans) => ensureArray(plans).map((plan, index) => `Gap Play ${index + 1}: ${plan.gap || 'Untitled gap'}
+  Why It Matters: ${plan.whyItMatters || ''}
+  Money Move: ${plan.moneyMove || ''}
+  Offer: ${plan.offer || ''}
+  Price Logic: ${plan.priceLogic || ''}
+  Execution Plan:
+${bulletList(plan.executionPlan)}
+  Proof To Collect: ${plan.proofToCollect || ''}
+  First Campaign: ${plan.firstCampaign || ''}`).join('\n\n') || '  - Not specified';
+        const report = `${analysis.reportTitle || 'SCOUT-FAIRE STRATEGIC MARKET INTELLIGENCE REPORT'}
+${line}
+Generated: ${new Date().toLocaleString()}
+Tier: ${analysis.tierPositioning || 'Pro / Enterprise'}
+Input: ${analysis.generatedFor || keywords}
+
+EXECUTIVE SUMMARY
+${line}
+${analysis.executiveSummary || ''}
+
+PORTFOLIO VERDICT
+${line}
+${analysis.portfolioVerdict || ''}
+
+BEST BET
+${line}
+${analysis.bestBet || ''}
+
+CONFIDENCE LEVEL
+${line}
+${analysis.confidenceLevel || 'Medium'}
+
+STRATEGIC WARNINGS
+${line}
+${bulletList(analysis.strategicWarnings)}
+
+NICHE DEEP-DIVE
+${line}
+${ensureArray(analysis.niches).map((niche, i) => `${i + 1}. ${String(niche.keyword || '').toUpperCase()}
+Opportunity Score: ${niche.opportunityScore || 0}/100
+Confidence: ${niche.confidence || 'Medium'}
+Trend: ${label(niche.trend)}
+Search Volume: ${label(niche.searchVolume)}
+Competition: ${label(niche.competition)}
+Buy Intent: ${label(niche.buyIntent)}
+
+Market Thesis:
+${niche.marketThesis || ''}
+
+Buyer Pain:
+${niche.buyerPain || ''}
+
+Target Buyer:
+${niche.targetBuyer || ''}
+
+Money Path:
+${niche.moneyPath || ''}
+
+Pricing Strategy:
+${niche.pricingStrategy || ''}
+
+Offer Stack:
+${bulletList(niche.offerStack)}
+
+Competitor Gaps:
+${bulletList(niche.competitorGaps)}
+
+Gap Monetization Plan:
+${gapPlanText(niche.gapMonetizationPlan)}
+
+Go-To-Market Actions:
+${bulletList(niche.goToMarket)}
+
+Content / Campaign Angles:
+${bulletList(niche.contentAngles)}
+
+Validation Plan:
+${bulletList(niche.validationPlan)}
+
+Risk Flags:
+${bulletList(niche.riskFlags)}
+
+First 30 Days:
+${bulletList(niche.firstThirtyDays)}
+`).join('\n' + '-'.repeat(72) + '\n')}
+
+EMERGING OPPORTUNITIES
+${line}
+${bulletList(analysis.emergingOpportunities)}
+
+90-DAY ROADMAP
+${line}
+${bulletList(analysis.ninetyDayRoadmap)}
+
+KEY PERFORMANCE INDICATORS
+${line}
+${bulletList(analysis.kpis)}
+
+Powered by Scout-Faire | Freedom Uprise Command Intelligence
+`;
+        const blob = new Blob([report], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `scout-faire-enterprise-report-${Date.now()}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+
+      const printReport = () => window.print();
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-slate-100 p-4 md:p-8">
+          <div className="w-full max-w-7xl mx-auto">
+            <div className="no-print bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-6 md:p-8 mb-8">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="p-4 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl shadow-lg text-slate-950">
+                    <TrendingUp />
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.35em] text-amber-300 font-bold">Freedom Uprise Intelligence</p>
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tight">Scout-Faire</h1>
+                    <p className="text-slate-300 mt-1">Pro / Enterprise intelligence that finds competitor gaps and turns them into money moves.</p>
+                  </div>
                 </div>
-                <button type="submit" class="analyze-btn" id="analyze-btn">
-                    Analyze Niche
+                <div className="grid grid-cols-3 gap-3 text-center text-xs md:text-sm">
+                  <div className="bg-white/10 rounded-2xl p-3 border border-white/10"><b className="block text-amber-300">Gaps</b>Competitors</div>
+                  <div className="bg-white/10 rounded-2xl p-3 border border-white/10"><b className="block text-amber-300">Money</b>Gap Plays</div>
+                  <div className="bg-white/10 rounded-2xl p-3 border border-white/10"><b className="block text-amber-300">Motion</b>90 Days</div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <label className="block text-sm font-bold text-slate-200">Enter niches, markets, business ideas, or customer problems</label>
+                <textarea
+                  value={keywords}
+                  onChange={(e) => setKeywords(e.target.value)}
+                  placeholder="e.g., local roofing lead generation, AI bookkeeping for contractors, senior relocation services"
+                  className="w-full px-5 py-4 bg-white text-slate-950 border-2 border-transparent rounded-2xl focus:border-amber-400 focus:ring-4 focus:ring-amber-400/20 transition-all outline-none placeholder:text-slate-400 resize-none"
+                  rows="3"
+                />
+                {error && (
+                  <div className="flex items-start gap-3 p-4 bg-rose-500/10 border border-rose-400/30 rounded-xl text-rose-100">
+                    <AlertCircle /> <span className="text-sm">{error}</span>
+                  </div>
+                )}
+                <button
+                  onClick={analyzeNiche}
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 py-4 rounded-2xl font-black hover:from-amber-300 hover:to-orange-400 transition-all shadow-lg disabled:opacity-60 flex items-center justify-center gap-2"
+                >
+                  {loading ? <><Loader2 /><span>Building Strategy Report...</span></> : <><Search /><span>Generate Pro Report</span></>}
                 </button>
-            </form>
-        </div>
-
-        <!-- Results Section -->
-        <div class="results-section" id="results-section">
-            <h3 class="niche-title" id="results-niche"></h3>
-            
-            <div class="scores-grid" id="scores-grid"></div>
-            
-            <div class="analysis-content" id="analysis-content"></div>
-            
-            <div class="upgrade-prompt" id="upgrade-prompt" style="display: none;">
-                <h3>Want More Insights?</h3>
-                <p id="upgrade-message"></p>
-                <a href="pricing.html" class="upgrade-btn">View Upgrade Options</a>
+              </div>
             </div>
+
+            {analysis && (
+              <div className="space-y-8 text-slate-950">
+                <div className="report-card bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8">
+                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-5 mb-6">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.3em] font-black text-amber-600">{analysis.tierPositioning || 'Pro / Enterprise'}</p>
+                      <h2 className="text-3xl md:text-4xl font-black text-slate-950 mt-2">{analysis.reportTitle}</h2>
+                      <p className="text-slate-500 mt-2">Generated {new Date().toLocaleDateString()} for: {analysis.generatedFor || keywords}</p>
+                    </div>
+                    <div className="no-print flex gap-3">
+                      <button onClick={exportReport} className="flex items-center gap-2 px-5 py-3 bg-slate-950 text-white rounded-xl hover:bg-slate-800 font-bold"><Download /> Export</button>
+                      <button onClick={printReport} className="px-5 py-3 bg-amber-500 text-slate-950 rounded-xl hover:bg-amber-400 font-bold">Print / PDF</button>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-4 mb-6">
+                    <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200"><div className="text-xs font-black uppercase text-slate-500 mb-2">Best Bet</div><div className="font-black text-lg">{analysis.bestBet}</div></div>
+                    <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200"><div className="text-xs font-black uppercase text-slate-500 mb-2">Confidence</div><div className="font-black text-lg">{analysis.confidenceLevel}</div></div>
+                    <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200"><div className="text-xs font-black uppercase text-slate-500 mb-2">Verdict</div><div className="font-black text-lg">{analysis.portfolioVerdict}</div></div>
+                  </div>
+
+                  <div className="grid lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2 bg-indigo-50 rounded-2xl p-6 border border-indigo-100">
+                      <div className="flex items-center gap-3 mb-3 text-indigo-900"><Lightbulb /><h3 className="font-black text-xl">Executive Summary</h3></div>
+                      <p className="leading-relaxed text-slate-800">{analysis.executiveSummary}</p>
+                    </div>
+                    <div className="bg-rose-50 rounded-2xl p-6 border border-rose-100">
+                      <div className="flex items-center gap-3 mb-3 text-rose-900"><Shield /><h3 className="font-black text-xl">Strategic Warnings</h3></div>
+                      <ul className="space-y-2 text-sm text-slate-800">
+                        {ensureArray(analysis.strategicWarnings).map((item, i) => <li key={i}>• {item}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {ensureArray(analysis.niches).map((niche, index) => (
+                  <div key={index} className="report-card bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8">
+                    <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-6">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.25em] text-slate-500 font-black">Niche Deep-Dive</p>
+                        <h3 className="text-3xl font-black text-slate-950 mt-1">{niche.keyword}</h3>
+                        <p className="text-slate-700 leading-relaxed mt-3 max-w-4xl">{niche.marketThesis}</p>
+                      </div>
+                      <div className={`inline-flex flex-col items-center px-7 py-5 rounded-2xl border-2 ${scoreClass(niche.opportunityScore)}`}>
+                        <div className="text-5xl font-black">{niche.opportunityScore}</div>
+                        <div className="text-xs font-black uppercase tracking-wide">Opportunity</div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+                      <Metric label="Trend" value={label(niche.trend)} />
+                      <Metric label="Search" value={label(niche.searchVolume)} />
+                      <Metric label="Competition" value={label(niche.competition)} />
+                      <Metric label="Buy Intent" value={label(niche.buyIntent)} className={intentClass(niche.buyIntent)} />
+                      <Metric label="Confidence" value={niche.confidence || 'Medium'} />
+                    </div>
+
+                    <div className="grid lg:grid-cols-2 gap-5 mb-6">
+                      <Panel title="Buyer Pain" icon={<Target />}>{niche.buyerPain}</Panel>
+                      <Panel title="Target Buyer" icon={<Target />}>{niche.targetBuyer}</Panel>
+                      <Panel title="Money Path" icon={<BarChart3 />}>{niche.moneyPath}</Panel>
+                      <Panel title="Pricing Strategy" icon={<BarChart3 />}>{niche.pricingStrategy}</Panel>
+                    </div>
+
+                    <div className="grid lg:grid-cols-3 gap-5">
+                      <ListPanel title="Offer Stack" items={niche.offerStack} />
+                      <ListPanel title="Competitor Gaps" items={niche.competitorGaps} />
+                      <ListPanel title="Go-To-Market" items={niche.goToMarket} />
+                      <ListPanel title="Campaign Angles" items={niche.contentAngles} />
+                      <ListPanel title="Validation Plan" items={niche.validationPlan} />
+                      <ListPanel title="Risk Flags" items={niche.riskFlags} danger />
+                    </div>
+
+                    <GapMonetizationPanel plans={niche.gapMonetizationPlan} />
+
+                    <div className="mt-6 bg-slate-950 text-white rounded-2xl p-6">
+                      <h4 className="font-black text-xl mb-4 text-amber-300">First 30 Days</h4>
+                      <ol className="grid md:grid-cols-2 gap-3">
+                        {ensureArray(niche.firstThirtyDays).map((item, i) => <li key={i} className="bg-white/10 rounded-xl p-4 border border-white/10"><b>Step {i + 1}:</b> {item}</li>)}
+                      </ol>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="report-card bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 md:p-8">
+                  <div className="grid lg:grid-cols-3 gap-6">
+                    <ListPanel title="Emerging Opportunities" items={analysis.emergingOpportunities} />
+                    <ListPanel title="90-Day Roadmap" items={analysis.ninetyDayRoadmap} />
+                    <ListPanel title="KPIs to Watch" items={analysis.kpis} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="no-print mt-8 text-center text-sm text-slate-400">
+              Powered by <span className="font-bold text-amber-300">Scout-Faire</span> | Freedom Uprise Command Intelligence
+            </div>
+          </div>
         </div>
-    </div>
-
-    <script>
-        // Global state
-        let userData = null;
-        const API_BASE = 'https://amatuedda-backend-production.up.railway.app';
-
-        // Check auth on page load
-        window.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('auth_token');
-    
-    if (!token) {
-        // window.location.href = 'login.html';  // ← COMMENTED OUT
-        // return;
-        // TEMP: Set fake user data for testing
-        userData = { id: 'test', email: 'test@example.com', tier: 'oracle', searches_remaining: 999 };
-        updateUserDisplay();
-        return;
+      );
     }
 
-            try {
-                const response = await fetch(`${API_BASE}/api/auth/me`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+    function Metric({ label, value, className = '' }) {
+      return <div className={`p-4 rounded-2xl border bg-slate-50 border-slate-200 ${className}`}><div className="text-xs font-black uppercase opacity-70 mb-1">{label}</div><div className="font-black">{value}</div></div>;
+    }
 
-                const data = await response.json();
+    function Panel({ title, icon, children }) {
+      return <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200"><div className="flex items-center gap-2 mb-2 text-slate-950 font-black">{icon}<h4>{title}</h4></div><p className="text-slate-700 leading-relaxed">{children}</p></div>;
+    }
 
-                if (!data.success) {
-                    localStorage.removeItem('auth_token');
-                    window.location.href = 'login.html';
-                    return;
-                }
-
-                userData = data.user;
-                updateUserDisplay();
-            } catch (error) {
-                console.error('Auth check failed:', error);
-                window.location.href = 'login.html';
-            }
-        });
-
-        function updateUserDisplay() {
-            document.getElementById('user-email').textContent = userData.email;
-            
-            const tierBadge = document.getElementById('tier-badge');
-            tierBadge.textContent = userData.tier.toUpperCase();
-            tierBadge.className = `tier-badge tier-${userData.tier}`;
-            
-            const counter = document.getElementById('search-counter');
-            if (userData.tier === 'free') {
-                counter.textContent = `${userData.searches_remaining} of 5 searches remaining`;
-            } else {
-                counter.textContent = `Unlimited searches (${userData.tier.toUpperCase()} tier)`;
-            }
-        }
-
-        // Handle analysis form submission
-        document.getElementById('analysis-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const niche = document.getElementById('niche-input').value.trim();
-            const errorMessage = document.getElementById('error-message');
-            const analyzeBtn = document.getElementById('analyze-btn');
-            const resultsSection = document.getElementById('results-section');
-
-            // Clear previous errors
-            errorMessage.classList.remove('show');
-            errorMessage.textContent = '';
-
-            // Hide previous results
-            resultsSection.classList.remove('show');
-
-            // Show loading state
-            analyzeBtn.disabled = true;
-            analyzeBtn.textContent = 'Analyzing...';
-
-            try {
-                const response = await fetch(`${API_BASE}/api/analysis/niche`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        niche: niche,
-                        userId: userData.id
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!data.success) {
-                    if (data.error === 'limit_reached') {
-                        showUpgradePrompt();
-                        throw new Error(data.message || 'Monthly search limit reached');
-                    }
-                    throw new Error(data.error || 'Analysis failed');
-                }
-
-                // Update search counter
-                userData.searches_remaining = data.usage.searches_remaining;
-                updateUserDisplay();
-
-                // Show results
-                displayResults(niche, data);
-
-            } catch (error) {
-                errorMessage.textContent = error.message;
-                errorMessage.classList.add('show');
-            } finally {
-                analyzeBtn.disabled = false;
-                analyzeBtn.textContent = 'Analyze Niche';
-            }
-        });
-
-        function displayResults(niche, data) {
-            const resultsSection = document.getElementById('results-section');
-            const resultsNiche = document.getElementById('results-niche');
-            const scoresGrid = document.getElementById('scores-grid');
-            const analysisContent = document.getElementById('analysis-content');
-
-            // Set niche title
-            resultsNiche.textContent = niche.toUpperCase();
-
-            // Display scores
-            scoresGrid.innerHTML = '';
-            const scores = data.scores || {};
-            
-            if (scores.market !== null) {
-                scoresGrid.innerHTML += createScoreCard('Market Demand', scores.market);
-            }
-            if (scores.competition !== null) {
-                scoresGrid.innerHTML += createScoreCard('Competition', scores.competition);
-            }
-            if (scores.profitability !== null) {
-                scoresGrid.innerHTML += createScoreCard('Profitability', scores.profitability);
-            }
-            if (scores.overall !== null) {
-                scoresGrid.innerHTML += createScoreCard('Overall Opportunity', scores.overall);
-            }
-
-            // Display analysis (now as HTML)
-            analysisContent.innerHTML = data.analysis;
-
-            // Show upgrade prompt if free tier
-            if (userData.tier === 'free') {
-                showTierUpgradeMessage('free');
-            } else if (userData.tier === 'elite') {
-                showTierUpgradeMessage('elite');
-            }
-
-            // Show results
-            resultsSection.classList.add('show');
-            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function createScoreCard(label, value) {
-            return `
-                <div class="score-card">
-                    <div class="score-label">${label}</div>
-                    <div class="score-value">${value}/10</div>
+    function GapMonetizationPanel({ plans }) {
+      const safePlans = ensureArray(plans);
+      return (
+        <div className="mt-6 bg-amber-50 border-2 border-amber-200 rounded-2xl p-6">
+          <div className="flex items-center gap-3 mb-5 text-slate-950"><BarChart3 /><h4 className="font-black text-2xl">Competitor Gap → Money Plan</h4></div>
+          <p className="text-slate-700 mb-5 leading-relaxed">This is the enterprise section: what the competition is missing, why the buyer cares, and exactly how to turn that weakness into revenue.</p>
+          <div className="space-y-5">
+            {safePlans.length ? safePlans.map((plan, i) => (
+              <div key={i} className="bg-white rounded-2xl border border-amber-200 p-5 shadow-sm">
+                <div className="text-xs font-black uppercase tracking-[0.2em] text-amber-700 mb-2">Gap Play {i + 1}</div>
+                <h5 className="font-black text-xl text-slate-950 mb-3">{plan.gap || 'Untitled competitor gap'}</h5>
+                <div className="grid lg:grid-cols-2 gap-4 text-sm">
+                  <MiniBlock label="Why Buyers Care" value={plan.whyItMatters} />
+                  <MiniBlock label="Money Move" value={plan.moneyMove} />
+                  <MiniBlock label="Named Offer" value={plan.offer} />
+                  <MiniBlock label="Price Logic" value={plan.priceLogic} />
+                  <MiniBlock label="Proof To Collect" value={plan.proofToCollect} />
+                  <MiniBlock label="First Campaign" value={plan.firstCampaign} />
                 </div>
-            `;
-        }
+                <div className="mt-4 bg-slate-950 text-white rounded-xl p-4">
+                  <div className="font-black text-amber-300 mb-2">Execution Plan</div>
+                  <ol className="space-y-2 text-sm">
+                    {ensureArray(plan.executionPlan).map((step, stepIndex) => <li key={stepIndex}><b>{stepIndex + 1}.</b> {step}</li>)}
+                  </ol>
+                </div>
+              </div>
+            )) : <div className="text-slate-500">No gap monetization plan was returned.</div>}
+          </div>
+        </div>
+      );
+    }
 
-        function showTierUpgradeMessage(tier) {
-            const upgradePrompt = document.getElementById('upgrade-prompt');
-            const upgradeMessage = document.getElementById('upgrade-message');
+    function MiniBlock({ label, value }) {
+      return <div className="bg-slate-50 border border-slate-200 rounded-xl p-4"><div className="text-xs font-black uppercase text-slate-500 mb-1">{label}</div><div className="text-slate-800 leading-relaxed">{value || 'Not specified'}</div></div>;
+    }
 
-            if (tier === 'free') {
-                upgradeMessage.textContent = 'Upgrade to ELITE to see competitor gaps and opportunities, or ORACLE for full monetization blueprints.';
-                upgradePrompt.style.display = 'block';
-            } else if (tier === 'elite') {
-                upgradeMessage.textContent = 'Upgrade to ORACLE to get detailed monetization blueprints showing exactly how to profit from each gap.';
-                upgradePrompt.style.display = 'block';
-            }
-        }
+    function ListPanel({ title, items, danger = false }) {
+      const safeItems = ensureArray(items);
+      return <div className={`${danger ? 'bg-rose-50 border-rose-100' : 'bg-slate-50 border-slate-200'} rounded-2xl p-5 border`}><h4 className="font-black text-slate-950 mb-4">{title}</h4><ul className="space-y-3 text-sm text-slate-700">{safeItems.length ? safeItems.map((item, i) => <li key={i} className="flex gap-2"><span className="font-black text-amber-600">{i + 1}.</span><span>{item}</span></li>) : <li className="text-slate-400">Not specified</li>}</ul></div>;
+    }
 
-        function showUpgradePrompt() {
-            const upgradePrompt = document.getElementById('upgrade-prompt');
-            const upgradeMessage = document.getElementById('upgrade-message');
-            upgradeMessage.textContent = "You've used all 5 free searches this month. Upgrade for unlimited analyses!";
-            upgradePrompt.style.display = 'block';
-        }
-
-        function logout() {
-            localStorage.removeItem('auth_token');
-            window.location.href = 'login.html';
-        }
-    </script>
+    ReactDOM.render(<NicheAnalyzer />, document.getElementById('root'));
+  </script>
 </body>
 </html>
