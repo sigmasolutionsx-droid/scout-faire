@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scout-Faire Training — Your Business Launchpad</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+    :root {
+      --navy:   #0a0f1e;
+      --navy2:  #111827;
+      --gold:   #c9a84c;
+      --gold2:  #e8c96d;
+      --red:    #c8102e;
+      --blue:   #003f87;
+      --white:  #f5f0e8;
+      --grey:   #6b7280;
+      --card:   rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'DM Sans',sans-serif; background:var(--navy); color:var(--white); min-height:100vh; }
+
+    /* Header */
+    header {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:20px 48px; border-bottom:1px solid var(--border);
+      position:sticky; top:0; z-index:100;
+      background:rgba(10,15,30,0.92); backdrop-filter:blur(12px);
+    }
+    header img { height:48px; }
+    .header-nav { display:flex; gap:24px; align-items:center; }
+    .header-nav a { color:rgba(245,240,232,0.7); text-decoration:none; font-size:0.9rem; transition:color 0.2s; }
+    .header-nav a:hover { color:var(--gold); }
+    .btn-app { background:var(--red); color:#fff!important; padding:9px 22px; border-radius:6px; font-weight:600; }
+
+    /* Hero */
+    .training-hero {
+      text-align:center; padding:72px 24px 56px;
+      background:linear-gradient(180deg, rgba(201,168,76,0.04) 0%, transparent 100%);
+      border-bottom:1px solid var(--border);
+    }
+    .training-hero-badge {
+      display:inline-block; background:rgba(201,168,76,0.1);
+      border:1px solid rgba(201,168,76,0.25); border-radius:20px;
+      padding:5px 16px; font-size:0.75rem; color:var(--gold);
+      letter-spacing:1.5px; text-transform:uppercase; margin-bottom:24px;
+    }
+    .training-hero h1 {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(2rem,4vw,3.2rem); font-weight:900;
+      margin-bottom:14px;
+    }
+    .training-hero p {
+      color:rgba(245,240,232,0.6); font-size:1rem; max-width:520px;
+      margin:0 auto; line-height:1.7;
+    }
+
+    /* Course grid */
+    .courses-wrap { max-width:1100px; margin:0 auto; padding:64px 24px; }
+
+    .courses-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:32px;
+    }
+    @media(max-width:768px){ .courses-grid{ grid-template-columns:1fr; } }
+
+    /* Course card */
+    .course-card {
+      border-radius:16px; overflow:hidden;
+      border:1px solid var(--border);
+      background:var(--card);
+      display:flex; flex-direction:column;
+    }
+    .course-card.beginner { border-color:rgba(201,168,76,0.25); }
+    .course-card.advanced { border-color:rgba(0,63,135,0.35); }
+
+    .course-header {
+      padding:28px 28px 20px;
+      background:linear-gradient(135deg, rgba(255,255,255,0.03), transparent);
+      border-bottom:1px solid var(--border);
+    }
+    .course-level {
+      font-size:0.72rem; text-transform:uppercase; letter-spacing:2px;
+      margin-bottom:8px;
+    }
+    .course-card.beginner .course-level { color:var(--gold); }
+    .course-card.advanced .course-level { color:#6ba3f5; }
+
+    .course-title {
+      font-family:'Playfair Display',serif;
+      font-size:1.6rem; font-weight:900; margin-bottom:8px;
+    }
+    .course-tagline { font-size:0.88rem; color:rgba(245,240,232,0.55); line-height:1.5; }
+
+    .course-meta {
+      display:flex; gap:20px; margin-top:16px;
+    }
+    .course-meta-item { font-size:0.78rem; color:var(--grey); }
+    .course-meta-item span { color:var(--white); font-weight:600; margin-right:4px; }
+
+    .course-tier-badge {
+      display:inline-block; margin-top:12px;
+      padding:4px 12px; border-radius:4px;
+      font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;
+    }
+    .badge-pro { background:rgba(201,168,76,0.15); color:var(--gold); }
+    .badge-enterprise { background:rgba(0,63,135,0.2); color:#6ba3f5; }
+
+    /* Modules */
+    .course-modules { padding:20px 28px; flex:1; }
+    .modules-label {
+      font-size:0.7rem; text-transform:uppercase; letter-spacing:1.5px;
+      color:var(--grey); margin-bottom:14px;
+    }
+
+    .module {
+      border:1px solid var(--border);
+      border-radius:10px; margin-bottom:10px; overflow:hidden;
+    }
+    .module-header {
+      display:flex; align-items:center; gap:14px;
+      padding:14px 16px; cursor:pointer;
+      transition:background 0.15s;
+    }
+    .module-header:hover { background:rgba(255,255,255,0.03); }
+    .module-num {
+      width:28px; height:28px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:0.75rem; font-weight:700; flex-shrink:0;
+    }
+    .beginner .module-num { background:rgba(201,168,76,0.15); color:var(--gold); }
+    .advanced .module-num { background:rgba(0,63,135,0.2); color:#6ba3f5; }
+
+    .module-info { flex:1; }
+    .module-title { font-size:0.88rem; font-weight:600; margin-bottom:2px; }
+    .module-lessons { font-size:0.75rem; color:var(--grey); }
+    .module-toggle { color:var(--grey); font-size:0.8rem; transition:transform 0.2s; }
+    .module.open .module-toggle { transform:rotate(180deg); }
+
+    .module-lessons-list {
+      display:none; padding:0 16px 14px 58px;
+      border-top:1px solid var(--border);
+    }
+    .module.open .module-lessons-list { display:block; }
+    .lesson {
+      display:flex; align-items:center; gap:10px;
+      padding:8px 0; font-size:0.82rem;
+      color:rgba(245,240,232,0.7); border-bottom:1px solid rgba(255,255,255,0.04);
+    }
+    .lesson:last-child { border-bottom:none; }
+    .lesson-icon { font-size:0.75rem; flex-shrink:0; }
+    .lesson-duration { margin-left:auto; color:var(--grey); font-size:0.75rem; white-space:nowrap; }
+    .lesson.locked { opacity:0.4; }
+
+    /* Course footer */
+    .course-footer { padding:20px 28px; border-top:1px solid var(--border); }
+    .course-btn {
+      display:block; width:100%; padding:13px;
+      border:none; border-radius:8px;
+      font-family:'DM Sans',sans-serif; font-size:0.92rem;
+      font-weight:700; cursor:pointer; text-align:center;
+      text-decoration:none; transition:all 0.2s;
+    }
+    .btn-beginner {
+      background:linear-gradient(135deg,var(--gold),#a07830);
+      color:#000; box-shadow:0 4px 16px rgba(201,168,76,0.25);
+    }
+    .btn-beginner:hover { box-shadow:0 6px 24px rgba(201,168,76,0.4); transform:translateY(-2px); }
+    .btn-advanced {
+      background:linear-gradient(135deg,var(--blue),#001f44);
+      color:#fff; box-shadow:0 4px 16px rgba(0,63,135,0.25);
+    }
+    .btn-advanced:hover { box-shadow:0 6px 24px rgba(0,63,135,0.4); transform:translateY(-2px); }
+    .course-btn-note { text-align:center; font-size:0.75rem; color:var(--grey); margin-top:8px; }
+
+    /* What you'll learn */
+    .outcomes-section {
+      max-width:1100px; margin:0 auto; padding:0 24px 80px;
+    }
+    .outcomes-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:40px;
+    }
+    @media(max-width:768px){ .outcomes-grid{ grid-template-columns:1fr; } }
+
+    .outcomes-block h3 {
+      font-family:'Playfair Display',serif;
+      font-size:1.3rem; margin-bottom:20px;
+    }
+    .outcome {
+      display:flex; align-items:flex-start; gap:12px;
+      padding:10px 0; border-bottom:1px solid var(--border);
+      font-size:0.87rem; color:rgba(245,240,232,0.8); line-height:1.5;
+    }
+    .outcome:last-child { border-bottom:none; }
+    .outcome-icon { flex-shrink:0; margin-top:1px; }
+
+    /* Gold divider */
+    .gold-divider {
+      max-width:1100px; margin:0 auto 48px; padding:0 24px;
+      display:flex; align-items:center; gap:16px;
+    }
+    .gold-divider::before,.gold-divider::after {
+      content:''; flex:1; height:1px;
+      background:linear-gradient(90deg,transparent,rgba(201,168,76,0.3),transparent);
+    }
+    .gold-divider span {
+      color:var(--gold); font-size:0.72rem; letter-spacing:2px; text-transform:uppercase; white-space:nowrap;
+    }
+
+    /* Footer */
+    footer {
+      text-align:center; padding:40px 24px;
+      border-top:1px solid var(--border);
+      color:var(--grey); font-size:0.82rem;
+    }
+    footer img { height:32px; margin-bottom:12px; opacity:0.5; display:block; margin-left:auto; margin-right:auto; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/"><img src="/logo.png" alt="Scout-Faire"></a>
+  <nav class="header-nav">
+    <a href="/">Home</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/" class="btn-app">Open App →</a>
+  </nav>
+</header>
+
+<div class="training-hero">
+  <div class="training-hero-badge">Scout-Faire Training</div>
+  <h1>Learn. Launch. Scale.</h1>
+  <p>A complete training library built around the Freedom Uprise process. Start with the fundamentals, then unlock the Enterprise library — deep-dive guides on audience building, community strategy, and list monetization.</p>
+</div>
+
+<div class="courses-wrap">
+  <div class="courses-grid">
+
+    <!-- BEGINNER COURSE -->
+    <div class="course-card beginner">
+      <img src="/course1-cover.png" alt="Your First 30 Days" style="width:100%;height:auto;display:block;">
+      <div class="course-header">
+        <div class="course-level">Course 1 · Beginner</div>
+        <div class="course-title">Your First 30 Days</div>
+        <div class="course-tagline">From niche report to first paying customer. Follow the 5 processes step by step with Scout guiding every move.</div>
+        <div class="course-meta">
+          <div class="course-meta-item"><span>6</span>modules</div>
+          <div class="course-meta-item"><span>24</span>lessons</div>
+          <div class="course-meta-item"><span>~4hrs</span>total</div>
+        </div>
+        <span class="course-tier-badge badge-pro">Pro + Enterprise</span>
+      </div>
+
+      <div class="course-modules">
+        <div class="modules-label">Course Modules</div>
+
+        <!-- Module 1 -->
+        <div class="module open">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">1</div>
+            <div class="module-info">
+              <div class="module-title">Reading Your Report</div>
+              <div class="module-lessons">4 lessons · 35 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>What every section of your report means<span class="lesson-duration">8 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>How to read the profitability score<span class="lesson-duration">6 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Understanding your competitor gaps<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Picking your first gap to pursue<span class="lesson-duration">11 min</span></div>
+          </div>
+        </div>
+
+        <!-- Module 2 -->
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">2</div>
+            <div class="module-info">
+              <div class="module-title">Process 1 — Foundation</div>
+              <div class="module-lessons">5 lessons · 42 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>Naming and pricing your offer<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Writing your buyer in one sentence<span class="lesson-duration">7 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Your positioning statement<span class="lesson-duration">8 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Writing your first outreach message<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Foundation checklist — are you ready?<span class="lesson-duration">8 min</span></div>
+          </div>
+        </div>
+
+        <!-- Module 3 -->
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">3</div>
+            <div class="module-info">
+              <div class="module-title">Process 2 — Outreach</div>
+              <div class="module-lessons">4 lessons · 38 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>Building your first 50-contact list<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Sending your first 20 messages<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Tracking replies without a CRM<span class="lesson-duration">8 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Outreach checklist — are you ready?<span class="lesson-duration">11 min</span></div>
+          </div>
+        </div>
+
+        <!-- Module 4 -->
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">4</div>
+            <div class="module-info">
+              <div class="module-title">Process 3 — Validation</div>
+              <div class="module-lessons">4 lessons · 36 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>How to run a validation conversation<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Documenting objections the right way<span class="lesson-duration">8 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Refining your offer based on feedback<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Validation checklist — are you ready?<span class="lesson-duration">9 min</span></div>
+          </div>
+        </div>
+
+        <!-- Module 5 -->
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">5</div>
+            <div class="module-info">
+              <div class="module-title">Process 4 & 5 — Launch & Review</div>
+              <div class="module-lessons">4 lessons · 40 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>Making your first direct offer<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>What to do when they say no<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Running your end-of-month review<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Go / Pivot / Upgrade — making the call<span class="lesson-duration">11 min</span></div>
+          </div>
+        </div>
+
+        <!-- Module 6 -->
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">6</div>
+            <div class="module-info">
+              <div class="module-title">Using Scout AI Every Day</div>
+              <div class="module-lessons">3 lessons · 24 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>How to ask Scout your next move<span class="lesson-duration">8 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Using Scout when you're stuck<span class="lesson-duration">8 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Clustering tasks around your day<span class="lesson-duration">8 min</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="course-footer">
+        <a href="/pricing.html" class="course-btn btn-beginner">Start Course 1 — Included with Pro</a>
+        <div class="course-btn-note">Included with Pro, Founders Pack &amp; Enterprise · No extra charge</div>
+      </div>
+    </div>
+
+    <!-- LEVEL 2 COURSE -->
+    <div class="course-card advanced">
+      <img src="/course2-cover.png" alt="Scale &amp; Systems" style="width:100%;height:auto;display:block;">
+      <div class="course-header">
+        <div class="course-level">Course 2 · Level 2</div>
+        <div class="course-title">Scale &amp; Systems</div>
+        <div class="course-tagline">You've made your first sale. Now build the systems that run without you, stack multiple niches, and turn Scout-Faire into a full business engine.</div>
+        <div class="course-meta">
+          <div class="course-meta-item"><span>7</span>modules</div>
+          <div class="course-meta-item"><span>28</span>lessons</div>
+          <div class="course-meta-item"><span>~5hrs</span>total</div>
+        </div>
+        <span class="course-tier-badge badge-enterprise">Enterprise Only</span>
+      </div>
+
+      <div class="course-modules">
+        <div class="modules-label">Course Modules</div>
+
+        <!-- Module 1 -->
+        <div class="module open">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">1</div>
+            <div class="module-info">
+              <div class="module-title">Month 2 — What Changes</div>
+              <div class="module-lessons">3 lessons · 28 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>Reading your Month 2 rebuilt report<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>What the EOM interview tells you<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Setting Month 2 goals based on Month 1 data<span class="lesson-duration">9 min</span></div>
+          </div>
+        </div>
+
+        <!-- Module 2 -->
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">2</div>
+            <div class="module-info">
+              <div class="module-title">Building Your Outreach System</div>
+              <div class="module-lessons">4 lessons · 38 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>Turning your outreach message into a repeatable sequence<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Batching contacts so outreach runs in 1 hour/week<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Setting up a simple CRM for your pipeline<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Writing email sequences that convert<span class="lesson-duration">9 min</span></div>
+          </div>
+        </div>
+
+        <!-- Module 3 -->
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">3</div>
+            <div class="module-info">
+              <div class="module-title">Content That Brings Buyers to You</div>
+              <div class="module-lessons">4 lessons · 36 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>Using your report's content angles as a posting schedule<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Turning your social media package into a 30-day calendar<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Growing your audience with free tools<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Direct messaging campaigns that don't feel spammy<span class="lesson-duration">8 min</span></div>
+          </div>
+        </div>
+
+        <!-- Module 4 -->
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">4</div>
+            <div class="module-info">
+              <div class="module-title">Building Your First Product</div>
+              <div class="module-lessons">4 lessons · 42 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>Choosing your product type from report data<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Building the product spec from your report gaps<span class="lesson-duration">12 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Building your sales funnel step by step<span class="lesson-duration">11 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Pricing your product using the report's ceiling data<span class="lesson-duration">9 min</span></div>
+          </div>
+        </div>
+
+        <!-- Module 5 -->
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">5</div>
+            <div class="module-info">
+              <div class="module-title">Stacking Niches</div>
+              <div class="module-lessons">4 lessons · 36 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>When you're ready to add a second niche<span class="lesson-duration">8 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>How to run two niches without losing focus<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Finding niches that share buyers<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Using Scout AI to manage multiple niche contexts<span class="lesson-duration">9 min</span></div>
+          </div>
+        </div>
+
+        <!-- Module 6 -->
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">6</div>
+            <div class="module-info">
+              <div class="module-title">Advanced Scout AI Coaching</div>
+              <div class="module-lessons">5 lessons · 44 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>Getting Scout to write your assets on demand<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Using Scout for situational task clustering<span class="lesson-duration">8 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Asking Scout to review your outreach and offers<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Building a weekly rhythm with Scout<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Scout prompts that get the best answers<span class="lesson-duration">9 min</span></div>
+          </div>
+        </div>
+
+        <!-- Module 7 -->
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">7</div>
+            <div class="module-info">
+              <div class="module-title">Building to $5,000/mo</div>
+              <div class="module-lessons">4 lessons · 38 min</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">▶</span>What $5K/mo actually requires — the math<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Raising prices vs getting more customers<span class="lesson-duration">9 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Building referral systems that work<span class="lesson-duration">10 min</span></div>
+            <div class="lesson"><span class="lesson-icon">▶</span>Your 90-day roadmap to $5K/mo<span class="lesson-duration">9 min</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="course-footer">
+        <a href="/pricing.html" class="course-btn btn-advanced">Start Course 2 — Enterprise Only</a>
+        <div class="course-btn-note">Included with Enterprise Annual · $66.42/mo locked forever</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="gold-divider"><span>Enterprise Training Library</span></div>
+<div style="text-align:center;padding:0 24px 40px;max-width:600px;margin:0 auto">
+  <p style="color:rgba(245,240,232,0.55);font-size:0.92rem;line-height:1.7">Deep-dive training guides exclusively for Enterprise members. Each one is a complete blueprint you can execute immediately.</p>
+</div>
+
+<div class="courses-wrap" style="padding-top:0">
+  <div class="courses-grid">
+
+    <!-- COURSE 3: DRIVE CAPTURE MAIL -->
+    <div class="course-card advanced">
+      <div class="course-header">
+        <div class="course-level">Guide 1 · Audience Building</div>
+        <div class="course-title">Drive Capture Mail</div>
+        <div class="course-tagline">The three keys to building a bigger, healthier, and more reliable audience — and turning it into a business that pays you every day.</div>
+        <div class="course-meta">
+          <div class="course-meta-item"><span>5</span>sections</div>
+          <div class="course-meta-item"><span>15</span>topics</div>
+          <div class="course-meta-item"><span>~1hr</span>read</div>
+        </div>
+        <span class="course-tier-badge badge-enterprise">Enterprise Only</span>
+      </div>
+
+      <div class="course-modules">
+        <div class="modules-label">Guide Sections</div>
+
+        <div class="module open">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">1</div>
+            <div class="module-info">
+              <div class="module-title">The Three Keys</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Why your list is not the goal — your business is</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>The correct order: offer → traffic → capture → mail</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>The subscriber decay clock — day one is peak interest</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">2</div>
+            <div class="module-info">
+              <div class="module-title">Part 1 — Drive</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Better traffic vs more traffic — quality over quantity</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>People travel in tribes — find the stadiums</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Buy, borrow, and create — the three traffic sources</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">3</div>
+            <div class="module-info">
+              <div class="module-title">Part 2 — Capture</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Maximize every inch of web real estate — 7 capture points</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Ask, don't demand — the opt-in philosophy</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Know your numbers — tracking capture rates</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">4</div>
+            <div class="module-info">
+              <div class="module-title">Part 3 — Mail</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Mail aggressively with strategy — congruent campaigns</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Single vs double opt-in and the decay ratio</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Polarity is targeting — attract the right, filter the rest</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">5</div>
+            <div class="module-info">
+              <div class="module-title">Action Plan — All Three Together</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Your weekly system — Monday to Friday cadence</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Using Scout-Faire to target before you spend</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Daily mailing without exceptions</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="course-footer">
+        <a href="/pricing.html" class="course-btn btn-advanced">Access Guide — Enterprise Only</a>
+        <div class="course-btn-note">Included with Enterprise Annual · $66.42/mo locked forever</div>
+      </div>
+    </div>
+
+    <!-- COURSE 4: DRIVING HOOKS -->
+    <div class="course-card advanced">
+      <div class="course-header">
+        <div class="course-level">Guide 2 · Strategic Marketing</div>
+        <div class="course-title">Driving Hooks</div>
+        <div class="course-tagline">Strategic audience-first online marketing. Stop chasing customers — learn how to make them come right to you.</div>
+        <div class="course-meta">
+          <div class="course-meta-item"><span>7</span>sections</div>
+          <div class="course-meta-item"><span>18</span>topics</div>
+          <div class="course-meta-item"><span>~1hr</span>read</div>
+        </div>
+        <span class="course-tier-badge badge-enterprise">Enterprise Only</span>
+      </div>
+
+      <div class="course-modules">
+        <div class="modules-label">Guide Sections</div>
+
+        <div class="module open">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">1</div>
+            <div class="module-info">
+              <div class="module-title">The Core Principle</div>
+              <div class="module-lessons">2 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Why chasing is inefficient — strategic positioning wins</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Be the destination the fish seek, not the fisherman who chases</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">2</div>
+            <div class="module-info">
+              <div class="module-title">Audience First — Always</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>The correct sequence — audience before product</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Identify preferences, digital hangouts, and challenges</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Position your bait where they already congregate</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">3</div>
+            <div class="module-info">
+              <div class="module-title">Lead Magnets &amp; Positioning</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>The magnet analogy — attract, don't chase</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Building compelling hooks that filter for quality leads</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>If the fish aren't biting — refine your audience or your bait</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">4</div>
+            <div class="module-info">
+              <div class="module-title">Build Your Digital Stadium</div>
+              <div class="module-lessons">2 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Where to build — groups, email lists, forums, channels</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Your stadium as a beacon of value — not a sales pit</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">5</div>
+            <div class="module-info">
+              <div class="module-title">Research: Know Your Audience</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Deep research — likes, dislikes, needs, and pain points</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Creating value content — reports, videos, webinars, email series</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Matching content format to effort level and impact</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">6</div>
+            <div class="module-info">
+              <div class="module-title">Engage &amp; Build Your Tribe</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Give away value first — tips, insights, checklists</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>The email sequence power — building relationships on autopilot</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Why people follow you, not your product</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">7</div>
+            <div class="module-info">
+              <div class="module-title">From Satisfaction to Loyalty</div>
+              <div class="module-lessons">2 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Turning satisfied buyers into loyal advocates</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>The loyalty difference — repeat, refer, and defend your brand</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="course-footer">
+        <a href="/pricing.html" class="course-btn btn-advanced">Access Guide — Enterprise Only</a>
+        <div class="course-btn-note">Included with Enterprise Annual · $66.42/mo locked forever</div>
+      </div>
+    </div>
+
+    <!-- COURSE 5: COMMUNITY FUNNEL BUILDER -->
+    <div class="course-card advanced">
+      <div class="course-header">
+        <div class="course-level">Guide 3 · Community Strategy</div>
+        <div class="course-title">Community Funnel Builder</div>
+        <div class="course-tagline">Build a niche community, find the gap, grow the list, and turn attention into revenue — without building on borrowed ground.</div>
+        <div class="course-meta">
+          <div class="course-meta-item"><span>10</span>modules</div>
+          <div class="course-meta-item"><span>30</span>topics</div>
+          <div class="course-meta-item"><span>~2hrs</span>read</div>
+        </div>
+        <span class="course-tier-badge badge-enterprise">Enterprise Only</span>
+      </div>
+
+      <div class="course-modules">
+        <div class="modules-label">Guide Modules</div>
+
+        <div class="module open">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">1</div>
+            <div class="module-info">
+              <div class="module-title">The First 30 Days: Build the Foundation</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Find the focus — narrow niche, strong transformation</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Position the group — names and promises that attract</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Scout the terrain before inviting a single member</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">2</div>
+            <div class="module-info">
+              <div class="module-title">Culture Code: Rules, Trust &amp; Control</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Set 7–10 enforceable rules with positive language</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Choose privacy with purpose — public vs private vs hidden</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Build the admin toolkit before launch</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">3</div>
+            <div class="module-info">
+              <div class="module-title">The Feeder System: 0 to 1,000</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Public platforms feed the group — teasers to deep dives</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>First 90 days — warm base + borrowed trust partnerships</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Track join requests, acceptance rate, and active conversations</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">4</div>
+            <div class="module-info">
+              <div class="module-title">The Engagement Engine</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>High-impact post types — questions, polls, spotlights, lives</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Scout the answers — comments are market research</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Turn repeated blockers into training assets and offers</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">5</div>
+            <div class="module-info">
+              <div class="module-title">The Weekly Rhythm</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Sample Monday–Sunday posting cadence</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Consistency beats random effort — train members to engage</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Repurpose — one post becomes an email, a guide, a template</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">6</div>
+            <div class="module-info">
+              <div class="module-title">The Revenue Path</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Revenue models — VIP, challenges, courses, affiliate</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Value first, then make the next step obvious</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Match the offer to the gap the group proved exists</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">7</div>
+            <div class="module-info">
+              <div class="module-title">VIP &amp; Challenge Funnel</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Simple funnel path — public → group → magnet → email → offer</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>The funnel should feel like the natural next move</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Enterprise asset angle — done-for-you templates and copy</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">8</div>
+            <div class="module-info">
+              <div class="module-title">AI, Moderation &amp; Community Health</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>AI as your assistant — pattern spotting, content drafts, sentiment</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Monitor engagement quality, not just member count</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Reach out when top members disappear</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">9</div>
+            <div class="module-info">
+              <div class="module-title">The Owned Platform Warning</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Borrowed ground risk — policy changes can kill reach overnight</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Collect emails early, move members into owned ecosystems</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Every major piece of value points to something you control</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">10</div>
+            <div class="module-info">
+              <div class="module-title">The 30-Day Action Plan</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Days 1–10: Niche, culture code, admin tools, seed posts</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Days 11–20: Invite, create lead magnet, start email capture</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Days 21–30: Build email sequence, review gaps, plan next asset</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="course-footer">
+        <a href="/pricing.html" class="course-btn btn-advanced">Access Guide — Enterprise Only</a>
+        <div class="course-btn-note">Included with Enterprise Annual · $66.42/mo locked forever</div>
+      </div>
+    </div>
+
+    <!-- COURSE 6: LIST BUILDING MASTERY -->
+    <div class="course-card advanced">
+      <div class="course-header">
+        <div class="course-level">Guide 4 · List Monetization</div>
+        <div class="course-title">List Building Mastery</div>
+        <div class="course-tagline">Build a targeted, profitable audience in the modern digital age. Capture, segment, monetize — and never apologize for emailing.</div>
+        <div class="course-meta">
+          <div class="course-meta-item"><span>8</span>sections</div>
+          <div class="course-meta-item"><span>24</span>topics</div>
+          <div class="course-meta-item"><span>~1.5hrs</span>read</div>
+        </div>
+        <span class="course-tier-badge badge-enterprise">Enterprise Only</span>
+      </div>
+
+      <div class="course-modules">
+        <div class="modules-label">Guide Sections</div>
+
+        <div class="module open">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">1</div>
+            <div class="module-info">
+              <div class="module-title">The Modern List: Beyond the Autoresponder</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Multi-platform stadiums — email, groups, YouTube, SMS, forums</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>One-click opt-in and invisible lead capture technology</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Resilience through diversified audience channels</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">2</div>
+            <div class="module-info">
+              <div class="module-title">Build With Purpose, Not Volume</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Growth for growth's sake is cancer — grow with intention</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Reverse-engineer your funnel from the end-goal offer</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>6-step funnel design: offer → subscriber → traffic → magnet → page → sequence</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">3</div>
+            <div class="module-info">
+              <div class="module-title">Attract, Don't Collect</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Attraction vs collection — find the hungry stream first</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>The Girl Scout cookie table — position where demand exists</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Educate, engage, entertain — the three value pillars</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">4</div>
+            <div class="module-info">
+              <div class="module-title">Segmentation: Not All Subscribers Are Equal</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>The 5-list system: Freebie → Entry → Gold → Platinum → JV</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Automation rules — move subscribers between lists automatically</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Talking to everybody means talking to nobody</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">5</div>
+            <div class="module-info">
+              <div class="module-title">Modern Lead Capture Technology</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Social API opt-in, invisible capture, and share gates</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Contest scripts and referral systems for viral growth</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Squeeze page design — simplicity wins in savvy markets</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">6</div>
+            <div class="module-info">
+              <div class="module-title">The Spiderweb Funnel</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Interconnected offers — every touchpoint leads somewhere</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Plant affiliate seeds everywhere, cross-sell constantly</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Accelerate after the first purchase — buyers are proven investors</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">7</div>
+            <div class="module-info">
+              <div class="module-title">Retain, Grow &amp; Never Apologize</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Mail daily — focus on subscribes, not unsubscribes</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Never apologize for emailing — you are running a business</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Content length is never the issue — holding attention is</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">8</div>
+            <div class="module-info">
+              <div class="module-title">The Freedom Uprise Blueprint</div>
+              <div class="module-lessons">3 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Be a community builder, not just an email marketer</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Build stadiums, fill them, serve relentlessly</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>The 8-point execution checklist</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="course-footer">
+        <a href="/pricing.html" class="course-btn btn-advanced">Access Guide — Enterprise Only</a>
+        <div class="course-btn-note">Included with Enterprise Annual · $66.42/mo locked forever</div>
+      </div>
+    </div>
+
+    <!-- GUIDE 5: LIST BUILDING WORKSHOP -->
+    <div class="course-card advanced">
+      <div class="course-header">
+        <div class="course-level">Guide 5 · Full Workshop</div>
+        <div class="course-title">List Building Workshop</div>
+        <div class="course-tagline">The complete 42-page masterclass on building, monetizing, and scaling a profitable subscriber list. From your first opt-in to advanced viral growth strategies.</div>
+        <div class="course-meta">
+          <div class="course-meta-item"><span>4</span>chapters</div>
+          <div class="course-meta-item"><span>16</span>topics</div>
+          <div class="course-meta-item"><span>~3hrs</span>read</div>
+        </div>
+        <span class="course-tier-badge badge-enterprise">Enterprise Only</span>
+      </div>
+
+      <div class="course-modules">
+        <div class="modules-label">Workshop Chapters</div>
+
+        <div class="module open">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">1</div>
+            <div class="module-info">
+              <div class="module-title">The Super List Difference</div>
+              <div class="module-lessons">4 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Why a list is the backbone of every online business</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Cash on demand — the power of hitting send</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Value first, always — the broken record that makes money</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>The money isn't in the list — it's in the value you give</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">2</div>
+            <div class="module-info">
+              <div class="module-title">Building Your Own Superlist</div>
+              <div class="module-lessons">4 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Digital money magnets — ethical bribes that convert</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Squeeze pages, opt-in forms, and 7+ capture points</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Traffic types — buy, borrow, and create your audiences</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Attracting, capturing, and engaging visitors into subscribers</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">3</div>
+            <div class="module-info">
+              <div class="module-title">Powerful Superlist Leverage</div>
+              <div class="module-lessons">4 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Monetizing as an affiliate — review before you recommend</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Creating your own products from subscriber feedback</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>JV partnerships and webinar funnels</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>The $1 per subscriber per month benchmark</div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-header" onclick="toggleModule(this)">
+            <div class="module-num">4</div>
+            <div class="module-info">
+              <div class="module-title">Advanced List Building Secrets</div>
+              <div class="module-lessons">4 topics</div>
+            </div>
+            <div class="module-toggle">▼</div>
+          </div>
+          <div class="module-lessons-list">
+            <div class="lesson"><span class="lesson-icon">📖</span>Viral list building — share gates and referral loops</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Monetize from day one — strategy before send</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Content marketing integration for compound growth</div>
+            <div class="lesson"><span class="lesson-icon">📖</span>Never apologize for mailing — some will, some won't, so what</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="course-footer">
+        <a href="/pricing.html" class="course-btn btn-advanced">Access Workshop — Enterprise Only</a>
+        <div class="course-btn-note">Included with Enterprise Annual · $66.42/mo locked forever</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="gold-divider"><span>What You'll Walk Away With</span></div>
+<div style="height:48px"></div>
+
+<!-- Outcomes -->
+<div class="outcomes-section">
+  <div class="outcomes-grid">
+    <div class="outcomes-block">
+      <h3 style="color:var(--gold)">After Course 1 — Your First 30 Days</h3>
+      <div class="outcome"><span class="outcome-icon">✓</span>You know exactly what your report means and which gap to pursue first</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>Your offer is named, priced, and written in one sentence</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>You've sent 20+ outreach messages to real potential buyers</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>You've had at least 3 real conversations with your market</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>You've made your first direct offer — regardless of the outcome</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>You have a go/pivot decision based on real numbers — not feelings</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>You use Scout every day and know exactly how to ask for your next move</div>
+    </div>
+    <div class="outcomes-block">
+      <h3 style="color:#6ba3f5">After Course 2 — Scale &amp; Systems</h3>
+      <div class="outcome"><span class="outcome-icon">✓</span>Outreach runs in 1 focused hour per week — not all day every day</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>Email sequences run automatically for every new lead</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>Content posts on a schedule without daily decision fatigue</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>Your first digital product is specced and ready to build</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>You're running 2 niches without losing focus on either</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>Scout writes your assets on demand — emails, pages, copy</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>You have a clear 90-day roadmap to $5,000/mo with specific numbers</div>
+    </div>
+  </div>
+  <div style="height:48px"></div>
+  <div class="outcomes-grid">
+    <div class="outcomes-block">
+      <h3 style="color:#6ba3f5">After the Enterprise Training Library</h3>
+      <div class="outcome"><span class="outcome-icon">✓</span>You understand the Drive → Capture → Mail framework and run it weekly</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>Your hooks are positioned where your audience already gathers</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>You've built a niche community with clear rules, rhythm, and revenue path</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>Your list is segmented into 5 tiers with automated movement between them</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>You use modern capture tech — share gates, social API, invisible capture</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>You mail your list daily without fear — and your revenue reflects it</div>
+      <div class="outcome"><span class="outcome-icon">✓</span>Your subscribers live on platforms you own — not just borrowed ground</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <img src="/logo.png" alt="Scout-Faire">
+  <p>Scout-Faire Training · Freedom Uprise Ecosystem</p>
+  <p style="margin-top:6px">© 2026 Freedom Uprise. All rights reserved.</p>
+</footer>
+
+<script>
+  function toggleModule(header) {
+    const module = header.parentElement;
+    const isOpen = module.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.module').forEach(m => m.classList.remove('open'));
+    // Open this one if it was closed
+    if (!isOpen) module.classList.add('open');
+  }
+</script>
+
+</body>
+</html>
