@@ -1,456 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sample Report — Scout-Faire Intelligence</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample Report — Scout-Faire Oracle Intelligence</title>
+<meta name="description" content="See a real Scout-Faire Oracle Intelligence report: full market analysis, profitability scoring, startup investment paths, and a phase-by-phase launch roadmap.">
+<style>
+  :root {
+    --navy: #0d1b2e;
+    --navy-deep: #0a1524;
+    --gold: #c9a227;
+    --gold-bright: #e6c860;
+    --cream: #f9f9f2;
+    --ink: #1c2733;
+    --muted: #8a94a3;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: var(--navy); color: #fff; }
+  .sans { font-family: Arial, Helvetica, sans-serif; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2c1810 0%, #1a0f0a 100%);
-            color: #f5f5f5;
-            min-height: 100vh;
-        }
+  header { padding: 22px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #22334a; }
+  .brand { font-size: 20px; letter-spacing: 5px; color: var(--gold); font-weight: bold; text-decoration: none; }
+  .brand span { display: block; font-family: Arial, sans-serif; font-size: 8px; letter-spacing: 3px; color: var(--muted); margin-top: 3px; }
+  nav a { font-family: Arial, sans-serif; font-size: 13px; color: #d4dbe4; text-decoration: none; margin-left: 24px; letter-spacing: 1px; }
+  nav a:hover { color: var(--gold); }
 
-        /* Header */
-        .header {
-            background: rgba(0,0,0,0.6);
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid rgba(200,16,46,0.3);
-            backdrop-filter: blur(10px);
-        }
-        .logo h1 {
-            font-size: 1.8rem;
-            background: linear-gradient(135deg, #c8102e 0%, #003f87 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 3px;
-        }
-        .logo p { color: #d4a574; font-size: 0.8rem; letter-spacing: 2px; margin-top: 5px; }
+  .hero { text-align: center; padding: 60px 5% 40px; }
+  .eyebrow { font-family: Arial, sans-serif; font-size: 11px; letter-spacing: 4px; color: var(--gold); }
+  h1 { font-size: clamp(28px, 5vw, 44px); margin: 18px 0 14px; line-height: 1.15; }
+  .hero p { font-family: Arial, sans-serif; font-size: 15px; line-height: 1.7; color: #b9c2ce; max-width: 640px; margin: 0 auto; }
 
-        .header-cta {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .sample-badge {
-            background: rgba(212,165,116,0.2);
-            border: 2px solid #d4a574;
-            color: #d4a574;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-        .cta-btn {
-            background: linear-gradient(135deg, #c8102e 0%, #8b0a1f 100%);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: bold;
-            text-decoration: none;
-            font-size: 0.95rem;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
-        .cta-btn:hover {
-            background: linear-gradient(135deg, #d11635 0%, #9c0b23 100%);
-            box-shadow: 0 6px 25px rgba(200,16,46,0.5);
-            transform: scale(1.02);
-        }
+  .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
+  .btn { font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; letter-spacing: 1px; text-decoration: none; padding: 14px 28px; border-radius: 3px; }
+  .btn-gold { background: linear-gradient(90deg, #b8912e, var(--gold-bright), #b8912e); color: #141004; }
+  .btn-ghost { border: 1px solid var(--gold); color: var(--gold); }
+  .btn:hover { opacity: .9; }
 
-        /* Banner */
-        .sample-banner {
-            background: linear-gradient(135deg, rgba(200,16,46,0.15) 0%, rgba(0,63,135,0.15) 100%);
-            border-bottom: 1px solid rgba(212,165,116,0.3);
-            padding: 16px 40px;
-            text-align: center;
-            font-size: 0.95rem;
-            color: #d4a574;
-        }
-        .sample-banner a { color: #ff6b6b; font-weight: bold; text-decoration: none; }
-        .sample-banner a:hover { text-decoration: underline; }
+  .pages { max-width: 860px; margin: 40px auto 0; padding: 0 5% 20px; }
+  .page-card { background: #fff; border-radius: 4px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,.5); margin-bottom: 36px; }
+  .page-card img { display: block; width: 100%; height: auto; }
+  .page-label { text-align: center; font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 3px; color: var(--muted); margin-bottom: 12px; }
 
-        /* Container */
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+  .what-you-get { background: var(--cream); color: var(--ink); padding: 60px 5%; }
+  .wyg-inner { max-width: 860px; margin: 0 auto; }
+  .what-you-get h2 { font-size: 26px; letter-spacing: 1px; border-left: 5px solid var(--gold); padding-left: 16px; margin-bottom: 26px; }
+  .wyg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+  .wyg-item { background: #fff; border: 1px solid #ddd8c4; border-top: 3px solid var(--gold); padding: 18px; }
+  .wyg-item h3 { font-family: Arial, sans-serif; font-size: 13px; letter-spacing: 1px; margin-bottom: 8px; }
+  .wyg-item p { font-family: Arial, sans-serif; font-size: 12.5px; line-height: 1.6; color: #4a5462; }
 
-        /* Results */
-        .results-section {
-            background: rgba(30,20,15,0.8);
-            border: 3px solid #666;
-            border-radius: 12px;
-            padding: 40px;
-        }
-        .niche-title {
-            font-size: 1.8rem;
-            color: #d4a574;
-            margin-bottom: 8px;
-            letter-spacing: 2px;
-        }
-        .niche-subtitle {
-            color: #aaa;
-            margin-bottom: 30px;
-            font-size: 0.95rem;
-        }
+  .bottom-cta { text-align: center; padding: 60px 5% 70px; }
+  .bottom-cta h2 { font-size: 28px; margin-bottom: 12px; }
+  .bottom-cta p { font-family: Arial, sans-serif; font-size: 14px; color: #b9c2ce; margin-bottom: 26px; }
 
-        /* Scores */
-        .scores-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .score-card {
-            background: rgba(0,0,0,0.4);
-            border: 2px solid #666;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-        }
-        .score-label { color: #aaa; font-size: 0.9rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .score-value { font-size: 2.5rem; font-weight: bold; color: #d4a574; }
-
-        /* Analysis content */
-        .analysis-content {
-            background: rgba(0,0,0,0.3);
-            border: 2px solid #555;
-            border-radius: 8px;
-            padding: 30px;
-            line-height: 1.8;
-        }
-        .analysis-header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #666; }
-        .niche-name { font-size: 2rem; color: #d4a574; margin-bottom: 10px; letter-spacing: 2px; }
-        .tier-indicator {
-            display: inline-block; padding: 8px 16px; border-radius: 6px;
-            font-size: 0.9rem; font-weight: bold; letter-spacing: 1px;
-            background: rgba(0,63,135,0.3); border: 2px solid #003f87; color: #5b9cff;
-        }
-        .section { margin-bottom: 40px; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 25px; }
-        .section-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #666;
-        }
-        .section-header h3 { font-size: 1.5rem; color: #d4a574; margin: 0; }
-        .score-badge { padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 1.1rem; border: 2px solid; }
-        .score-high { color: #4ade80; border-color: #4ade80; background: rgba(74,222,128,0.1); }
-        .score-med  { color: #facc15; border-color: #facc15; background: rgba(250,204,21,0.1); }
-        .oracle-badge {
-            padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px;
-            background: rgba(0,63,135,0.2); border: 1px solid #003f87; color: #5b9cff;
-        }
-        .gap-card {
-            background: rgba(0,0,0,0.3); border: 2px solid #555; border-radius: 8px;
-            padding: 20px; margin-bottom: 20px; transition: all 0.3s ease;
-        }
-        .gap-card:hover { border-color: #c8102e; transform: translateX(5px); }
-        .gap-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-        .gap-number {
-            background: #d4a574; color: #1a0f0a; width: 35px; height: 35px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 1.1rem; flex-shrink: 0;
-        }
-        .gap-header h4 { flex: 1; margin: 0; color: #d4a574; font-size: 1.2rem; }
-        .difficulty-badge { padding: 4px 12px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; border: 1px solid; }
-        .diff-low  { color: #4ade80; border-color: #4ade80; background: rgba(74,222,128,0.1); }
-        .diff-high { color: #f87171; border-color: #f87171; background: rgba(248,113,113,0.1); }
-        .gap-details { padding-left: 50px; }
-        .gap-item { margin-bottom: 10px; color: #ccc; }
-        .gap-item strong { color: #d4a574; }
-        .opportunity-pct {
-            font-size: 1.8rem; font-weight: bold; color: #4ade80;
-            margin-left: auto; white-space: nowrap;
-        }
-
-        /* Blueprint */
-        .blueprint-card { background: rgba(0,63,135,0.1); border: 2px solid #003f87; border-radius: 10px; margin-bottom: 25px; overflow: hidden; }
-        .blueprint-header { background: rgba(0,63,135,0.3); padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; }
-        .blueprint-header h4 { color: #5b9cff; font-size: 1.2rem; margin: 0; }
-        .blueprint-content { padding: 25px; }
-        .blueprint-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
-        .blueprint-field label { color: #aaa; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px; }
-        .blueprint-field p { color: #f5f5f5; }
-        .blueprint-list { list-style: none; padding: 0; }
-        .blueprint-list li { color: #ccc; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .blueprint-list li:before { content: "→ "; color: #d4a574; }
-        .phase-box {
-            background: rgba(0,0,0,0.3); border: 1px solid #555; border-radius: 8px;
-            padding: 20px; margin-bottom: 15px;
-        }
-        .phase-box h5 { color: #d4a574; margin-bottom: 12px; font-size: 1rem; }
-        .phase-budget { color: #4ade80; font-weight: bold; float: right; }
-
-        /* Bottom CTA */
-        .bottom-cta {
-            margin-top: 50px;
-            background: linear-gradient(135deg, rgba(200,16,46,0.15) 0%, rgba(0,63,135,0.15) 100%);
-            border: 2px solid rgba(212,165,116,0.4);
-            border-radius: 12px;
-            padding: 50px 40px;
-            text-align: center;
-        }
-        .bottom-cta h2 { font-size: 2rem; color: #d4a574; margin-bottom: 16px; letter-spacing: 2px; }
-        .bottom-cta p { color: #aaa; max-width: 600px; margin: 0 auto 30px; line-height: 1.7; font-size: 1.05rem; }
-        .bottom-cta .cta-btn { font-size: 1.1rem; padding: 16px 40px; display: inline-block; }
-        .bottom-cta .sub-note { margin-top: 16px; color: #888; font-size: 0.9rem; }
-
-        @media (max-width: 768px) {
-            .header { flex-direction: column; gap: 16px; padding: 20px; }
-            .header-cta { flex-direction: column; }
-            .sample-banner { padding: 12px 20px; }
-            .container { margin: 20px auto; }
-            .results-section { padding: 24px; }
-            .blueprint-row { grid-template-columns: 1fr; }
-            .gap-details { padding-left: 0; }
-        }
-
-        @media print {
-            @page { margin: 1.5cm; size: A4; }
-            .header, .sample-banner, .bottom-cta, .cta-btn { display: none !important; }
-            body { background: white !important; color: #1e293b !important; }
-            .results-section { background: white !important; border: none !important; padding: 0 !important; }
-            .analysis-content { background: white !important; border: 1px solid #d1d5db !important; }
-            .section { background: #f8fafc !important; break-inside: avoid; }
-            .gap-card { background: #f8fafc !important; border-color: #d1d5db !important; break-inside: avoid; }
-            .blueprint-card { break-inside: avoid; }
-            .blueprint-header { background: #e2e8f0 !important; }
-            .blueprint-header h4, .niche-name, .niche-title, .section-header h3, .gap-header h4, .gap-item strong { color: #1e293b !important; }
-        }
-    </style>
+  footer { border-top: 1px solid #22334a; padding: 24px 5%; text-align: center; font-family: Arial, sans-serif; font-size: 11px; letter-spacing: 2px; color: var(--muted); }
+</style>
 </head>
 <body>
 
-<!-- Header -->
-<div class="header">
-    <div class="logo">
-        <h1>SCOUT-FAIRE</h1>
-        <p>ANALYTICS INTELLIGENT</p>
+<header>
+  <a class="brand" href="/">SCOUT-FAIRE<span>ANALYTICS INTELLIGENT</span></a>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/sample-report.html" style="color:var(--gold)">Sample Report</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">ORACLE INTELLIGENCE &middot; SAMPLE REPORT</div>
+  <h1>See Exactly What You Get</h1>
+  <p>This is a real Scout-Faire Oracle Intelligence report — a full market analysis of the NFL away-game travel packages niche. Every report scores the opportunity, maps the investment, and hands you a phase-by-phase launch roadmap. No fluff, no filler.</p>
+  <div class="cta-row">
+    <a class="btn btn-gold" href="/samples/scout-faire-sample-report.pdf" download>Download the Sample PDF</a>
+    <a class="btn btn-ghost" href="/pricing.html">Get Your Niche Analyzed</a>
+  </div>
+</section>
+
+<section class="pages">
+  <div class="page-label">PAGE 1 &middot; OPPORTUNITY SCORECARD</div>
+  <div class="page-card"><img src="/samples/sample-page-1.jpg" alt="Sample report cover with profitability score, market trend, buy intent, and competition ratings" loading="lazy"></div>
+
+  <div class="page-label">PAGE 2 &middot; EXECUTIVE SUMMARY &amp; INVESTMENT PATHS</div>
+  <div class="page-card"><img src="/samples/sample-page-2.jpg" alt="Executive summary, market intelligence snapshot, and startup investment breakdown" loading="lazy"></div>
+
+  <div class="page-label">PAGE 3 &middot; LAUNCH ROADMAP</div>
+  <div class="page-card"><img src="/samples/sample-page-3.jpg" alt="Phase-by-phase launch roadmap with milestones and budgets" loading="lazy"></div>
+</section>
+
+<section class="what-you-get">
+  <div class="wyg-inner">
+    <h2>EVERY REPORT INCLUDES</h2>
+    <div class="wyg-grid">
+      <div class="wyg-item">
+        <h3>PROFITABILITY SCORE</h3>
+        <p>A 0&ndash;10 rating with market trend, buy intent, and competition levels — know if the niche is worth your time in ten seconds.</p>
+      </div>
+      <div class="wyg-item">
+        <h3>EXECUTIVE SUMMARY</h3>
+        <p>What the business is, who pays for it, why it wins, and why the window is open right now.</p>
+      </div>
+      <div class="wyg-item">
+        <h3>INVESTMENT PATHS</h3>
+        <p>A bootstrap budget and a recommended budget, line-itemed — so you know the real cost before you commit a dollar.</p>
+      </div>
+      <div class="wyg-item">
+        <h3>LAUNCH ROADMAP</h3>
+        <p>Phase-by-phase action items with milestones and budgets, from day one to recurring revenue.</p>
+      </div>
     </div>
-    <div class="header-cta">
-        <span class="sample-badge">SAMPLE REPORT</span>
-        <a href="/signup.html" class="cta-btn">Run Your Own Report →</a>
-    </div>
-</div>
+  </div>
+</section>
 
-<!-- Sample Banner -->
-<div class="sample-banner">
-    📊 This is a live example of a Scout-Faire Oracle intelligence report. &nbsp;
-    <a href="/signup.html">Create your free account</a> to run reports on any niche, market, or business idea.
-</div>
+<section class="bottom-cta">
+  <h2>Your Niche. This Report. 48 Hours.</h2>
+  <p>Stop guessing what you're walking into. Get the intelligence first.</p>
+  <a class="btn btn-gold" href="/pricing.html">Run My Niche Through Scout-Faire</a>
+</section>
 
-<!-- Main -->
-<div class="container">
-    <div class="results-section">
-        <div class="niche-title">NFL FAN TRAVEL &amp; AWAY GAME PACKAGES</div>
-        <div class="niche-subtitle">Sports travel market · Generated by Scout-Faire Oracle · Sample report</div>
-
-        <!-- Scores -->
-        <div class="scores-grid">
-            <div class="score-card">
-                <div class="score-label">Market Demand</div>
-                <div class="score-value">9/10</div>
-            </div>
-            <div class="score-card">
-                <div class="score-label">Competition</div>
-                <div class="score-value">6/10</div>
-            </div>
-            <div class="score-card">
-                <div class="score-label">Profitability</div>
-                <div class="score-value">8/10</div>
-            </div>
-            <div class="score-card">
-                <div class="score-label">Overall Opportunity</div>
-                <div class="score-value">8/10</div>
-            </div>
-        </div>
-
-        <!-- Analysis Content -->
-        <div class="analysis-content">
-
-            <div class="analysis-header">
-                <div class="niche-name">NFL FAN TRAVEL &amp; AWAY GAME PACKAGES</div>
-                <span class="tier-indicator">ORACLE INTELLIGENCE</span>
-            </div>
-
-            <!-- Competitor Gap Analysis -->
-            <div class="section">
-                <div class="section-header">
-                    <h3>Competitor Gap Analysis</h3>
-                    <span class="oracle-badge">ORACLE</span>
-                </div>
-
-                <div class="gap-card">
-                    <div class="gap-header">
-                        <div class="gap-number">1</div>
-                        <h4>Fanatics Travel</h4>
-                        <span class="difficulty-badge diff-low">Low Difficulty</span>
-                        <div class="opportunity-pct">89%</div>
-                    </div>
-                    <div class="gap-details">
-                        <div class="gap-item"><strong>Gap:</strong> Limited last-minute availability and no real-time seat-selection integration; packages are fixed and lack granular customization (e.g., separate flight class).</div>
-                        <div class="gap-item"><strong>Opportunity:</strong> Offer dynamic, real-time bookable packages with seat-level selection and modular add-ons — something Fanatics cannot currently deliver.</div>
-                        <div class="gap-item"><strong>Buyer Pain:</strong> Fans miss out or get locked into packages that don't fit their travel style or budget split.</div>
-                    </div>
-                </div>
-
-                <div class="gap-card">
-                    <div class="gap-header">
-                        <div class="gap-number">2</div>
-                        <h4>Sports-Travel.com</h4>
-                        <span class="difficulty-badge diff-low">Low Difficulty</span>
-                        <div class="opportunity-pct">66%</div>
-                    </div>
-                    <div class="gap-details">
-                        <div class="gap-item"><strong>Gap:</strong> No transparent pricing dashboard; customers must request quotes and wait days, leading to slow decision cycles.</div>
-                        <div class="gap-item"><strong>Opportunity:</strong> Instant-checkout pricing with live availability — eliminate the quote-and-wait friction entirely.</div>
-                        <div class="gap-item"><strong>Buyer Pain:</strong> High-intent buyers lose momentum waiting for quotes. Many don't convert at all.</div>
-                    </div>
-                </div>
-
-                <div class="gap-card">
-                    <div class="gap-header">
-                        <div class="gap-number">3</div>
-                        <h4>Ticketmaster Experiences</h4>
-                        <span class="difficulty-badge diff-high">High Difficulty</span>
-                        <div class="opportunity-pct">73%</div>
-                    </div>
-                    <div class="gap-details">
-                        <div class="gap-item"><strong>Gap:</strong> Scarce options for mid-tier fans and lack of flexible cancellation policies; focus on premium games leaves many regular-season matchups underserved.</div>
-                        <div class="gap-item"><strong>Opportunity:</strong> Serve the mid-tier fan segment ($800–$1,500 range) with flexible packages and cancellation protection for regular-season games.</div>
-                        <div class="gap-item"><strong>Buyer Pain:</strong> Mid-tier fans feel priced out or underserved — a large, loyal, and undermonetized segment.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Monetization Blueprint -->
-            <div class="section">
-                <div class="section-header">
-                    <h3>Monetization Blueprint</h3>
-                    <span class="oracle-badge">ORACLE</span>
-                </div>
-
-                <div class="blueprint-card">
-                    <div class="blueprint-header">
-                        <h4>NFL Away Game Concierge — Subscription Travel Bundle</h4>
-                        <span class="score-badge score-high">HIGH OPPORTUNITY</span>
-                    </div>
-                    <div class="blueprint-content">
-                        <div class="blueprint-row">
-                            <div class="blueprint-field">
-                                <label>Opportunity</label>
-                                <p>A subscription-style concierge service that bundles flight, hotel, seat upgrade, local transport, pre-game meal, post-game meet &amp; greet, travel insurance, and 24/7 support into a single, instant-checkout package for NFL fans traveling to away games.</p>
-                            </div>
-                            <div class="blueprint-field">
-                                <label>Target Customer</label>
-                                <p>25–45 year-old NFL fans who want a hassle-free, premium experience and are willing to pay $1,200 for guaranteed upgrades and exclusive perks. Dual-income households, high brand loyalty, social sharers.</p>
-                            </div>
-                        </div>
-                        <div class="blueprint-row">
-                            <div class="blueprint-field">
-                                <label>Why Now</label>
-                                <p>The NFL season is in full swing, fan engagement on social media is at a peak, and travel tech has matured to allow instant booking and dynamic pricing. This convergence creates a unique window to capture high-intent customers before competitors expand.</p>
-                            </div>
-                            <div class="blueprint-field">
-                                <label>Price Point</label>
-                                <p><strong style="color:#4ade80;font-size:1.3rem;">$1,200/package</strong><br>All-inclusive per trip. Monthly subscription tier at $99/mo for priority access + member discounts.</p>
-                            </div>
-                        </div>
-
-                        <label style="color:#aaa;font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:12px;">Execution Plan</label>
-
-                        <div class="phase-box">
-                            <h5>Phase 1: Foundation (Days 1–7) <span class="phase-budget">$5,000</span></h5>
-                            <ul class="blueprint-list">
-                                <li>Define MVP feature set and user flow</li>
-                                <li>Secure contracts with a flight aggregator, hotel API, and stadium ticket partner</li>
-                                <li>Build a simple booking engine prototype</li>
-                                <li>Set up a Stripe account for instant payments</li>
-                                <li>Create a landing page with a lead capture form</li>
-                                <li>✓ Prototype functional, supplier agreements signed, landing page live</li>
-                            </ul>
-                        </div>
-
-                        <div class="phase-box">
-                            <h5>Phase 2: Launch (Days 8–21) <span class="phase-budget">$8,000</span></h5>
-                            <ul class="blueprint-list">
-                                <li>Run targeted Meta and YouTube ads to NFL fan audiences</li>
-                                <li>Launch affiliate partnership with 3 NFL fan podcasts/YouTube channels</li>
-                                <li>Activate email sequence to captured leads from Phase 1</li>
-                                <li>Onboard first 10 customers with white-glove service</li>
-                                <li>Collect testimonials and video proof</li>
-                            </ul>
-                        </div>
-
-                        <div class="phase-box">
-                            <h5>Phase 3: Scale (Days 22–90) <span class="phase-budget">$15,000</span></h5>
-                            <ul class="blueprint-list">
-                                <li>Expand to 5 NFL team markets based on Phase 2 data</li>
-                                <li>Launch subscription tier with priority booking access</li>
-                                <li>Build referral program — $100 credit per referral</li>
-                                <li>Integrate real-time seat API for dynamic upgrades</li>
-                                <li>Target $50K MRR by Day 90</li>
-                            </ul>
-                        </div>
-
-                        <div class="blueprint-row" style="margin-top:20px;">
-                            <div class="blueprint-field">
-                                <label>First Campaign Angle</label>
-                                <p>"Stop planning. Start showing up." — Position against the stress and logistics of DIY travel. Target fans who've missed games because planning was too much work.</p>
-                            </div>
-                            <div class="blueprint-field">
-                                <label>Proof To Collect</label>
-                                <p>Video testimonials at the game, social check-ins at partner restaurants, before/after comparison of DIY vs. concierge total cost.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Emerging Opportunities -->
-            <div class="section">
-                <div class="section-header">
-                    <h3>Emerging Opportunities &amp; 90-Day Roadmap</h3>
-                </div>
-                <div class="blueprint-row">
-                    <div class="blueprint-field">
-                        <label>Emerging Opportunities</label>
-                        <ul class="blueprint-list">
-                            <li>International NFL games (London, Munich) — no concierge services exist yet</li>
-                            <li>Women's football leagues and USFL fan travel — underserved entirely</li>
-                            <li>Fantasy football meet-up travel packages for league commissioners</li>
-                            <li>Corporate suite + client entertainment bundles targeting B2B</li>
-                        </ul>
-                    </div>
-                    <div class="blueprint-field">
-                        <label>KPIs to Watch</label>
-                        <ul class="blueprint-list">
-                            <li>Cost per booking (target: under $180)</li>
-                            <li>Package repeat rate (target: 30%+ rebooking within season)</li>
-                            <li>NPS score from post-trip survey (target: 60+)</li>
-                            <li>Subscription conversion rate from one-time buyers (target: 15%)</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-        </div><!-- /analysis-content -->
-    </div><!-- /results-section -->
-
-    <!-- Bottom CTA -->
-    <div class="bottom-cta">
-        <h2>RUN YOUR OWN REPORT</h2>
-        <p>This is what Scout-Faire generates for any niche, market, or business idea — in under 60 seconds. Competitor gaps, opportunity scores, a monetization blueprint, and a 90-day execution plan.</p>
-        <a href="/signup.html" class="cta-btn">Get Started Free →</a>
-        <div class="sub-note">Free account · No credit card required · Results in 60 seconds</div>
-    </div>
-
-</div><!-- /container -->
+<footer>SCOUT-FAIRE ORACLE INTELLIGENCE &middot; FREEDOM UPRISE LABS</footer>
 
 </body>
 </html>
