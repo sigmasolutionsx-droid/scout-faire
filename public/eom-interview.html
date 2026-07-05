@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>End-of-Month Strategy Interview — Scout-Faire</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { visibility: hidden; }
+    @keyframes spin  { to { transform: rotate(360deg); } }
+    @keyframes fadein { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    .spin     { animation: spin 1s linear infinite; }
+    .fade-in  { animation: fadein 0.4s ease both; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white">
+
+<script>
+(async () => {
+  try {
+    const r = await fetch('/api/auth/user', { credentials: 'include' });
+    if (!r.ok) { window.location.href = '/login.html'; return; }
+    const u = await r.json();
+    if (!u.hasEom) {
+      document.getElementById('notEnterprise').classList.remove('hidden');
+    }
+    document.getElementById('userEmailBadge').textContent = u.email;
+    document.documentElement.style.visibility = '';
+  } catch { window.location.href = '/login.html'; }
+})();
+</script>
+
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur border-b border-white/10">
+  <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center">
+        <svg width="16" height="16" fill="none" stroke="#0f172a" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      </div>
+      <div>
+        <div class="font-black text-white text-sm">Scout-Faire</div>
+        <div class="text-xs text-amber-400">Enterprise Monthly Review</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 text-xs">
+      <span id="userEmailBadge" class="text-slate-400"></span>
+      <a href="/" class="text-amber-400 font-bold hover:underline">← Dashboard</a>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-3xl mx-auto px-4 py-10">
+
+  <!-- Not Enterprise warning -->
+  <div id="notEnterprise" class="hidden mb-6 bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5 text-center">
+    <p class="text-amber-400 font-bold mb-2">Enterprise feature</p>
+    <p class="text-slate-300 text-sm mb-3">The End-of-Month Strategy Interview is part of the Enterprise Yearly plan.</p>
+    <a href="/pricing.html" class="inline-block bg-amber-500 text-slate-950 px-5 py-2 rounded-xl font-black text-sm">Upgrade to Enterprise</a>
+  </div>
+
+  <!-- Form -->
+  <div id="formSection">
+    <div class="text-center mb-8">
+      <div class="text-xs uppercase tracking-widest text-amber-400 font-bold mb-2">Enterprise Yearly</div>
+      <h1 class="text-3xl font-black text-white mb-2">End-of-Month Strategy Interview</h1>
+      <p class="text-slate-400 text-sm max-w-xl mx-auto">Answer these 15 questions honestly. Scout-Faire will generate your tailored next-month package based on what actually happened — not theory.</p>
+    </div>
+
+    <div class="bg-white/5 border border-white/10 rounded-3xl p-6 mb-5">
+      <label class="block text-sm font-bold text-slate-300 mb-2">What niche or business are you reviewing?</label>
+      <input id="nicheInput" type="text" placeholder="e.g., Specialty vehicle insurance intake service, Niche insurance micro-content..."
+        class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all" />
+    </div>
+
+    <form id="interviewForm" class="space-y-4">
+      <!-- Questions 1-15 -->
+    </form>
+
+    <div id="formError" class="hidden mt-4 text-sm text-rose-300 bg-rose-500/10 border border-rose-400/20 px-4 py-3 rounded-xl"></div>
+
+    <button id="submitBtn" onclick="submitInterview()"
+      class="mt-6 w-full bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 py-4 rounded-2xl font-black text-lg hover:from-amber-300 hover:to-orange-400 transition-all shadow-lg disabled:opacity-50">
+      Generate My Next-Month Package →
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div id="loadingSection" class="hidden text-center py-20">
+    <div class="relative w-16 h-16 mx-auto mb-6">
+      <div class="absolute inset-0 border-4 border-amber-400 border-t-transparent rounded-full spin"></div>
+    </div>
+    <div class="text-lg font-bold text-white mb-2">Analyzing your month...</div>
+    <div class="text-slate-400 text-sm">Scout-Faire is reading your interview and building your tailored package</div>
+  </div>
+
+  <!-- Results -->
+  <div id="resultsSection" class="hidden space-y-4"></div>
+
+</main>
+
+<script>
+const QUESTIONS = [
+  'What did you actually complete this month?',
+  'Which offer or message got the most attention?',
+  'How many people saw the offer?',
+  'How many leads, replies, calls, downloads, or purchases came in?',
+  'What objections did people give?',
+  'What confused people?',
+  'What buyer segment responded best?',
+  'What buyer segment ignored it?',
+  'What part of the plan felt hardest to execute?',
+  'What asset do you wish you had?',
+  'Did pricing feel too low, too high, or unclear?',
+  'Did anyone ask for something slightly different than the offer?',
+  'Did you discover a better niche angle?',
+  'What proof did you collect?',
+  'What should Scout-Faire adjust for next month?'
+];
+
+// Build the form
+const form = document.getElementById('interviewForm');
+QUESTIONS.forEach((q, i) => {
+  const div = document.createElement('div');
+  div.className = 'bg-white/5 border border-white/10 rounded-2xl p-5';
+  div.innerHTML = `
+    <label class="block text-sm font-bold text-slate-300 mb-2">
+      <span class="text-amber-400 mr-2">${i+1}.</span>${q}
+    </label>
+    <textarea id="q${i}" rows="3" placeholder="Be specific — the more detail you give, the better the next package will be"
+      class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all resize-none text-sm"></textarea>
+  `;
+  form.appendChild(div);
+});
+
+async function submitInterview() {
+  const niche = document.getElementById('nicheInput').value.trim();
+  const errEl = document.getElementById('formError');
+  errEl.classList.add('hidden');
+
+  if (!niche) { errEl.textContent = 'Please enter the niche or business you are reviewing.'; errEl.classList.remove('hidden'); return; }
+
+  const answers = QUESTIONS.map((_, i) => (document.getElementById(`q${i}`)?.value?.trim() || ''));
+  const filled  = answers.filter(a => a.length > 0).length;
+  if (filled < 5) { errEl.textContent = 'Please answer at least 5 questions before submitting.'; errEl.classList.remove('hidden'); return; }
+
+  document.getElementById('formSection').classList.add('hidden');
+  document.getElementById('loadingSection').classList.remove('hidden');
+  document.getElementById('submitBtn').disabled = true;
+
+  try {
+    const r = await fetch('/api/end-of-month-interview', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ niche, answers })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Failed to generate package');
+    document.getElementById('loadingSection').classList.add('hidden');
+    renderPackage(niche, d.package);
+  } catch (e) {
+    document.getElementById('loadingSection').classList.add('hidden');
+    document.getElementById('formSection').classList.remove('hidden');
+    document.getElementById('submitBtn').disabled = false;
+    errEl.textContent = e.message || 'Something went wrong. Please try again.';
+    errEl.classList.remove('hidden');
+  }
+}
+
+function renderPackage(niche, p) {
+  const out = document.getElementById('resultsSection');
+  out.classList.remove('hidden');
+  out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  let html = `
+  <div class="bg-gradient-to-br from-amber-950 to-slate-950 border border-amber-500/30 rounded-3xl p-6 fade-in">
+    <div class="text-xs uppercase tracking-widest text-amber-400 font-bold mb-1">Post-Interview Tailored Package</div>
+    <div class="text-2xl font-black text-white">${esc(niche)}</div>
+    <div class="text-slate-400 text-sm mt-1">Generated ${new Date().toLocaleString()}</div>
+  </div>`;
+
+  if (p.monthlyPerformanceSummary) {
+    html += section('Monthly Performance Summary', `<p class="text-slate-300 leading-relaxed">${esc(p.monthlyPerformanceSummary)}</p>`, 'text-slate-400');
+  }
+
+  if (p.bestSignal || p.weakestSignal) {
+    html += `<div class="grid sm:grid-cols-2 gap-4 fade-in">
+      ${p.bestSignal    ? `<div class="bg-emerald-500/10 border border-emerald-500/20 rounded-3xl p-5">
+        <div class="text-xs uppercase tracking-widest text-emerald-400 font-bold mb-2">Best Signal</div>
+        <p class="text-white text-sm leading-relaxed">${esc(p.bestSignal)}</p>
+      </div>` : ''}
+      ${p.weakestSignal ? `<div class="bg-rose-500/10 border border-rose-500/20 rounded-3xl p-5">
+        <div class="text-xs uppercase tracking-widest text-rose-400 font-bold mb-2">Weakest Signal</div>
+        <p class="text-white text-sm leading-relaxed">${esc(p.weakestSignal)}</p>
+      </div>` : ''}
+    </div>`;
+  }
+
+  if (p.objectionMap?.length) {
+    html += section('Objection Map', `<div class="space-y-3">
+      ${p.objectionMap.map(o => `<div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+        <div class="text-xs uppercase tracking-widest text-rose-400 font-bold mb-1">Objection</div>
+        <p class="text-white text-sm mb-2 font-medium">"${esc(o.objection)}"</p>
+        <div class="text-xs uppercase tracking-widest text-emerald-400 font-bold mb-1">Response</div>
+        <p class="text-slate-300 text-sm">${esc(o.response)}</p>
+      </div>`).join('')}
+    </div>`, 'text-slate-400');
+  }
+
+  if (p.updatedBuyerSegment || p.updatedOfferAngle) {
+    html += `<div class="grid sm:grid-cols-2 gap-4 fade-in">
+      ${p.updatedBuyerSegment ? `<div class="bg-indigo-500/10 border border-indigo-500/20 rounded-3xl p-5">
+        <div class="text-xs uppercase tracking-widest text-indigo-400 font-bold mb-2">Updated Buyer Segment</div>
+        <p class="text-white text-sm leading-relaxed">${esc(p.updatedBuyerSegment)}</p>
+      </div>` : ''}
+      ${p.updatedOfferAngle ? `<div class="bg-amber-500/10 border border-amber-500/20 rounded-3xl p-5">
+        <div class="text-xs uppercase tracking-widest text-amber-400 font-bold mb-2">Updated Offer Angle</div>
+        <p class="text-white text-sm leading-relaxed">${esc(p.updatedOfferAngle)}</p>
+      </div>` : ''}
+    </div>`;
+  }
+
+  // Next Month Market Pack
+  const mp = p.nextMonthMarketPack || {};
+  if (mp.buyerAngle || mp.articleAsset?.title) {
+    html += `<div class="bg-white/5 border border-white/10 rounded-3xl p-5 fade-in">
+      <div class="text-xs uppercase tracking-widest text-amber-400 font-bold mb-4">Next Month Market Pack</div>
+
+      ${mp.buyerAngle ? `<div class="mb-4">
+        <div class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Updated Buyer Angle</div>
+        <p class="text-white text-sm">${esc(mp.buyerAngle)}</p>
+      </div>` : ''}
+
+      ${mp.leadMagnetImprovement ? `<div class="mb-4 bg-black/20 rounded-xl p-3">
+        <div class="text-xs uppercase tracking-widest text-purple-400 font-bold mb-1">Lead Magnet Improvement</div>
+        <p class="text-slate-300 text-sm">${esc(mp.leadMagnetImprovement)}</p>
+      </div>` : ''}
+
+      ${mp.outreachMessage ? `<div class="mb-4 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-4">
+        <div class="text-xs uppercase tracking-widest text-emerald-400 font-bold mb-2">Outreach Message</div>
+        <pre class="text-white text-sm whitespace-pre-wrap font-sans leading-relaxed">${esc(mp.outreachMessage)}</pre>
+        <button onclick="navigator.clipboard.writeText(${JSON.stringify(mp.outreachMessage || '')})" class="mt-2 text-xs text-emerald-400 font-bold hover:underline">Copy Message</button>
+      </div>` : ''}
+
+      ${mp.articleAsset?.title ? `<div class="mb-4 bg-purple-500/5 border border-purple-500/20 rounded-2xl p-4">
+        <div class="text-xs uppercase tracking-widest text-purple-400 font-bold mb-2">Article Asset</div>
+        <h3 class="text-white font-black mb-3">${esc(mp.articleAsset.title)}</h3>
+        ${mp.articleAsset.body ? `<div class="text-slate-300 text-sm leading-relaxed space-y-2">
+          ${(mp.articleAsset.body).split('\n').filter(x=>x.trim()).map(x => `<p>${esc(x)}</p>`).join('')}
+        </div>
+        <button onclick="navigator.clipboard.writeText(${JSON.stringify((mp.articleAsset.title||'')+'\n\n'+(mp.articleAsset.body||''))})" class="mt-3 text-xs text-purple-400 font-bold hover:underline">Copy Article</button>` : ''}
+      </div>` : ''}
+
+      <div class="grid sm:grid-cols-3 gap-3 text-xs">
+        ${mp.campaignTest    ? `<div class="bg-black/20 rounded-xl p-3"><div class="text-amber-400 font-bold mb-1">Campaign Test</div><p class="text-slate-300">${esc(mp.campaignTest)}</p></div>` : ''}
+        ${mp.metricToWatch   ? `<div class="bg-black/20 rounded-xl p-3"><div class="text-indigo-400 font-bold mb-1">Metric to Watch</div><p class="text-slate-300">${esc(mp.metricToWatch)}</p></div>` : ''}
+        ${mp.decisionToMake  ? `<div class="bg-black/20 rounded-xl p-3"><div class="text-emerald-400 font-bold mb-1">Decision to Make</div><p class="text-slate-300">${esc(mp.decisionToMake)}</p></div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  // Launch Package Recommendation
+  if (p.launchPackageRecommendation) {
+    const lrec = p.launchPackageRecommendation.toUpperCase();
+    const isReady = lrec.startsWith('YES');
+    const isNotYet = lrec.startsWith('NOT');
+    const lBg = isReady ? 'from-emerald-950 border-emerald-500/40' : isNotYet ? 'from-amber-950 border-amber-500/40' : 'from-slate-900 border-white/10';
+    const lBadge = isReady ? 'bg-emerald-500 text-white' : isNotYet ? 'bg-amber-500 text-slate-950' : 'bg-slate-600 text-white';
+    html += `<div class="bg-gradient-to-br ${lBg} to-slate-950 border rounded-3xl p-5 fade-in">
+      <div class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3">Launch Package Recommendation</div>
+      <div class="${lBadge} inline-block px-4 py-1.5 rounded-xl font-black text-sm mb-3">${esc(p.launchPackageRecommendation.split('—')[0].trim())}</div>
+      <p class="text-slate-300 text-sm leading-relaxed">${esc(p.launchPackageRecommendation)}</p>
+    </div>`;
+  }
+
+  html += `<div class="text-center py-4 fade-in">
+    <button onclick="window.print()" class="text-sm text-slate-400 hover:text-white transition-colors mr-4">Print Package</button>
+    <a href="/eom-interview.html" class="text-sm text-amber-400 font-bold hover:underline">Start Next Interview</a>
+  </div>`;
+
+  out.innerHTML = html;
+}
+
+function section(title, bodyHtml, labelClass = 'text-slate-400') {
+  return `<div class="bg-white/5 border border-white/10 rounded-3xl p-5 mb-0 fade-in">
+    <div class="text-xs uppercase tracking-widest ${labelClass} font-bold mb-3">${title}</div>
+    ${bodyHtml}
+  </div>`;
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

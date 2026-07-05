@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marketing Command Center — Scout-Faire</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #2c2416;
+      background-image:
+        repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(227,30,36,0.03) 50px, rgba(227,30,36,0.03) 51px),
+        repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(0,74,152,0.03) 50px, rgba(0,74,152,0.03) 51px);
+      min-height: 100vh;
+      color: #f5f5f4;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: linear-gradient(90deg,
+        #E31E24 0%, #E31E24 25%,
+        #6B7280 25%, #6B7280 50%,
+        #004A98 50%, #004A98 75%,
+        #E31E24 75%, #E31E24 100%);
+      background-size: 80px 6px;
+      z-index: 100;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: rgba(28,25,23,0.95);
+      border-bottom: 2px solid rgba(227,30,36,0.3);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 6px;
+      z-index: 90;
+      backdrop-filter: blur(10px);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+    }
+
+    .logo-area img { width: 48px; height: auto; }
+
+    .logo-text {
+      font-size: 1.3rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #f5f5f4;
+    }
+
+    .logo-text span { color: #E31E24; }
+
+    .page-title {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #d4a574;
+      border-left: 3px solid #E31E24;
+      padding-left: 14px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-link {
+      color: #d4d4d8;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 6px 14px;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .nav-link:hover { border-color: #E31E24; color: #E31E24; }
+
+    .credits-chip {
+      background: #1c1917;
+      border: 2px solid #E31E24;
+      border-right-color: #004A98;
+      color: #f5f5f4;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 6px 14px;
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg, #E31E24, #004A98);
+      border: none;
+      color: white;
+      padding: 8px 18px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: opacity 0.2s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);
+    }
+
+    .logout-btn:hover { opacity: 0.85; }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: calc(100vh - 80px);
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      background: rgba(28,25,23,0.8);
+      border-right: 2px solid rgba(227,30,36,0.2);
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .sidebar-section h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #6B7280;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(107,114,128,0.3);
+    }
+
+    .niche-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: #1c1917;
+      border: 2px solid #57534e;
+      color: #f5f5f4;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .niche-input:focus {
+      outline: none;
+      border-color: #E31E24;
+    }
+
+    .niche-input::placeholder { color: #78716c; }
+
+    .tool-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: rgba(28,25,23,0.6);
+      border: 2px solid #57534e;
+      color: #d4d4d8;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: left;
+      transition: all 0.2s;
+      margin-bottom: 6px;
+    }
+
+    .tool-btn:hover {
+      border-color: #E31E24;
+      color: #f5f5f4;
+      background: rgba(227,30,36,0.08);
+    }
+
+    .tool-btn.active {
+      border-color: #E31E24;
+      background: rgba(227,30,36,0.15);
+      color: #fff;
+      border-left: 4px solid #E31E24;
+    }
+
+    .tool-icon {
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .generate-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #E31E24 0%, #004A98 100%);
+      border: none;
+      color: white;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      transition: all 0.3s;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
+    }
+
+    .generate-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(227,30,36,0.4);
+    }
+
+    .generate-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .credits-note {
+      font-size: 0.8rem;
+      color: #78716c;
+      text-align: center;
+      margin-top: -16px;
+    }
+
+    /* ── Main ── */
+    .main {
+      padding: 32px 36px;
+      overflow-y: auto;
+    }
+
+    .welcome-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      text-align: center;
+      color: #78716c;
+    }
+
+    .welcome-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.4;
+    }
+
+    .welcome-state h2 {
+      font-size: 1.5rem;
+      color: #d4d4d8;
+      margin-bottom: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .welcome-state p { font-size: 1rem; max-width: 380px; line-height: 1.6; }
+
+    /* ── Result Area ── */
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid rgba(227,30,36,0.3);
+    }
+
+    .result-niche {
+      font-size: 1.6rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .result-niche span {
+      display: block;
+      font-size: 0.8rem;
+      color: #78716c;
+      font-weight: 400;
+      letter-spacing: 3px;
+      margin-bottom: 4px;
+    }
+
+    .result-type-badge {
+      background: rgba(227,30,36,0.15);
+      border: 2px solid #E31E24;
+      color: #E31E24;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Content blocks */
+    .content-block {
+      background: #1c1917;
+      border: 2px solid #44403c;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .content-block-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid #44403c;
+    }
+
+    .content-block-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #d4a574;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .platform-tag {
+      background: rgba(0,74,152,0.3);
+      border: 1px solid #004A98;
+      color: #93c5fd;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .copy-btn {
+      background: none;
+      border: 1px solid #57534e;
+      color: #78716c;
+      padding: 5px 12px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-family: inherit;
+      font-weight: 600;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .copy-btn:hover {
+      border-color: #E31E24;
+      color: #E31E24;
+    }
+
+    .copy-btn.copied {
+      border-color: #16a34a;
+      color: #16a34a;
+    }
+
+    .content-body {
+      padding: 18px;
+      color: #d4d4d8;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .content-body strong {
+      color: #f5f5f4;
+      font-weight: 700;
+    }
+
+    /* Grid layout for social posts */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* Email sequence timeline */
+    .email-sequence {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .email-item {
+      display: flex;
+      gap: 16px;
+    }
+
+    .email-timeline {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 32px;
+      flex-shrink: 0;
+    }
+
+    .email-dot {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #E31E24, #004A98);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 900;
+      color: white;
+      flex-shrink: 0;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    }
+
+    .email-line {
+      width: 2px;
+      flex: 1;
+      background: rgba(227,30,36,0.3);
+      margin: 4px 0;
+      min-height: 20px;
+    }
+
+    .email-card {
+      flex: 1;
+      background: #1c1917;
+      border: 2px solid #44403c;
+      margin-bottom: 20px;
+    }
+
+    /* Keyword grid */
+    .keyword-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 18px;
+    }
+
+    .keyword-chip {
+      background: rgba(0,74,152,0.2);
+      border: 2px solid #004A98;
+      color: #93c5fd;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .keyword-intent {
+      background: rgba(227,30,36,0.2);
+      border: 1px solid #E31E24;
+      color: #fca5a5;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* Ad copy */
+    .ad-block {
+      background: rgba(0,0,0,0.3);
+      border-left: 4px solid #E31E24;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+
+    .ad-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #78716c;
+      margin-bottom: 6px;
+    }
+
+    .ad-headline {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #93c5fd;
+      margin-bottom: 4px;
+    }
+
+    .ad-description {
+      font-size: 0.9rem;
+      color: #d4d4d8;
+      line-height: 1.5;
+    }
+
+    /* Loading state */
+    .loading-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 20px;
+    }
+
+    .spinner-wrap { position: relative; width: 60px; height: 60px; }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(227,30,36,0.2);
+      border-top-color: #E31E24;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      color: #d4a574;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .loading-sub { color: #78716c; font-size: 0.85rem; }
+
+    /* Error */
+    .error-box {
+      background: rgba(227,30,36,0.1);
+      border: 2px solid #E31E24;
+      color: #fca5a5;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    /* Copy all */
+    .copy-all-btn {
+      background: rgba(0,74,152,0.2);
+      border: 2px solid #004A98;
+      color: #93c5fd;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+
+    .copy-all-btn:hover {
+      background: rgba(0,74,152,0.4);
+    }
+
+    /* Auth gate */
+    .auth-gate {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .auth-gate h2 {
+      font-size: 2rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .auth-gate p {
+      color: #78716c;
+      margin-bottom: 28px;
+      font-size: 1.05rem;
+    }
+
+    .auth-gate .cta-btn {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #E31E24, #004A98);
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { border-right: none; border-bottom: 2px solid rgba(227,30,36,0.2); }
+      .content-grid { grid-template-columns: 1fr; }
+      .main { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <a href="/" class="logo-area">
+    <img src="logo.png" alt="Scout-Faire" />
+    <div>
+      <div class="logo-text">Scout<span>-</span>Faire</div>
+    </div>
+  </a>
+  <div class="page-title">Marketing Command Center</div>
+  <div class="header-right">
+    <a href="/" class="nav-link">Analysis</a>
+    <a href="/pricing.html" class="nav-link">Pricing</a>
+    <span class="credits-chip" id="header-credits" style="display:none"></span>
+    <button class="logout-btn" id="logout-btn" style="display:none" onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<!-- Auth gate (shown while loading) -->
+<div id="auth-gate" class="auth-gate" style="display:none">
+  <div style="font-size:3rem;margin-bottom:20px;">🔒</div>
+  <h2>Login Required</h2>
+  <p>Sign in to access the Marketing Command Center</p>
+  <a href="/login.html" class="cta-btn">Sign In</a>
+</div>
+
+<!-- Main app (hidden until auth confirmed) -->
+<div id="app" style="display:none">
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+      <div class="sidebar-section">
+        <h3>Target Niche</h3>
+        <textarea
+          class="niche-input"
+          id="niche-input"
+          placeholder="e.g. organic dog food, eco yoga mats, vintage watches…"
+        ></textarea>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Content Type</h3>
+        <button class="tool-btn active" data-tool="social" onclick="selectTool(this)">
+          <span class="tool-icon">📱</span>
+          Social Media Pack
+        </button>
+        <button class="tool-btn" data-tool="email" onclick="selectTool(this)">
+          <span class="tool-icon">✉️</span>
+          Email Sequence
+        </button>
+        <button class="tool-btn" data-tool="ad" onclick="selectTool(this)">
+          <span class="tool-icon">🎯</span>
+          Ad Copy
+        </button>
+        <button class="tool-btn" data-tool="blog" onclick="selectTool(this)">
+          <span class="tool-icon">📝</span>
+          Blog Content
+        </button>
+        <button class="tool-btn" data-tool="keywords" onclick="selectTool(this)">
+          <span class="tool-icon">🔍</span>
+          SEO Keywords
+        </button>
+      </div>
+
+      <div class="sidebar-section">
+        <button class="generate-btn" id="generate-btn" onclick="generate()">
+          Generate Content
+        </button>
+        <p class="credits-note" id="credits-note"></p>
+      </div>
+
+    </aside>
+
+    <!-- Main content -->
+    <main class="main" id="main-area">
+      <div class="welcome-state" id="welcome-state">
+        <div class="welcome-icon">⚡</div>
+        <h2>Ready to Generate</h2>
+        <p>Enter your niche, pick a content type, and click Generate to create ready-to-use marketing content instantly.</p>
+      </div>
+
+      <div id="loading-state" class="loading-state" style="display:none">
+        <div class="spinner-wrap"><div class="spinner"></div></div>
+        <div class="loading-text">Generating Content</div>
+        <div class="loading-sub" id="loading-sub">Crafting your marketing assets…</div>
+      </div>
+
+      <div id="error-box" class="error-box" style="display:none"></div>
+      <div id="result-area" style="display:none"></div>
+    </main>
+
+  </div>
+</div>
+
+<script>
+  let currentUser = null;
+  let selectedTool = 'social';
+
+  // ── Auth ──────────────────────────────────────────────
+  async function initAuth() {
+    try {
+      const res = await fetch('/api/auth/user');
+      if (!res.ok) throw new Error('not auth');
+      currentUser = await res.json();
+      showApp();
+    } catch {
+      document.getElementById('auth-gate').style.display = 'flex';
+    }
+  }
+
+  function showApp() {
+    document.getElementById('app').style.display = 'block';
+    const credits = currentUser.credits || 0;
+    const sub = currentUser.subscriptionType;
+    const chip = document.getElementById('header-credits');
+    chip.textContent = sub ? `${sub.toUpperCase()} — Unlimited` : `${credits} credits`;
+    chip.style.display = 'block';
+    document.getElementById('logout-btn').style.display = 'block';
+    updateCreditsNote(credits, sub);
+  }
+
+  function updateCreditsNote(credits, sub) {
+    const note = document.getElementById('credits-note');
+    if (sub) {
+      note.textContent = `Unlimited — ${sub} plan`;
+    } else {
+      note.textContent = `${credits} credit${credits !== 1 ? 's' : ''} remaining`;
+    }
+  }
+
+  function logout() { window.location.href = '/api/logout'; }
+
+  // ── Tool selection ────────────────────────────────────
+  function selectTool(btn) {
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedTool = btn.dataset.tool;
+  }
+
+  // ── Generate ──────────────────────────────────────────
+  async function generate() {
+    const niche = document.getElementById('niche-input').value.trim();
+    if (!niche) {
+      alert('Please enter a niche first.');
+      return;
+    }
+
+    showLoading(selectedTool);
+
+    try {
+      const res = await fetch('/api/marketing/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ niche, contentType: selectedTool })
+      });
+
+      if (res.status === 401) { window.location.href = '/login.html'; return; }
+      if (res.status === 402) {
+        hideLoading();
+        showError('No credits remaining. Please purchase a plan.');
+        return;
+      }
+
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Generation failed');
+
+      if (data.credits !== undefined && currentUser) {
+        currentUser.credits = data.credits;
+        updateCreditsNote(data.credits, currentUser.subscriptionType);
+        document.getElementById('header-credits').textContent =
+          currentUser.subscriptionType
+            ? `${currentUser.subscriptionType.toUpperCase()} — Unlimited`
+            : `${data.credits} credits`;
+      }
+
+      renderResult(niche, selectedTool, data.content);
+    } catch (err) {
+      hideLoading();
+      showError(err.message);
+    }
+  }
+
+  function showLoading(tool) {
+    const labels = {
+      social: 'Crafting platform-specific posts…',
+      email: 'Writing your email sequence…',
+      ad: 'Building high-converting ad copy…',
+      blog: 'Drafting blog outline & intro…',
+      keywords: 'Researching SEO keywords…'
+    };
+    document.getElementById('welcome-state').style.display = 'none';
+    document.getElementById('error-box').style.display = 'none';
+    document.getElementById('result-area').style.display = 'none';
+    document.getElementById('loading-sub').textContent = labels[tool] || 'Working…';
+    document.getElementById('loading-state').style.display = 'flex';
+    document.getElementById('generate-btn').disabled = true;
+  }
+
+  function hideLoading() {
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('generate-btn').disabled = false;
+  }
+
+  function showError(msg) {
+    const box = document.getElementById('error-box');
+    box.textContent = msg;
+    box.style.display = 'block';
+    document.getElementById('result-area').style.display = 'none';
+    document.getElementById('welcome-state').style.display = 'none';
+  }
+
+  // ── Render results ────────────────────────────────────
+  function renderResult(niche, tool, content) {
+    hideLoading();
+
+    const toolLabels = {
+      social: 'Social Media Pack',
+      email: 'Email Sequence',
+      ad: 'Ad Copy',
+      blog: 'Blog Content',
+      keywords: 'SEO Keywords'
+    };
+
+    const ra = document.getElementById('result-area');
+    ra.style.display = 'block';
+
+    let html = `
+      <div class="result-header">
+        <div class="result-niche">
+          <span>Niche</span>
+          ${escHtml(niche)}
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="result-type-badge">${toolLabels[tool]}</div>
+          <button class="copy-all-btn" onclick="copyAll()">Copy All</button>
+        </div>
+      </div>
+    `;
+
+    if (tool === 'social')    html += renderSocial(content);
+    else if (tool === 'email') html += renderEmail(content);
+    else if (tool === 'ad')   html += renderAd(content);
+    else if (tool === 'blog') html += renderBlog(content);
+    else if (tool === 'keywords') html += renderKeywords(content);
+
+    ra.innerHTML = html;
+  }
+
+  function renderSocial(c) {
+    const platforms = [
+      { key: 'instagram', label: 'Instagram', icon: '📸' },
+      { key: 'facebook',  label: 'Facebook',  icon: '👥' },
+      { key: 'twitter',   label: 'X / Twitter', icon: '🐦' },
+      { key: 'linkedin',  label: 'LinkedIn',  icon: '💼' },
+    ];
+    return `<div class="content-grid">${platforms.map(p => `
+      <div class="content-block">
+        <div class="content-block-header">
+          <div class="content-block-title">
+            ${p.icon} ${p.label}
+            <span class="platform-tag">${p.label}</span>
+          </div>
+          <button class="copy-btn" onclick="copyBlock(this, '${p.key}-post')">Copy</button>
+        </div>
+        <div class="content-body" id="${p.key}-post">${escHtml(c[p.key] || '')}</div>
+      </div>
+    `).join('')}</div>`;
+  }
+
+  function renderEmail(c) {
+    const emails = [
+      { key: 'email1', label: 'Email 1 — Awareness', day: 'Day 1' },
+      { key: 'email2', label: 'Email 2 — Value',     day: 'Day 3' },
+      { key: 'email3', label: 'Email 3 — Offer',     day: 'Day 7' },
+    ];
+    return `<div class="email-sequence">${emails.map((e, i) => `
+      <div class="email-item">
+        <div class="email-timeline">
+          <div class="email-dot">${i + 1}</div>
+          ${i < emails.length - 1 ? '<div class="email-line"></div>' : ''}
+        </div>
+        <div class="email-card" style="margin-left:0;flex:1;">
+          <div class="content-block-header">
+            <div class="content-block-title">✉️ ${e.label} <span class="platform-tag">${e.day}</span></div>
+            <button class="copy-btn" onclick="copyBlock(this, '${e.key}')">Copy</button>
+          </div>
+          <div class="content-body" id="${e.key}">${formatEmailHtml(c[e.key] || '')}</div>
+        </div>
+      </div>
+    `).join('')}</div>`;
+  }
+
+  function renderAd(c) {
+    const platforms = [
+      { key: 'google', label: 'Google Search Ads', color: '#E31E24' },
+      { key: 'facebook', label: 'Facebook / Meta Ads', color: '#004A98' },
+    ];
+    return platforms.map(p => {
+      const ads = c[p.key] || [];
+      return `
+        <div class="content-block" style="margin-bottom:20px">
+          <div class="content-block-header">
+            <div class="content-block-title" style="color:${p.color}">🎯 ${p.label}</div>
+            <button class="copy-btn" onclick="copyBlock(this, '${p.key}-ads')">Copy All</button>
+          </div>
+          <div id="${p.key}-ads">
+            ${ads.map((ad, i) => `
+              <div class="ad-block">
+                <div class="ad-label">Ad Variation ${i + 1}</div>
+                <div class="ad-headline">${escHtml(ad.headline || '')}</div>
+                <div class="ad-description">${escHtml(ad.description || '')}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderBlog(c) {
+    return `
+      <div class="content-block" style="margin-bottom:20px">
+        <div class="content-block-header">
+          <div class="content-block-title">📝 Blog Post Outline</div>
+          <button class="copy-btn" onclick="copyBlock(this, 'blog-outline')">Copy</button>
+        </div>
+        <div class="content-body" id="blog-outline">${escHtml(c.outline || '')}</div>
+      </div>
+      <div class="content-block">
+        <div class="content-block-header">
+          <div class="content-block-title">✍️ Intro Paragraph</div>
+          <button class="copy-btn" onclick="copyBlock(this, 'blog-intro')">Copy</button>
+        </div>
+        <div class="content-body" id="blog-intro">${escHtml(c.intro || '')}</div>
+      </div>
+      ${c.cta ? `
+      <div class="content-block">
+        <div class="content-block-header">
+          <div class="content-block-title">🚀 Call-to-Action</div>
+          <button class="copy-btn" onclick="copyBlock(this, 'blog-cta')">Copy</button>
+        </div>
+        <div class="content-body" id="blog-cta">${escHtml(c.cta)}</div>
+      </div>` : ''}
+    `;
+  }
+
+  function renderKeywords(c) {
+    const groups = [
+      { key: 'commercial', label: 'Commercial Intent', color: '#E31E24' },
+      { key: 'informational', label: 'Informational', color: '#004A98' },
+      { key: 'longtail', label: 'Long-tail', color: '#d4a574' },
+    ];
+    return groups.map(g => {
+      const kws = c[g.key] || [];
+      return `
+        <div class="content-block" style="margin-bottom:20px">
+          <div class="content-block-header">
+            <div class="content-block-title" style="color:${g.color}">🔍 ${g.label} Keywords</div>
+            <button class="copy-btn" onclick="copyKeywords('${g.key}-kws')">Copy</button>
+          </div>
+          <div class="keyword-grid" id="${g.key}-kws">${kws.map(k => `
+            <div class="keyword-chip">
+              ${escHtml(k.keyword || k)}
+              ${k.intent ? `<span class="keyword-intent">${escHtml(k.intent)}</span>` : ''}
+            </div>
+          `).join('')}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ── Copy helpers ──────────────────────────────────────
+  function copyBlock(btn, id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    navigator.clipboard.writeText(el.innerText).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function copyKeywords(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const kws = [...el.querySelectorAll('.keyword-chip')].map(c => c.innerText.trim()).join('\n');
+    navigator.clipboard.writeText(kws);
+  }
+
+  function copyAll() {
+    const ra = document.getElementById('result-area');
+    const text = [...ra.querySelectorAll('.content-body')].map(b => b.innerText.trim()).join('\n\n---\n\n');
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy All', 2000);
+    });
+  }
+
+  // ── Util ─────────────────────────────────────────────
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/\n/g, '<br>');
+  }
+
+  function formatEmailHtml(str) {
+    return escHtml(str).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  }
+
+  initAuth();
+</script>
+</body>
+</html>
